@@ -20,7 +20,7 @@
             :rules="rules"
             label-width="120px"
         >
-            <el-tabs value="relation" type="border-card">
+            <el-tabs value="skin" type="border-card">
                 <el-tab-pane name="basic" label="基础信息">
                     <el-form-item
                         label="名称"
@@ -32,7 +32,7 @@
                             v-model="model.name"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="分类">
+                    <el-form-item label="分类" prop="categories">
                         <el-select
                             v-model="model.categories"
                             multiple
@@ -47,7 +47,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="数值">
+                    <el-form-item label="数值" prop="scores">
                         <div class="score-item">
                             难度：
                             <el-rate
@@ -88,60 +88,6 @@
                             >
                             </el-rate>
                         </div>
-                    </el-form-item>
-                    <el-form-item label="顺风出装">
-                        <el-select
-                            v-model="model.items1"
-                            class="recommend-items"
-                            :multiple-limit="6"
-                            filterable
-                            multiple
-                            placeholder="选择出装"
-                        >
-                            <el-option
-                                v-for="item in items"
-                                :key="item._id"
-                                :label="item.name"
-                                :value="item._id"
-                            >
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="逆风出装">
-                        <el-select
-                            v-model="model.items2"
-                            class="recommend-items"
-                            :multiple-limit="6"
-                            filterable
-                            multiple
-                            placeholder="选择出装"
-                        >
-                            <el-option
-                                v-for="item in items"
-                                :key="item._id"
-                                :label="item.name"
-                                :value="item._id"
-                            >
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="使用技巧">
-                        <el-input
-                            type="textarea"
-                            v-model="model.usageTips"
-                        ></el-input>
-                    </el-form-item>
-                    <el-form-item label="对抗技巧">
-                        <el-input
-                            type="textarea"
-                            v-model="model.battleTips"
-                        ></el-input>
-                    </el-form-item>
-                    <el-form-item label="团战思路">
-                        <el-input
-                            type="textarea"
-                            v-model="model.teamTips"
-                        ></el-input>
                     </el-form-item>
                     <el-form-item label="头像" prop="avatar">
                         <div class="form-img-item">
@@ -225,7 +171,7 @@
                                     trigger: 'blur',
                                 },
                                 {
-                                    validator: validateSkillIcon,
+                                    validator: validatePic,
                                     trigger: 'blur',
                                 },
                             ]"
@@ -251,7 +197,10 @@
                                 <el-input v-model="item.icon"></el-input>
                             </div>
                         </el-form-item>
-                        <el-form-item label="冷却">
+                        <el-form-item
+                            label="冷却"
+                            :prop="`skills.${i}.cooldowns`"
+                        >
                             <div class="skill-cooldown-list">
                                 <div
                                     class="skill-cooldown-item"
@@ -284,7 +233,10 @@
                                     ></i>
                                     <i
                                         class="el-icon-circle-close"
-                                        v-show="!disableForm && item.cooldowns.length > 1"
+                                        v-show="
+                                            !disableForm &&
+                                            item.cooldowns.length > 1
+                                        "
                                         title="删除"
                                         @click="item.cooldowns.splice(j, 1)"
                                     ></i>
@@ -306,7 +258,10 @@
                                 </div>
                             </div>
                         </el-form-item>
-                        <el-form-item label="消耗">
+                        <el-form-item
+                            label="消耗"
+                            :prop="`skills.${i}.consume`"
+                        >
                             <div class="skill-cooldown-list">
                                 <div class="skill-cooldown-item">
                                     <el-input-number
@@ -319,13 +274,16 @@
                                 </div>
                             </div>
                         </el-form-item>
-                        <el-form-item label="描述">
+                        <el-form-item
+                            label="描述"
+                            :prop="`skills.${i}.description`"
+                        >
                             <el-input
                                 type="textarea"
                                 v-model="item.description"
                             ></el-input>
                         </el-form-item>
-                        <el-form-item label="提示">
+                        <el-form-item label="提示" :prop="`skills.${i}.tips`">
                             <el-input
                                 type="textarea"
                                 v-model="item.tips"
@@ -333,10 +291,84 @@
                         </el-form-item>
                     </section>
                     <div class="add-section" v-show="!disableForm">
-                        <el-button @click="model.skills.push({ cooldowns: [0], consume: 0 })"
-                            ><i class="el-icon-plus"></i> 增加技能</el-button
+                        <el-button
+                            @click="
+                                model.skills.push({
+                                    cooldowns: [0],
+                                    consume: 0,
+                                })
+                            "
+                            ><i class="el-icon-plus"></i> 添加技能</el-button
                         >
                     </div>
+                </el-tab-pane>
+                <el-tab-pane name="usage" label="使用建议">
+                    <el-form-item label="顺风出装">
+                        <el-select
+                            v-model="model.recommendedItem1.items"
+                            class="recommend-items"
+                            :multiple-limit="6"
+                            filterable
+                            multiple
+                            placeholder="选择出装"
+                        >
+                            <el-option
+                                v-for="item in items"
+                                :key="item._id"
+                                :label="item.name"
+                                :value="item._id"
+                            >
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="顺风出装提示">
+                        <el-input
+                            type="textarea"
+                            v-model="model.recommendedItem1.tips"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item label="逆风出装">
+                        <el-select
+                            v-model="model.recommendedItem2.items"
+                            class="recommend-items"
+                            :multiple-limit="6"
+                            filterable
+                            multiple
+                            placeholder="选择出装"
+                        >
+                            <el-option
+                                v-for="item in items"
+                                :key="item._id"
+                                :label="item.name"
+                                :value="item._id"
+                            >
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="逆风出装提示">
+                        <el-input
+                            type="textarea"
+                            v-model="model.recommendedItem2.tips"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item label="使用技巧">
+                        <el-input
+                            type="textarea"
+                            v-model="model.usageTips"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item label="对抗技巧">
+                        <el-input
+                            type="textarea"
+                            v-model="model.battleTips"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item label="团战思路">
+                        <el-input
+                            type="textarea"
+                            v-model="model.teamTips"
+                        ></el-input>
+                    </el-form-item>
                 </el-tab-pane>
                 <el-tab-pane name="relation" label="关系">
                     <div class="relation-item">
@@ -373,7 +405,21 @@
                                     ></el-button
                                 ></span>
                             </h4>
-                            <el-form-item label="英雄" :prop="`partners.${i}.hero`" :rules="[{required: true, message: '英雄不能为空', trigger: 'change'}, {validator: validateSelectedPartner, trigger: 'change'}]">
+                            <el-form-item
+                                label="英雄"
+                                :prop="`partners.${i}.hero`"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '英雄不能为空',
+                                        trigger: 'change',
+                                    },
+                                    {
+                                        validator: validateSelectedPartner,
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
                                 <el-select
                                     v-model="item.hero"
                                     filterable
@@ -381,14 +427,20 @@
                                 >
                                     <el-option
                                         v-for="item in partners"
-                                        :key="'partn'+item._id"
+                                        :key="'partn' + item._id"
                                         :label="item.name"
                                         :value="item._id"
                                     >
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="描述" :prop="`partners.${i}.description`" :rules="[{required: true, message: '描述不能为空'}]">
+                            <el-form-item
+                                label="描述"
+                                :prop="`partners.${i}.description`"
+                                :rules="[
+                                    { required: true, message: '描述不能为空' },
+                                ]"
+                            >
                                 <el-input
                                     type="textarea"
                                     v-model="item.description"
@@ -398,7 +450,7 @@
                         <div class="add-section" v-show="!disableForm">
                             <el-button @click="model.partners.push({})"
                                 ><i class="el-icon-plus"></i>
-                                增加搭档</el-button
+                                添加搭档</el-button
                             >
                         </div>
                     </div>
@@ -436,7 +488,21 @@
                                     ></el-button
                                 ></span>
                             </h4>
-                            <el-form-item label="英雄" :prop="`restraints.${i}.hero`" :rules="[{required: true, message: '英雄不能为空', trigger: 'change'}, { validator: validateSelectedRestraint, trigger: 'change' }]">
+                            <el-form-item
+                                label="英雄"
+                                :prop="`restraints.${i}.hero`"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '英雄不能为空',
+                                        trigger: 'change',
+                                    },
+                                    {
+                                        validator: validateSelectedRestraint,
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
                                 <el-select
                                     v-model="item.hero"
                                     filterable
@@ -444,14 +510,20 @@
                                 >
                                     <el-option
                                         v-for="item in partners"
-                                        :key="'kzds'+item._id"
+                                        :key="'kzds' + item._id"
                                         :label="item.name"
                                         :value="item._id"
                                     >
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="描述" :prop="`restraints.${i}.description`" :rules="[{required: true, message: '描述不能为空'}]">
+                            <el-form-item
+                                label="描述"
+                                :prop="`restraints.${i}.description`"
+                                :rules="[
+                                    { required: true, message: '描述不能为空' },
+                                ]"
+                            >
                                 <el-input
                                     type="textarea"
                                     v-model="item.description"
@@ -461,7 +533,7 @@
                         <div class="add-section" v-show="!disableForm">
                             <el-button @click="model.restraints.push({})"
                                 ><i class="el-icon-plus"></i>
-                                增加克制的英雄</el-button
+                                添加克制的英雄</el-button
                             >
                         </div>
                     </div>
@@ -499,7 +571,21 @@
                                     ></el-button
                                 ></span>
                             </h4>
-                            <el-form-item label="英雄" :prop="`reRestraints.${i}.hero`" :rules="[{required: true, message: '英雄不能为空', trigger: 'change'}, { validator: validateSelectedReRestraint, trigger: 'change' }]">
+                            <el-form-item
+                                label="英雄"
+                                :prop="`reRestraints.${i}.hero`"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '英雄不能为空',
+                                        trigger: 'change',
+                                    },
+                                    {
+                                        validator: validateSelectedReRestraint,
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
                                 <el-select
                                     v-model="item.hero"
                                     filterable
@@ -507,14 +593,20 @@
                                 >
                                     <el-option
                                         v-for="item in reRestraints"
-                                        :key="'bkzsdi'+item._id"
+                                        :key="'bkzsdi' + item._id"
                                         :label="item.name"
                                         :value="item._id"
                                     >
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="描述" :prop="`reRestraints.${i}.description`" :rules="[{required: true, message: '描述不能为空'}]">
+                            <el-form-item
+                                label="描述"
+                                :prop="`reRestraints.${i}.description`"
+                                :rules="[
+                                    { required: true, message: '描述不能为空' },
+                                ]"
+                            >
                                 <el-input
                                     type="textarea"
                                     v-model="item.description"
@@ -524,9 +616,128 @@
                         <div class="add-section" v-show="!disableForm">
                             <el-button @click="model.reRestraints.push({})"
                                 ><i class="el-icon-plus"></i>
-                                增加被克制的英雄</el-button
+                                添加被克制的英雄</el-button
                             >
                         </div>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane name="skin" label="皮肤">
+                    <section
+                        class="section-item"
+                        v-for="(item, i) of model.skins"
+                        :key="'skin' + i"
+                    >
+                        <h4>
+                            <span>皮肤{{ i + 1 }}：</span>
+                            <span v-show="!disableForm">
+                                <el-button
+                                    icon="el-icon-plus"
+                                    size="mini"
+                                    circle
+                                    title="在前面添加一项"
+                                    @click="model.skins.splice(i, 1, {}, item)"
+                                ></el-button
+                                ><el-button
+                                    type="danger"
+                                    icon="el-icon-delete"
+                                    size="mini"
+                                    circle
+                                    title="删除"
+                                    @click="removeSkin(item, i)"
+                                ></el-button
+                            ></span>
+                        </h4>
+                        <el-form-item
+                            label="名称"
+                            :prop="`skins.${i}.name`"
+                            :rules="[
+                                {
+                                    required: true,
+                                    message: '皮肤名称不能为空',
+                                    trigger: 'blur',
+                                },
+                            ]"
+                        >
+                            <el-input v-model="item.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="描述">
+                            <el-input type="textarea" v-model="item.description"></el-input>
+                        </el-form-item>
+                        <el-form-item
+                            label="图片"
+                            :prop="`skins.${i}.img`"
+                            :rules="[
+                                {
+                                    required: true,
+                                    message: '皮肤图片不能为空',
+                                    trigger: 'blur',
+                                },
+                                {
+                                    validator: validatePic,
+                                    trigger: 'blur',
+                                },
+                            ]"
+                            ><el-input v-model="item.img"></el-input
+                        ></el-form-item>
+                        <el-form-item class="skin-img-item">
+                            <el-upload
+                                class="icon-uploader"
+                                :action="`${$http.defaults.baseURL}/upload`"
+                                :show-file-list="false"
+                                :on-success="(res) => (item.img = res.url)"
+                                title="点击选择图片上传"
+                            >
+                                <img
+                                    v-if="item.img"
+                                    :src="item.img"
+                                    class="icon"
+                                />
+                                <i
+                                    v-else
+                                    class="el-icon-plus avatar-uploader-icon"
+                                ></i>
+                            </el-upload>
+                        </el-form-item>
+                        <el-form-item
+                            label="封面"
+                            :prop="`skins.${i}.banner`"
+                            :rules="[
+                                {
+                                    required: true,
+                                    message: '皮肤封面不能为空',
+                                    trigger: 'blur',
+                                },
+                                {
+                                    validator: validatePic,
+                                    trigger: 'blur',
+                                },
+                            ]"
+                            ><el-input v-model="item.banner"></el-input
+                        ></el-form-item>
+                        <el-form-item class="skin-banner-item">
+                            <el-upload
+                                class="icon-uploader"
+                                :action="`${$http.defaults.baseURL}/upload`"
+                                :show-file-list="false"
+                                :on-success="(res) => (item.banner = res.url)"
+                                title="点击选择图片上传"
+                            >
+                                <img
+                                    v-if="item.banner"
+                                    :src="item.banner"
+                                    class="icon"
+                                />
+                                <i
+                                    v-else
+                                    class="el-icon-plus avatar-uploader-icon"
+                                ></i>
+                            </el-upload>
+                        </el-form-item>
+                    </section>
+                    <div class="add-section" v-show="!disableForm">
+                        <el-button @click="model.skins.push({})"
+                            ><i class="el-icon-plus"></i> 添加皮肤</el-button
+                        >
                     </div>
                 </el-tab-pane>
             </el-tabs>
@@ -551,13 +762,6 @@ export default {
         id: String,
     },
     data() {
-        const validateAvatar = (rule, val, cb) => {
-            if (this.imgStatus === false && val) {
-                cb(new Error("图片显示错误，请检查图片地址"));
-            } else {
-                cb();
-            }
-        };
         return {
             disableForm: false, // 是否禁用表单
             categories: [], // 分类列表
@@ -572,10 +776,13 @@ export default {
                     attack: 1,
                     survive: 1,
                 },
+                recommendedItem1: {},
+                recommendedItem2: {},
                 skills: [],
                 partners: [],
                 restraints: [],
                 reRestraints: [],
+                skins: [],
             },
             rules: {
                 name: [
@@ -585,7 +792,7 @@ export default {
                         trigger: "blur",
                     },
                 ],
-                avatar: [{ validator: validateAvatar, trigger: "blur" }],
+                avatar: [{ validator: this.validatePic, trigger: "blur" }],
             },
             nameErrorTip: "",
         };
@@ -606,22 +813,22 @@ export default {
         },
         partners() {
             // 搭档的英雄应该排除自己
-            return this.heros.filter(hero=> hero.name !== this.model.name);
+            return this.heros.filter((hero) => hero.name !== this.model.name);
         },
         restraints() {
             // 克制的英雄列表应该排除被克制的英雄
-            if(this.model.reRestraints.length <= 0) {
+            if (this.model.reRestraints.length <= 0) {
                 return this.partners;
             }
             return this.herosFilter(this.partners, this.model.reRestraints);
         },
         reRestraints() {
             // 被克制的英雄列表应该排除克制的英雄
-            if(this.model.restraints.length <= 0) {
+            if (this.model.restraints.length <= 0) {
                 return this.partners;
             }
             return this.herosFilter(this.partners, this.model.restraints);
-        }
+        },
     },
     methods: {
         save() {
@@ -676,17 +883,17 @@ export default {
             }
             return str;
         },
-        herosFilter(all, arr1){
+        herosFilter(all, arr1) {
             // 全部英雄    已选被克制英雄或已选克制英雄
             let arr = JSON.parse(JSON.stringify(all));
-            arr.map(hero=> {
-               arr1.map(item=> {
-                    if(hero._id == item.hero) {
+            arr.map((hero) => {
+                arr1.map((item) => {
+                    if (hero._id == item.hero) {
                         hero.isRepeat = true; // 在数组对象上标记重复，最后过滤
                     }
-                })
-            })
-            return arr.filter(item => !item.isRepeat);
+                });
+            });
+            return arr.filter((item) => !item.isRepeat);
         },
         resetForm() {
             // 重置表单数据
@@ -699,10 +906,13 @@ export default {
                     attack: 1,
                     survive: 1,
                 },
+                recommendedItem1: {},
+                recommendedItem2: {},
                 skills: [],
                 partners: [],
                 restraints: [],
                 reRestraints: [],
+                skins: [],
             };
         },
         removeSkill(skill, index) {
@@ -714,26 +924,38 @@ export default {
         },
         removePartner(partner, index) {
             if (partner.hero || partner.description) {
-                this.removeConfirm(this.model.partners, index, '搭档');
+                this.removeConfirm(this.model.partners, index, "搭档");
             } else {
                 this.model.partners.splice(index, 1);
             }
         },
         removeRestraint(hero, index) {
-            if(hero.hero || hero.description) {
-                this.removeConfirm(this.model.restraints, index, '克制的英雄')
+            if (hero.hero || hero.description) {
+                this.removeConfirm(this.model.restraints, index, "克制的英雄");
             } else {
                 this.model.restraints.splice(index, 1);
             }
         },
         removeReRestraint(hero, index) {
-            if(hero.hero || hero.description) {
-                this.removeConfirm(this.model.reRestraints, index, '被克制的英雄')
+            if (hero.hero || hero.description) {
+                this.removeConfirm(
+                    this.model.reRestraints,
+                    index,
+                    "被克制的英雄"
+                );
             } else {
                 this.model.reRestraints.splice(index, 1);
             }
         },
+        removeSkin(skin, index) {
+            if( skin.name || skin.description || skin.img || skin.banner) {
+                this.removeConfirm(this.model.skins, index, '皮肤');
+            }else {
+                this.model.skins.splice(index, 1);
+            }
+        },
         removeConfirm(arr, index, name = "") {
+            // 确定删除表单项提示框
             this.$confirm(`是否确定要删除 ${name + (index + 1)} ？`, "提示", {
                 confirmButtonText: "删除",
                 cancelButtonText: "取消",
@@ -744,7 +966,7 @@ export default {
                 })
                 .catch(() => {});
         },
-        validateSkillIcon(rule, val, cb) {
+        validatePic(rule, val, cb) {
             const res = this.checkImg(val);
             if (res === false && val) {
                 cb(new Error("图片显示错误，请检查图片地址"));
@@ -752,20 +974,21 @@ export default {
                 cb();
             }
         },
-        validateSelectedPartner(rule, val, cb){
+        validateSelectedPartner(rule, val, cb) {
             this.validateSelectedHero(rule, val, cb, this.model.partners);
         },
-        validateSelectedRestraint(rule, val, cb){
+        validateSelectedRestraint(rule, val, cb) {
             this.validateSelectedHero(rule, val, cb, this.model.restraints);
         },
-        validateSelectedReRestraint(rule, val, cb){
+        validateSelectedReRestraint(rule, val, cb) {
             this.validateSelectedHero(rule, val, cb, this.model.reRestraints);
         },
         validateSelectedHero(rule, val, cb, arr) {
-            const res = arr.filter( item => item.hero == val);
-            if(res.length > 1) {
-                cb(new Error('英雄已被选，不要重复选择'));
-            }else {
+            // 验证是否重复选英雄
+            const res = arr.filter((item) => item.hero == val);
+            if (res.length > 1) {
+                cb(new Error("英雄已被选，不要重复选择"));
+            } else {
                 cb();
             }
         },
@@ -817,6 +1040,7 @@ export default {
             vm.$refs.ruleForm.clearValidate(); // 清除表单验证错误
             if (to.path == "/heros/create") {
                 vm.resetForm(); // 进入新建页面重置表单
+                // vm.$refs.ruleForm.resetFields()
             }
             if (to.path == "/heros/detail/" + to.params.id) {
                 vm.disableForm = true;
@@ -980,5 +1204,44 @@ export default {
 .hero-edit .relation-item .section-item {
     border-bottom: none;
     margin-bottom: 25px;
+}
+.icon-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.icon-uploader .el-upload:hover {
+    border-color: #409eff;
+}
+.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+}
+.icon-uploader .icon {
+    width: 178px;
+    height: 178px;
+    display: block;
+}
+.hero-edit .skin-img-item .avatar-uploader-icon {
+    height: 350px;
+    width: auto;
+}
+.hero-edit .skin-img-item .icon-uploader .icon {
+    height: 350px;
+    width: auto;
+}
+.hero-edit .skin-banner-item .avatar-uploader-icon {
+    height: 250px;
+    width: auto;
+}
+.hero-edit .skin-banner-item .icon-uploader .icon {
+    height: 250px;
+    width: auto;
 }
 </style>

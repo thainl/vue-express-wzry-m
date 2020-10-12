@@ -22,8 +22,16 @@ const schema = new mongoose.Schema({
         consume: { type: Number }, // 技能消耗
         cooldowns: [{ type: Number }], // 技能冷却
     }],
-    items1: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Item' }], // 顺风出装
-    items2: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Item' }], // 逆风出装
+    // items1: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Item' }], // 顺风出装
+    // items2: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Item' }], // 逆风出装
+    recommendedItem1: { // 顺风出装
+        items: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Item' }],
+        tips: { type: String }
+    },
+    recommendedItem2: { // 逆风出装
+        items: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Item' }],
+        tips: { type: String }
+    },
     usageTips: { type: String }, // 使用技巧
     battleTips: { type: String }, // 对抗技巧
     teamTips: { type: String }, // 团战思路
@@ -38,6 +46,12 @@ const schema = new mongoose.Schema({
     reRestraints: [{ // 被哪些英雄克制
         hero: { type: mongoose.SchemaTypes.ObjectId, ref: 'Hero' },
         description: { type: String }
+    }],
+    skins: [{
+        name: { type: String },
+        description: { type: String },
+        img: { type: String },
+        banner: { type: String }
     }]
 });
 
