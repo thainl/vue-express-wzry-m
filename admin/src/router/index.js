@@ -32,6 +32,7 @@ const routes = [
         props: true,
         component: () => import('../views/CategoryEdit.vue')
       },
+
       {
         path: 'items/create',
         name: 'ItemCreate',
@@ -48,6 +49,7 @@ const routes = [
         props: true,
         component: () => import('../views/ItemEdit.vue')
       },
+
       {
         path: 'heros/create',
         name: 'HeroCreate',
@@ -69,6 +71,40 @@ const routes = [
         name: 'HeroDetail',
         props: true,
         component: () => import('../views/HeroEdit.vue')
+      },
+
+      {
+        path: 'articles/create',
+        name: 'ArticleCreate',
+        component: () => import('../views/ArticleEdit.vue')
+      },
+      {
+        path: 'articles/list',
+        name: 'ArticleList',
+        component: () => import('../views/ArticleList.vue')
+      },
+      {
+        path: 'articles/edit/:id',
+        name: 'ArticleEdit',
+        props: true,
+        component: () => import('../views/ArticleEdit.vue')
+      },
+
+      {
+        path: 'ads/create',
+        name: 'AdCreate',
+        component: () => import('../views/AdEdit.vue')
+      },
+      {
+        path: 'ads/list',
+        name: 'AdList',
+        component: () => import('../views/AdList.vue')
+      },
+      {
+        path: 'ads/edit/:id',
+        name: 'AdEdit',
+        props: true,
+        component: () => import('../views/AdEdit.vue')
       },
     ]
   },

@@ -1,16 +1,21 @@
 <template>
-    <div class="category-list">
-        <h2>分类列表</h2>
-        <el-table :data="categories">
+    <div class="ad-list">
+        <h2>广告位列表</h2>
+        <el-table :data="ads">
             <el-table-column prop="_id" label="id" width="220px">
             </el-table-column>
-            <el-table-column prop="parent.name" label="父级分类"> </el-table-column>
-            <el-table-column prop="name" label="分类名称"> </el-table-column>
+            <el-table-column prop="name" label="广告位名称"> </el-table-column>
+            <el-table-column
+                label="广告数量">
+                <template v-slot="scope">
+                    {{scope.row.items.length}}
+                </template>
+                </el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
                 <template v-slot="scope">
                     <el-button
                         @click="
-                            $router.push(`/categories/edit/${scope.row._id}`)
+                            $router.push(`/ads/edit/${scope.row._id}`)
                         "
                         size="small"
                         >编辑</el-button
@@ -29,26 +34,26 @@
 
 <script>
 export default {
-    name: "CategoryList",
+    name: "AdList",
     data() {
         return {
-            categories: []
+            ads: []
         }
     },
     methods: {
         async fetch() {
-            const res = await this.$http.get('/rest/categories');
+            const res = await this.$http.get('/rest/ads');
             if(res.status === 200) {
-                this.categories = res.data;
+                this.ads = res.data;
             }
         },
         async remove(row) {
-        this.$confirm(`是否确定要删除分类 "${row.name}"`, '提示', {
+        this.$confirm(`是否确定要删除广告位 "${row.name}"`, '提示', {
             confirmButtonText: '删除',
             cancelButtonText: '取消',
             type: "warning"
         }).then(async ()=> {
-            let res = await this.$http.delete('/rest/categories/' + row._id);
+            let res = await this.$http.delete('/rest/ads/' + row._id);
             if(res.data.success) {
                 this.$message({
                     type:'success',
@@ -56,7 +61,7 @@ export default {
                 });
                 this.fetch();
             }
-        })
+        }).catch(() => {});
             
         }
     },
@@ -66,5 +71,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+#item-icon {
+    width: 50px;
+    height: 50px;
+}
 </style>

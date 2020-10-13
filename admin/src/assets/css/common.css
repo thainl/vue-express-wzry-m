@@ -1,0 +1,41 @@
+.icon-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.icon-uploader .el-upload:hover {
+    border-color: #409eff;
+}
+.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+}
+.icon-uploader .icon {
+    width: 178px;
+    height: 178px;
+    display: block;
+}
+.section-item {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+.section-item:last-of-type {
+    border-bottom: none;
+}
+.section-item > h4 {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 70px;
+}
+.add-section {
+    text-align: center;
+}
+.add-section .el-button {
+    width: 50%;
+}

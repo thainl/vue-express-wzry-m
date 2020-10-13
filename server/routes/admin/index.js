@@ -7,11 +7,13 @@ module.exports = app => {
     });
 
     async function isExistName (req) { // 验证名称是否已存在
+        if(!req.body.name) return false;
         const findOptions = {name: req.body.name};
         if(req.Model.modelName === 'Category') {
             findOptions.parent = req.body.parent;
         }
         const existName = await req.Model.find(findOptions);
+        console.log(existName);
         if(existName.length !== 0) {
             console.log('名称已存在');
             return true;
@@ -35,7 +37,7 @@ module.exports = app => {
         // 关联字段查询为可选选项
         if(req.Model.modelName === 'Category') {
             queryOptions.populate = 'parent';
-        }else if(req.Model.modelName === 'Hero') {
+        }else if(req.Model.modelName === 'Hero' || req.Model.modelName === 'Article') {
             queryOptions.populate = 'categories';
         }
         const items = await req.Model.find().setOptions(queryOptions).limit(20);

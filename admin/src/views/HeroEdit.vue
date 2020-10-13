@@ -20,7 +20,7 @@
             :rules="rules"
             label-width="120px"
         >
-            <el-tabs value="skin" type="border-card">
+            <el-tabs value="basic" type="border-card">
                 <el-tab-pane name="basic" label="基础信息">
                     <el-form-item
                         label="名称"
@@ -181,7 +181,8 @@
                                     class="icon-uploader"
                                     :action="`${$http.defaults.baseURL}/upload`"
                                     :show-file-list="false"
-                                    :on-success="(res) => (item.icon = res.url)"
+                                    accept=".png,.jpg,.jpeg,.gif,.webp"
+                                    :on-success="(res) => $set(item, 'icon', res.url)"
                                     title="点击选择图片上传"
                                 >
                                     <img
@@ -684,7 +685,8 @@
                                 class="icon-uploader"
                                 :action="`${$http.defaults.baseURL}/upload`"
                                 :show-file-list="false"
-                                :on-success="(res) => (item.img = res.url)"
+                                accept=".png,.jpg,.jpeg,.gif,.webp"
+                                :on-success="(res) => $set(item, 'img', res.url)"
                                 title="点击选择图片上传"
                             >
                                 <img
@@ -719,7 +721,8 @@
                                 class="icon-uploader"
                                 :action="`${$http.defaults.baseURL}/upload`"
                                 :show-file-list="false"
-                                :on-success="(res) => (item.banner = res.url)"
+                                accept=".png,.jpg,.jpeg,.gif,.webp"
+                                :on-success="(res) => $set(item, 'banner', res.url)"
                                 title="点击选择图片上传"
                             >
                                 <img
@@ -756,8 +759,10 @@
 </template>
 
 <script>
+import validatorMixin from '@/assets/js/validatorMixin.js';
 export default {
     name: "HeroEdit",
+    mixins: [validatorMixin],
     props: {
         id: String,
     },
@@ -804,12 +809,6 @@ export default {
             } else {
                 return this.id;
             }
-        },
-        imgStatus() {
-            if (this.model.avatar) {
-                return this.checkImg(this.model.avatar);
-            }
-            return -1;
         },
         partners() {
             // 搭档的英雄应该排除自己
@@ -966,14 +965,6 @@ export default {
                 })
                 .catch(() => {});
         },
-        validatePic(rule, val, cb) {
-            const res = this.checkImg(val);
-            if (res === false && val) {
-                cb(new Error("图片显示错误，请检查图片地址"));
-            } else {
-                cb();
-            }
-        },
         validateSelectedPartner(rule, val, cb) {
             this.validateSelectedHero(rule, val, cb, this.model.partners);
         },
@@ -1012,16 +1003,6 @@ export default {
             // 获取英雄列表
             const res = await this.$http.get("/rest/heros/");
             this.heros = res.data;
-        },
-        checkImg(url) {
-            // 检查图片是否正常显示
-            let img = new Image();
-            img.src = url;
-            if (img.sizes > 0 || (img.width > 0 && img.height > 0)) {
-                return true;
-            } else {
-                return false;
-            }
         },
         handleIconSuccess(res) {
             if (res.url) {
@@ -1116,18 +1097,6 @@ export default {
     display: block;
     width: 100%;
 }
-.hero-edit .section-item {
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 20px;
-}
-.hero-edit .section-item:last-of-type {
-    border-bottom: none;
-}
-.hero-edit .section-item > h4 {
-    display: flex;
-    justify-content: space-between;
-    padding-left: 70px;
-}
 .hero-edit .skill-cooldown-list {
     display: flex;
 }
@@ -1188,12 +1157,6 @@ export default {
     padding-left: 28px;
     padding-right: 28px;
 }
-.hero-edit .add-section {
-    text-align: center;
-}
-.hero-edit .add-section .el-button {
-    width: 50%;
-}
 .hero-edit .relation-item {
     border-bottom: 1px solid #ddd;
     padding-bottom: 15px;
@@ -1228,16 +1191,8 @@ export default {
     height: 178px;
     display: block;
 }
-.hero-edit .skin-img-item .avatar-uploader-icon {
-    height: 350px;
-    width: auto;
-}
 .hero-edit .skin-img-item .icon-uploader .icon {
     height: 350px;
-    width: auto;
-}
-.hero-edit .skin-banner-item .avatar-uploader-icon {
-    height: 250px;
     width: auto;
 }
 .hero-edit .skin-banner-item .icon-uploader .icon {
