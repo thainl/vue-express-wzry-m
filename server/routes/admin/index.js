@@ -21,7 +21,7 @@ module.exports = app => {
         return false;
     }
 
-    // 新增分类
+    // 新增资源
     router.post('/', async(req, res) => {
         if(await isExistName(req)) {
             res.send({errno: 1, msg: '名称已存在'});
@@ -31,7 +31,7 @@ module.exports = app => {
         res.send(model);
     })
 
-    // 获取分类列表
+    // 获取资源列表
     router.get('/', async (req, res)=> {
         const queryOptions = {};
         // 关联字段查询为可选选项
@@ -44,13 +44,13 @@ module.exports = app => {
         res.send(items);
     })
 
-    // 获取分类详情
+    // 获取资源详情
     router.get('/:id', async(req, res) => {
         const model = await req.Model.findById(req.params.id);
         res.send(model);
     })
 
-    // 修改分类
+    // 修改资源
     router.put('/:id', async (req, res) => {
         const exist = await req.Model.findById(req.params.id);
         if(exist.name != req.body.name || req.body.parent && exist.parent != req.body.parent) { // 判断修改时名称或parent是否发生更改
@@ -63,7 +63,7 @@ module.exports = app => {
         res.send(model);
     })
 
-    // 删除分类
+    // 删除资源
     router.delete('/:id', async (req, res) => {
         await req.Model.findByIdAndRemove(req.params.id);
         res.send({success: true});
@@ -94,5 +94,25 @@ module.exports = app => {
         const file = req.file;
         file.url = `http://127.0.0.1:2887/uploads/${file.filename}`;
         res.send(file);
+    })
+
+    // 登录
+    app.post('/admin/api/login', async(req, res) => {
+        // 查找用户
+        const AdminUser = require('../../models/AdminUser');
+        const { name, password } = req.body;
+        const user = await AdminUser.findOne({ name }).select('+password'); // 读取password字段
+        if(!user) {
+            return res.status(422).send({msg: '用户不存在'});
+        }
+        // 检验密码
+        const isValid = require('bcrypt').compareSync(password, user.password);
+        if(isValid) {
+            return res.status(422).send({msg: '密码错误'});
+        }
+        // 返回token
+        const jwt = require('jsonwebtoken');
+        jwt.sign({ id: user._id }, app.get('secret')); // 生成密钥（要传递的信息， 密钥）
+        res.send({ token })
     })
 };

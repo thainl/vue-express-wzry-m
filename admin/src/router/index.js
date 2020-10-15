@@ -12,6 +12,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/login',
+    name: 'Login',
+    component: ()=> import('../views/Login.vue')
+  },
+  {
     path: '/',
     name: 'Main',
     component: Main,
@@ -105,6 +110,23 @@ const routes = [
         name: 'AdEdit',
         props: true,
         component: () => import('../views/AdEdit.vue')
+      },
+
+      {
+        path: 'admin_users/create',
+        name: 'AdminUserCreate',
+        component: () => import('../views/AdminUserEdit.vue')
+      },
+      {
+        path: 'admin_users/list',
+        name: 'AdminUserList',
+        component: () => import('../views/AdminUserList.vue')
+      },
+      {
+        path: 'admin_users/edit/:id',
+        name: 'AdminUserEdit',
+        props: true,
+        component: () => import('../views/AdminUserEdit.vue')
       },
     ]
   },
