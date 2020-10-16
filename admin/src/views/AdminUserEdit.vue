@@ -113,18 +113,7 @@ export default {
     },
     created() {
         this._id && this.fetch();
-    },
-    beforeRouteEnter(to, from, next) {
-        next((vm) => {
-            vm.$refs.ruleForm.clearValidate(); // 清除表单验证错误
-            if (
-                to.path == "/admin_users/create" &&
-                from.path == "/admin_users/edit/" + from.params.id
-            ) {
-                vm.$refs.ruleForm.resetFields(); // 重置表单
-            }
-        });
-    },
+    }
 };
 </script>
 

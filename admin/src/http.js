@@ -1,8 +1,19 @@
 import axios from 'axios';
 import Vue from 'vue';
+import router from './router/index';
 
 const http = axios.create({
     baseURL: 'http://localhost:2887/admin/api'
+})
+
+// 请求拦截
+http.interceptors.request.use(config => {
+    if(localStorage.token) {
+        config.headers.Authorization = 'Bearer ' + localStorage.token; // Bearer 为一种类型
+    }
+    return config;
+}, err => {
+    return Promise.reject(err);
 })
 
 // 响应拦截
@@ -15,6 +26,10 @@ http.interceptors.response.use(res => {
             type: 'error',
             message: err.response.data.msg
         })
+        if(err.response.status === 401) {
+            // 状态码为401，跳转到登录页
+            router.push('/login')
+        }
     }
     return Promise.reject(err);
 })

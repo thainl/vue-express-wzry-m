@@ -111,17 +111,6 @@ export default {
         this._id && this.fetch();
         this.fetchCategories();
     },
-    beforeRouteEnter(to, from, next) {
-        next((vm) => {
-            vm.$refs.ruleForm.clearValidate(); // 清除表单验证错误
-            if (
-                to.path == "/articles/create" &&
-                from.path == "/articles/edit/" + from.params.id
-            ) {
-                vm.$refs.ruleForm.resetFields(); // 重置表单
-            }
-        });
-    },
     components: {
         VueEditor
     }

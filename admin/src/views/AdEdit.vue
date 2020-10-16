@@ -68,7 +68,8 @@
                 <el-form-item>
                     <el-upload
                         class="icon-uploader"
-                        :action="`${$http.defaults.baseURL}/upload`"
+                        :action="uploadUrl"
+                        :headers="getAuthHeaders()"
                         :show-file-list="false"
                         accept=".png,.jpg,.jpeg,.gif,.webp"
                         :on-success="(res) => $set(item, 'image', res.url)"
@@ -172,17 +173,6 @@ export default {
     },
     created() {
         this._id && this.fetch();
-    },
-    beforeRouteEnter(to, from, next) {
-        next((vm) => {
-            vm.$refs.ruleForm.clearValidate(); // 清除表单验证错误
-            if (
-                to.path == "/ads/create" &&
-                from.path == "/ads/edit/" + from.params.id
-            ) {
-                vm.model = {items: []} // 重置表单
-            }
-        });
     },
 };
 </script>

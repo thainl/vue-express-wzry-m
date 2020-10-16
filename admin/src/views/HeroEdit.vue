@@ -93,7 +93,8 @@
                         <div class="form-img-item">
                             <el-upload
                                 class="icon-uploader"
-                                :action="`${$http.defaults.baseURL}/upload`"
+                                :action="uploadUrl"
+                                :headers="getAuthHeaders()"
                                 :show-file-list="false"
                                 :on-success="handleIconSuccess"
                                 title="点击选择图片上传"
@@ -179,7 +180,8 @@
                             <div class="form-img-item">
                                 <el-upload
                                     class="icon-uploader"
-                                    :action="`${$http.defaults.baseURL}/upload`"
+                                    :action="uploadUrl"
+                                    :headers="getAuthHeaders()"
                                     :show-file-list="false"
                                     accept=".png,.jpg,.jpeg,.gif,.webp"
                                     :on-success="(res) => $set(item, 'icon', res.url)"
@@ -683,7 +685,8 @@
                         <el-form-item class="skin-img-item">
                             <el-upload
                                 class="icon-uploader"
-                                :action="`${$http.defaults.baseURL}/upload`"
+                                :action="uploadUrl"
+                                :headers="getAuthHeaders()"
                                 :show-file-list="false"
                                 accept=".png,.jpg,.jpeg,.gif,.webp"
                                 :on-success="(res) => $set(item, 'img', res.url)"
@@ -719,7 +722,8 @@
                         <el-form-item class="skin-banner-item">
                             <el-upload
                                 class="icon-uploader"
-                                :action="`${$http.defaults.baseURL}/upload`"
+                                :action="uploadUrl"
+                                :headers="getAuthHeaders()"
                                 :show-file-list="false"
                                 accept=".png,.jpg,.jpeg,.gif,.webp"
                                 :on-success="(res) => $set(item, 'banner', res.url)"
@@ -894,26 +898,6 @@ export default {
             });
             return arr.filter((item) => !item.isRepeat);
         },
-        resetForm() {
-            // 重置表单数据
-            this.model = {
-                name: "",
-                avatar: "",
-                scores: {
-                    difficult: 1,
-                    skills: 1,
-                    attack: 1,
-                    survive: 1,
-                },
-                recommendedItem1: {},
-                recommendedItem2: {},
-                skills: [],
-                partners: [],
-                restraints: [],
-                reRestraints: [],
-                skins: [],
-            };
-        },
         removeSkill(skill, index) {
             if (skill.name || skill.icon || skill.description || skill.tips) {
                 this.removeConfirm(this.model.skills, index, "技能");
@@ -1019,10 +1003,6 @@ export default {
     beforeRouteEnter(to, from, next) {
         next((vm) => {
             vm.$refs.ruleForm.clearValidate(); // 清除表单验证错误
-            if (to.path == "/heros/create") {
-                vm.resetForm(); // 进入新建页面重置表单
-                // vm.$refs.ruleForm.resetFields()
-            }
             if (to.path == "/heros/detail/" + to.params.id) {
                 vm.disableForm = true;
             } else {

@@ -44,7 +44,8 @@
             <el-form-item>
                 <el-upload
                     class="icon-uploader"
-                    :action="`${$http.defaults.baseURL}/upload`"
+                    :action="uploadUrl"
+                    :headers="getAuthHeaders()"
                     :show-file-list="false"
                     :on-success="handleIconSuccess"
                     accept=".png,.jpg,.jpeg,.gif,.webp"
@@ -169,17 +170,6 @@ export default {
     created() {
         this._id && this.fetch();
         this.fetchCategories();
-    },
-    beforeRouteEnter(to, from, next) {
-        next((vm) => {
-            vm.$refs.ruleForm.clearValidate(); // 清除表单验证错误
-            if (
-                to.path == "/items/create" &&
-                from.path == "/items/edit/" + from.params.id
-            ) {
-                vm.$refs.ruleForm.resetFields(); // 重置表单
-            }
-        });
     },
 };
 </script>

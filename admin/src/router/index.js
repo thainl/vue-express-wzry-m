@@ -14,6 +14,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
+    meta: { isPublic: true },
     component: ()=> import('../views/Login.vue')
   },
   {
@@ -142,6 +143,15 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if(!to.meta.isPublic && !localStorage.token) {
+    // 不是公开可以访问的页面 并且 无token
+    Vue.prototype.$message({type:'error', message: '请先登录'})
+    next('/login');
+  }
+  next();
 })
 
 export default router

@@ -118,17 +118,6 @@ export default {
         this._id && this.fetch();
         this.fetchParents();
     },
-    beforeRouteEnter(to, from, next) {
-        next((vm) => {
-            vm.$refs.ruleForm.clearValidate(); // 清除表单验证错误
-            if (
-                to.path == "/categories/create" &&
-                from.path == "/categories/edit/" + from.params.id
-            ) {
-                vm.model = {};
-            }
-        });
-    },
 };
 </script>
 
