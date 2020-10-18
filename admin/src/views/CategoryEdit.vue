@@ -9,7 +9,7 @@
             label-width="120px"
         >
             <el-form-item label="上级分类">
-                <el-select v-model="model.parent" placeholder="请选择父级分类">
+                <el-select filterable v-model="model.parent" placeholder="请选择父级分类">
                     <el-option selected label="__无__" :value="null"></el-option>
                     <el-option
                         v-for="item in parents"

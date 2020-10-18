@@ -671,11 +671,6 @@
                             :prop="`skins.${i}.img`"
                             :rules="[
                                 {
-                                    required: true,
-                                    message: '皮肤图片不能为空',
-                                    trigger: 'blur',
-                                },
-                                {
                                     validator: validatePic,
                                     trigger: 'blur',
                                 },
@@ -700,6 +695,7 @@
                                 <i
                                     v-else
                                     class="el-icon-plus avatar-uploader-icon"
+                                    :class="{'not-allowed-upload': disableForm}"
                                 ></i>
                             </el-upload>
                         </el-form-item>
@@ -707,11 +703,6 @@
                             label="封面"
                             :prop="`skins.${i}.banner`"
                             :rules="[
-                                {
-                                    required: true,
-                                    message: '皮肤封面不能为空',
-                                    trigger: 'blur',
-                                },
                                 {
                                     validator: validatePic,
                                     trigger: 'blur',
@@ -737,6 +728,7 @@
                                 <i
                                     v-else
                                     class="el-icon-plus avatar-uploader-icon"
+                                    :class="{'not-allowed-upload': disableForm}"
                                 ></i>
                             </el-upload>
                         </el-form-item>
@@ -1178,5 +1170,8 @@ export default {
 .hero-edit .skin-banner-item .icon-uploader .icon {
     height: 250px;
     width: auto;
+}
+.not-allowed-upload {
+    cursor: not-allowed;
 }
 </style>

@@ -10,6 +10,7 @@ app.use('/', express.static(resolve(__dirname, 'public')));
 
 require('./plugins/db')(app);
 require('./routes/admin')(app);
+require('./routes/web')(app);
 
 
 app.listen(2887, ()=> {

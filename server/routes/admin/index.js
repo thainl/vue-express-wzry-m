@@ -16,7 +16,6 @@ module.exports = app => {
             findOptions.parent = req.body.parent;
         }
         const existName = await req.Model.find(findOptions);
-        console.log(existName);
         if(existName.length !== 0) {
             console.log('名称已存在');
             return true;
@@ -43,8 +42,7 @@ module.exports = app => {
         }else if(req.Model.modelName === 'Hero' || req.Model.modelName === 'Article') {
             queryOptions.populate = 'categories';
         }
-        const Category = require('../../models/Category');
-        const items = await req.Model.find().setOptions(queryOptions).limit(20);
+        const items = await req.Model.find().setOptions(queryOptions).limit(100);
         res.send(items);
     })
 

@@ -8,4 +8,6 @@ module.exports = app => {
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, '数据库连接失败'));
     db.once('open', ()=> {console.log('数据库连接成功');})
+    // 把所有的模型先引用一遍
+    require('require-all')(__dirname + '/../models'); // 把文件夹下的文件都引入
 };
