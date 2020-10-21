@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const schema = new mongoose.Schema({
+    heroId: { type: Number},
     name: {
         type: String,
     },

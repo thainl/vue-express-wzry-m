@@ -3,6 +3,7 @@ const schema = new mongoose.Schema({
     name: {
         type: String
     },
+    itemId: { type: Number },
     icon: {
         type: String
     },

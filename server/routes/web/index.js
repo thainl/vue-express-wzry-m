@@ -7,10 +7,10 @@ module.exports = (app) => {
     const Item = mongoose.model('Item');
     const Ming = mongoose.model('Ming');
     const Summoner = mongoose.model('Summoner');
-    // const herolist = require('./herolist.json');
-    // const itemlist = require('./item.json');
-    // const minglist = require('./ming.json');
-    // const summonerlist = require('./summoner.json');
+    const herolist = require('./herolist.json');
+    const itemlist = require('./item.json');
+    const minglist = require('./ming.json');
+    const summonerlist = require('./summoner.json');
 
     // // 录入文章数据
     // router.get('/news/init', async (req, res) => {
@@ -26,7 +26,7 @@ module.exports = (app) => {
     //     res.send(newsList);
     // })
 
-    // // 录入英雄数据
+    // 录入英雄数据
     // router.get('/heroes/init', async (req, res) => {
     //     const catZS = await Category.findOne({name:'战士'}).lean();
     //     const catFS = await Category.findOne({name:'法师'}).lean();
@@ -53,6 +53,7 @@ module.exports = (app) => {
 
     //         return {
     //             name: hero.cname,
+    //             heroId: Number(hero.ename),
     //             avatar: `http://127.0.0.1:2887/uploads/${hero.ename}.jpg`,
     //             "scores" : {
     //                 "difficult" : 1,
@@ -82,6 +83,7 @@ module.exports = (app) => {
     //     const list = itemlist.map(item => {
     //         return {
     //             name: item.item_name,
+    //             itemId: Number(item.item_id),
     //             icon: `http://127.0.0.1:2887/uploads/${item.item_id}.jpg`,
     //             "price" : item.price,
     //             "category" : catArr[item.item_type - 1],
@@ -105,26 +107,30 @@ module.exports = (app) => {
     //     const list = minglist.map(ming=> {
     //         return {
     //             name: ming.ming_name,
+    //             mingId: Number(ming.ming_id),
     //             icon: `https://game.gtimg.cn/images/yxzj/img201606/mingwen/${ming.ming_id}.png`,
     //             category: catObj[ming.ming_type],
     //             grade: Number(ming.ming_grade),
     //             effect: ming.ming_des,
     //         }
     //     })
+    //     // await Ming.deleteMany({});
     //     // await Ming.insertMany(list);
     //     res.send(list);
     // })
 
-    // // 录入召唤师技能
+    // 录入召唤师技能
     // router.get('/summoners/init', async (req, res) => {
     //     const list = summonerlist.map(s=> {
     //         return {
     //             name: s.summoner_name,
+    //             summonerId: Number(s.summoner_id),
     //             icon: `http://127.0.0.1:2887/uploads/${s.summoner_id}.jpg`,
     //             unlockLevel: Number(s.summoner_rank.match(/[\d]+/g)),
     //             description: s.summoner_description
     //         }
     //     })
+    //     // await Summoner.deleteMany({});
     //     // await Summoner.insertMany(list);
     //     res.send(list)
     // })
@@ -209,7 +215,12 @@ module.exports = (app) => {
 
     // 获取文章详情
     router.get('/articles/:id', async (req, res) => {
-        const data = await Article.findById(req.params.id);
+        const data = await Article.findById(req.params.id).lean();
+        // 相同分类的相关文章
+        data.related = await Article.aggregate([
+            { $match: { categories: { $in: data.categories } } },
+            { $sample: { size: 2 } }, // 随机选2条数据
+        ])
         res.send(data);
     })
 

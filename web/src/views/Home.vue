@@ -34,7 +34,7 @@
                 <ul class="entry-nav-list bg-white clearfix">
                     <li v-for="(item, i) of entryNavList" :key="'en' + i">
                         <router-link
-                            class="list-item-link text-center d-flex flex-column"
+                            class="list-item-link text-center d-flex flex-column ai-center"
                             to="/"
                         >
                             <i :class="item.name" class="flex-1 spirte-1"></i>
@@ -173,7 +173,7 @@ export default {
 
 <style lang="scss">
 .home .swiper-box {
-    height: 165px;
+    height: auto;
     .swiper-pagination.home-swiper-pagination.swiper-pagination-bullets {
         text-align: right;
         padding-right: 11px;
@@ -205,7 +205,7 @@ export default {
                 float: left;
                 height: 70px;
                 padding: 10px 0;
-                width: 8.33333333%;
+                width: 8.3333334%;
                 .list-item-link {
                     position: relative;
                     height: 100%;
@@ -223,8 +223,10 @@ export default {
                         margin-bottom: -2px;
                     }
                     i {
+                        display: inline-block;
                         position: relative;
                         margin-left: -1px;
+                        width: 93.75px;
                     }
                     .blz {
                         background-position: -188px -58px;
@@ -309,8 +311,13 @@ export default {
         }
     }
 }
-.latest-hero-img {
-    display: block;
-    margin-bottom: 13px;
+.list-card-heroes {
+    .hero-item-wrapper {
+        margin: 0 -15px 0 -7px;
+    }
+    .latest-hero-img {
+        display: block;
+        margin-bottom: 13px;
+    }
 }
 </style>

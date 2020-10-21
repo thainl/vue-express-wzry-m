@@ -1,7 +1,9 @@
 const { exit } = require('process');
 const jwt = require('jsonwebtoken');
 const AdminUser = require('../../models/AdminUser');
+const Category = require('../../models/Category');
 const assert = require('http-assert'); // 用于确保信息是否正确，抛出错误
+const { Mongoose } = require('mongoose');
 
 module.exports = app => {
     const express = require('express');
@@ -35,15 +37,88 @@ module.exports = app => {
 
     // 获取资源列表
     router.get('/', async (req, res)=> {
+        res.send(await getList(req, req.query.size, req.query.page));
+    })
+
+    async function getList(req, size, page) {
+        size = size ? Number(size) : 200;
+        page = page ? Number(page) : 1;
+        const items = await req.Model.find().setOptions(queryOptions(req)).skip((page - 1) * size).limit(size).lean();
+        const totalCount = await req.Model.countDocuments();
+        return { totalCount, items };
+    }
+
+    // 关联查询哪个字段
+    function queryOptions(req) {
         const queryOptions = {};
         // 关联字段查询为可选选项
         if(req.Model.modelName === 'Category') {
             queryOptions.populate = 'parent';
         }else if(req.Model.modelName === 'Hero' || req.Model.modelName === 'Article') {
             queryOptions.populate = 'categories';
+        }else if(req.Model.modelName === 'Item' || req.Model.modelName === 'Ming') {
+            queryOptions.populate = 'category';
         }
-        const items = await req.Model.find().setOptions(queryOptions).limit(100);
+        return queryOptions;
+    }
+
+    // 只获取资源列表的名称和_id
+    router.get('/selectlist', async (req, res)=> {
+        let { items } = await getList(req);
+        items = items.map(item => {
+            if(!item.name) return item;
+            return {
+                _id: item._id,
+                name: item.name,
+            }
+        })
         res.send(items);
+    })
+
+    // 搜索
+    router.get('/search', async (req, res) => {
+        let { keyword, page, size } = req.query;
+        page = page ? Number(page) : 1;
+        size = size ? Number(size) : 10;
+        const reg = new RegExp(keyword, 'i'); // 利用正则进行模糊查询
+        const cate = await Category.find({name: { $regex: reg }}); // 查找分类
+        // const result = await req.Model.find().setOptions(queryOptions(req)).find(
+        //     {
+        //         $or: [ // 多条件
+        //             { name: { $regex: reg } },
+        //             { title: { $regex: reg } },
+        //             { body: { $regex: keyword, $options: '$i' } }, // 也可以这样写，忽略大小写
+        //             { parent: cate },
+        //             { category: cate },
+        //             { categories: { $all: cate } }
+        //         ]
+                    
+        //     },
+        //     {
+        //         password: 0, // 返回的结果不包含密码字段
+        //     },
+        // ).skip(size * ( page - 1 )).limit(size)
+        req.Model.find().setOptions(queryOptions(req)).find(
+            {
+                $or: [ // 多条件
+                    { name: { $regex: reg } },
+                    { title: { $regex: reg } },
+                    { body: { $regex: keyword, $options: '$i' } }, // 也可以这样写，忽略大小写
+                    { parent: cate },
+                    { category: cate },
+                    { categories: { $all: cate } }
+                ]
+                    
+            },
+            {
+                password: 0, // 返回的结果不包含密码字段
+            },
+        ).then(result=> {
+            res.send({
+                totalCount: result.length,
+                items: result.slice(size * ( page - 1 ), size * ( page - 1 )+ size)
+            });
+        })
     })
 
     // 获取资源详情
@@ -78,7 +153,7 @@ module.exports = app => {
     const resourceMiddleware = require('../../middleware/resource');
 
     // 通用的CRUD操作
-    app.use('/admin/api/rest/:resource', authMiddleware(), resourceMiddleware(), router)
+    app.use('/admin/api/rest/:resource',  resourceMiddleware(), router)
 
     // 上传图片
     const multer = require('multer');
@@ -113,7 +188,7 @@ module.exports = app => {
         res.send({ token })
     })
 
-    app.get('/admin/api/userinfo', async(req, res) => {
+    app.get('/admin/api/userinfo', authMiddleware(), async(req, res) => {
         const token = String(req.headers.authorization || '').split(' ').pop();
         const { id } = jwt.verify(token, app.get('secret'));
         const user = await AdminUser.findById(id);

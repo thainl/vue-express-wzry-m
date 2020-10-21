@@ -39,3 +39,13 @@
 .add-section .el-button {
     width: 50%;
 }
+
+.el-pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+.el-form-search-item .el-input {
+    width: 300px;
+    margin-right: 10px;
+}

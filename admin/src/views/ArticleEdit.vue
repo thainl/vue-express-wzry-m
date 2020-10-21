@@ -93,7 +93,7 @@ export default {
             }
         },
         async fetchCategories() {
-            const res = await this.$http.get('/rest/categories');
+            const res = await this.$http.get('/rest/categories/selectlist');
             if(res.status === 200) {
                 this.categories = res.data;
             }
@@ -118,4 +118,11 @@ export default {
 </script>
 
 <style>
+.ql-toolbar {
+    position: sticky;
+    z-index: 100;
+    background: #fff;
+    top: -20px;
+    width: 100%;
+}
 </style>

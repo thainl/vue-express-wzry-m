@@ -58,7 +58,6 @@ export default {
     padding: 0 17px;
     .card-head {
         border-bottom: 1px solid #e9ecee;
-        margin-bottom: 12px;
         .card-head-title {
             position: relative;
             padding: 15px 0;
@@ -83,11 +82,13 @@ export default {
         }
     }
     .card-body {
+        padding-top: 12px;
         .category-nav {
             ul>li {
                 position: relative;
                 line-height: 24px;
                 color: #343440;
+                cursor: pointer;
                 &.active{
                     color: map-get($color,'primary');
                     &::after {
@@ -105,6 +106,10 @@ export default {
         }
         .card-swiper {
             margin-top: 17px;
+            .swiper-slide {
+                width: 100%;
+                overflow-x: hidden;
+            }
         }
     }
 }

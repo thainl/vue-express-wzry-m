@@ -140,7 +140,7 @@ export default {
             }
         },
         async fetchCategories() {
-            const res = await this.$http.get('/rest/categories');
+            const res = await this.$http.get('/rest/categories/selectlist');
             if(res.status === 200) {
                 this.categories = res.data;
             }

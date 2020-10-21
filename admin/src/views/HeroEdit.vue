@@ -967,17 +967,17 @@ export default {
         },
         async fetchCategories() {
             // 获取分类列表
-            const res = await this.$http.get("/rest/categories/");
+            const res = await this.$http.get("/rest/categories/selectlist");
             this.categories = res.data;
         },
         async fetchItems() {
             // 获取装备列表
-            const res = await this.$http.get("/rest/items/");
+            const res = await this.$http.get("/rest/items/selectlist");
             this.items = res.data;
         },
         async fetchHeros() {
             // 获取英雄列表
-            const res = await this.$http.get("/rest/heros/");
+            const res = await this.$http.get("/rest/heros/selectlist");
             this.heros = res.data;
         },
         handleIconSuccess(res) {

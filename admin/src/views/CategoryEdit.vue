@@ -108,7 +108,7 @@ export default {
             }
         },
         async fetchParents() {
-            const res = await this.$http.get("/rest/categories");
+            const res = await this.$http.get("/rest/categories/selectlist");
             if (res.status === 200) {
                 this.parents = res.data;
             }
