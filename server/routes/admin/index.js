@@ -67,10 +67,14 @@ module.exports = app => {
         let { items } = await getList(req);
         items = items.map(item => {
             if(!item.name) return item;
-            return {
+            let res = {
                 _id: item._id,
                 name: item.name,
             }
+            if(item.category) res.category = item.category;
+            if(item.categories) res.categories = item.categories;
+            if(item.parent) res.parent = item.parent;
+            return res;
         })
         res.send(items);
     })
@@ -153,7 +157,7 @@ module.exports = app => {
     const resourceMiddleware = require('../../middleware/resource');
 
     // 通用的CRUD操作
-    app.use('/admin/api/rest/:resource',  resourceMiddleware(), router)
+    app.use('/admin/api/rest/:resource', authMiddleware(),  resourceMiddleware(), router)
 
     // 上传图片
     const multer = require('multer');

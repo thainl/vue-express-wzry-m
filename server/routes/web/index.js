@@ -97,12 +97,12 @@ module.exports = (app) => {
     //     res.send(list);
     // })
 
-    // // 录入铭文数据
+    // 录入铭文数据
     // router.get('/mings/init', async (req, res) => {
     //     const red = await Category.findOne({name:'红'}).lean();
-    //     const yellow = await Category.findOne({name:'黄'}).lean();
+    //     const green = await Category.findOne({name:'绿'}).lean();
     //     const blue = await Category.findOne({name:'蓝'}).lean();
-    //     const catObj = { red, yellow, blue };
+    //     const catObj = { red, blue: green, yellow: blue };
 
     //     const list = minglist.map(ming=> {
     //         return {
@@ -221,6 +221,16 @@ module.exports = (app) => {
             { $match: { categories: { $in: data.categories } } },
             { $sample: { size: 2 } }, // 随机选2条数据
         ])
+        res.send(data);
+    })
+
+    // 获取英雄详情
+    router.get('/heroes/:id', async (req, res) => {
+        const data = await Hero.findById(req.params.id).populate('categories').lean();
+        if(data.skins && data.skins.length > 0) {
+            data.title = data.skins[0].name;
+            data.banner = data.skins[0].banner;
+        }
         res.send(data);
     })
 

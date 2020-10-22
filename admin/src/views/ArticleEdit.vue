@@ -16,7 +16,7 @@
                     placeholder="选择文章分类"
                 >
                     <el-option
-                        v-for="item in categories"
+                        v-for="item in articleCategories"
                         :key="item._id"
                         :label="item.name"
                         :value="item._id"
@@ -59,6 +59,11 @@ export default {
             } else {
                 return this.id;
             }
+        },
+        articleCategories() {
+            return this.categories.filter(cate => {
+                if(cate.parent) return cate.parent.name == '新闻分类';
+            });
         },
     },
     methods: {

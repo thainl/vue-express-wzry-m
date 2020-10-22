@@ -15,9 +15,7 @@
                 width="150px"
                 label="文章分类">
                 <template v-slot="scope">
-                    <span v-for="(item, i) of scope.row.categories" :key="i + item._id">
-                        {{item.name}}<span v-if="i < scope.row.categories.length - 1">/</span>
-                    </span>
+                    <span>{{scope.row.categories.map(v => v.name).join('/')}}</span>
                 </template>
             </el-table-column>
             <el-table-column prop="title" label="文章名称"> </el-table-column>

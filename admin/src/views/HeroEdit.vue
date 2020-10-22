@@ -39,7 +39,7 @@
                             placeholder="选择英雄分类"
                         >
                             <el-option
-                                v-for="item in categories"
+                                v-for="item in heroCategories"
                                 :key="item._id"
                                 :label="item.name"
                                 :value="item._id"
@@ -306,6 +306,123 @@
                     </div>
                 </el-tab-pane>
                 <el-tab-pane name="usage" label="使用建议">
+                    <div class="recommended-skills">
+                        <el-form-item label="主升技能">
+                            <el-select
+                                v-model="model.recommendedSkill1"
+                                class="recommend-skill"
+                                filterable
+                                placeholder="选择技能"
+                            >
+                                <template slot="empty">
+                                    <p class="no-skill-options-tip">请先添加技能并保存</p>
+                                </template>
+                                <template v-if="model.skills.length > 0 && model.skills[0]._id">
+                                    <el-option
+                                    v-for="item in model.skills"
+                                    :key="item._id"
+                                    :label="item.name"
+                                    :value="item._id"
+                                    >
+                                    </el-option>
+                                </template>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="副升技能">
+                            <el-select
+                                v-model="model.recommendedSkill2"
+                                class="recommend-skill"
+                                filterable
+                                placeholder="选择技能"
+                            >
+                                <template slot="empty">
+                                    <p class="no-skill-options-tip">请先添加技能并保存</p>
+                                </template>
+                                <template v-if="model.skills.length > 0 && model.skills[0]._id">
+                                    <el-option
+                                        v-for="item in model.skills"
+                                        :key="item._id"
+                                        :label="item.name"
+                                        :value="item._id"
+                                    >
+                                    </el-option>
+                                </template>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="召唤师技能">
+                            <el-select
+                                v-model="model.recommendedSummoners"
+                                :multiple-limit="2"
+                                filterable
+                                multiple
+                                placeholder="选择2个推荐的召唤师技能"
+                            >
+                                <el-option
+                                    v-for="item in summoners"
+                                    :key="item._id"
+                                    :label="item.name"
+                                    :value="item._id"
+                                >
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </div>
+                    <div class="recommended-mings">
+                        <el-form-item label="红色铭文推荐">
+                            <el-select
+                                v-model="model.recommendedMings[0]"
+                                class="recommend-items"
+                                filterable
+                                placeholder="选择铭文"
+                            >
+                                <template v-if="redMings.length">
+                                    <el-option
+                                        v-for="item in redMings"
+                                        :key="item._id"
+                                        :label="item.name"
+                                        :value="item._id"
+                                    >
+                                    </el-option>
+                                </template>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="绿色铭文推荐">
+                            <el-select
+                                v-model="model.recommendedMings[1]"
+                                class="recommend-items"
+                                filterable
+                                placeholder="选择铭文"
+                            >
+                                <template v-if="greenMings.length">
+                                    <el-option
+                                        v-for="item in greenMings"
+                                        :key="item._id"
+                                        :label="item.name"
+                                        :value="item._id"
+                                    >
+                                    </el-option>
+                                </template>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="蓝色铭文推荐">
+                            <el-select
+                                v-model="model.recommendedMings[2]"
+                                class="recommend-items"
+                                filterable
+                                placeholder="选择铭文"
+                            >
+                                <template v-if="blueMings.length">
+                                    <el-option
+                                        v-for="item in blueMings"
+                                        :key="item._id"
+                                        :label="item.name"
+                                        :value="item._id"
+                                    >
+                                    </el-option>
+                                </template>
+                            </el-select>
+                        </el-form-item>
+                    </div>
                     <el-form-item label="顺风出装">
                         <el-select
                             v-model="model.recommendedItem1.items"
@@ -768,6 +885,8 @@ export default {
             categories: [], // 分类列表
             items: [], // 准备列表
             heros: [], // 英雄列表
+            summoners: [], // 召唤师技能列表
+            mings: [], // 铭文列表
             model: {
                 name: "",
                 avatar: "",
@@ -779,6 +898,7 @@ export default {
                 },
                 recommendedItem1: {},
                 recommendedItem2: {},
+                recommendedMings: [],
                 skills: [],
                 partners: [],
                 restraints: [],
@@ -823,6 +943,23 @@ export default {
                 return this.partners;
             }
             return this.herosFilter(this.partners, this.model.restraints);
+        },
+        redMings() {
+            // 红色铭文列表
+            return this.computedMingCate('红');
+        },
+        greenMings() {
+            // 绿色铭文列表
+            return this.computedMingCate('绿');
+        },
+        blueMings() {
+            // 蓝色铭文列表
+            return this.computedMingCate('蓝');
+        },
+        heroCategories() {
+            return this.categories.filter(cate => {
+                if(cate.parent) return cate.parent.name == '英雄分类';
+            });
         },
     },
     methods: {
@@ -980,17 +1117,38 @@ export default {
             const res = await this.$http.get("/rest/heros/selectlist");
             this.heros = res.data;
         },
+        async fetchSummoners() {
+            // 获取召唤师技能
+            const res = await this.$http.get('/rest/summoners/selectlist');
+            this.summoners = res.data;
+        },
+        async fetchMings() {
+            // 获取铭文列表
+            const res = await this.$http.get('/rest/mings/selectlist');
+            this.mings = res.data;
+        },
         handleIconSuccess(res) {
             if (res.url) {
                 this.model.avatar = res.url;
             }
         },
+        computedMingCate(type) {
+            // 铭文的三个分类列表
+            if(this.categories.length > 0) {
+                const cate = this.categories.filter(cate => cate.name == type && cate.parent.name == '铭文分类')[0];
+                return this.mings.filter(ming => ming.category._id == cate._id);
+            }else {
+                return [];
+            }
+        }
     },
     created() {
         this._id && this.fetch();
         this.fetchCategories();
         this.fetchItems();
         this.fetchHeros();
+        this.fetchSummoners();
+        this.fetchMings();
     },
     beforeRouteEnter(to, from, next) {
         next((vm) => {
@@ -1173,5 +1331,14 @@ export default {
 }
 .not-allowed-upload {
     cursor: not-allowed;
+}
+.recommended-skills, .recommended-mings {
+    display: flex;
+    flex-wrap: wrap;
+}
+.no-skill-options-tip{
+    text-align: center;
+    font-size: 14px;
+    color: #f56c6c;
 }
 </style>

@@ -15,7 +15,7 @@
                     placeholder="选择物品分类"
                 >
                     <el-option
-                        v-for="item in categories"
+                        v-for="item in itemCategories"
                         :key="item._id"
                         :label="item.name"
                         :value="item._id"
@@ -90,7 +90,12 @@ export default {
             } else {
                 return this.id;
             }
-        }
+        },
+        itemCategories() {
+            return this.categories.filter(cate => {
+                if(cate.parent) return cate.parent.name == '物品分类';
+            });
+        },
     },
     methods: {
         save() {

@@ -1,6 +1,6 @@
 <template>
     <div class="heroes-list-card-item">
-        <router-link to="/">
+        <router-link :to="`/heroes/${item._id}`">
             <img :src="item.avatar" alt="">
             <span class="name text-center fs-sm">{{ item.name }}</span>
         </router-link>

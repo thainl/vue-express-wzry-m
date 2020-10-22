@@ -14,9 +14,7 @@
             <el-table-column prop="name" label="英雄名称"> </el-table-column>
             <el-table-column prop="categories[0].name" label="英雄分类">
                 <template v-slot="scope">
-                    <span v-for="(item, i) of scope.row.categories" :key="i + item._id">
-                        {{item.name}}<span v-if="i < scope.row.categories.length - 1">/</span>
-                    </span>
+                    <span>{{ scope.row.categories.map(v => v.name).join('/') }}</span>
                 </template>
             </el-table-column>
             <el-table-column label="英雄头像">

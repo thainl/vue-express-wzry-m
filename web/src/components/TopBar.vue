@@ -1,19 +1,25 @@
 <template>
-    <div class="top-bar-com spirte-1 d-flex jc-between">
+    <div class="top-bar-com spirte-1 d-flex jc-between" :class="{'hero-top-bar': type == 'heroDetail'}">
             <div class="logo d-flex">
                 <a href="/" class="logo-img spirte-1"></a>
-                <div class="logo-txt">
-                    <h1 class="text-white fs-md">王者荣耀</h1>
+                <div class="logo-txt d-flex flex-column jc-center">
+                    <h1 class="text-white fs-md">王者荣耀<span v-if="type == 'heroDetail'" class="desc">攻略站</span></h1>
                     <p class="text-grey-1">团队成就更多</p>
                 </div>
             </div>
             <a href="##" class="download-app-link spirte-1"></a>
+            <a href="##" v-if="type == 'heroDetail'" class="more-link text-white">更多英雄<span class="fs-xl"> &gt;</span></a>
         </div>
 </template>
 
 <script>
     export default {
         name: 'TopBar',
+        props: {
+            type: {
+                type: String
+            }
+        }
     }
 </script>
 
@@ -37,8 +43,12 @@
         }
         .logo-txt {
             margin-left: 10px;
+            height: 34px;
             h1 {
                 line-height: 17px;
+                .desc {
+                    margin-left: 15px;
+                }
             }
         }
     }
@@ -48,6 +58,30 @@
         margin-top: 9px;
         margin-right: 16px;
         background-position: -59px -309px;
+    }
+    .more-link {
+        margin-top: 11px;
+        margin-right: 20px;
+        
+        span.fs-xl {
+            font-weight: bold;
+            vertical-align: -1px;
+        }
+    }
+}
+.hero-top-bar {
+    .logo {
+        .logo-txt {
+            >p{
+                display: none;
+            }
+            h1 {
+                margin-top: -5px;
+            }
+        }
+    }
+    .download-app-link {
+        display: none;
     }
 }
 </style>
