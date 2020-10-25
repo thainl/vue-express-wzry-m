@@ -3,7 +3,7 @@
         <h2>
             {{ disableForm ? "查看" : _id ? "编辑" : "新建" }}英雄
             <el-button
-                @click="$router.push(`/heros/edit/${_id}`)"
+                @click="$router.push(`/heroes/edit/${_id}`)"
                 v-if="disableForm"
                 title="编辑英雄"
                 type="primary"
@@ -884,7 +884,7 @@ export default {
             disableForm: false, // 是否禁用表单
             categories: [], // 分类列表
             items: [], // 准备列表
-            heros: [], // 英雄列表
+            heroes: [], // 英雄列表
             summoners: [], // 召唤师技能列表
             mings: [], // 铭文列表
             model: {
@@ -920,7 +920,7 @@ export default {
     },
     computed: {
         _id() {
-            if (this.$route.path == "/rest/heros/create") {
+            if (this.$route.path == "/heroes/create") {
                 return undefined;
             } else {
                 return this.id;
@@ -928,21 +928,21 @@ export default {
         },
         partners() {
             // 搭档的英雄应该排除自己
-            return this.heros.filter((hero) => hero.name !== this.model.name);
+            return this.heroes.filter((hero) => hero.name !== this.model.name);
         },
         restraints() {
             // 克制的英雄列表应该排除被克制的英雄
             if (this.model.reRestraints.length <= 0) {
                 return this.partners;
             }
-            return this.herosFilter(this.partners, this.model.reRestraints);
+            return this.heroesFilter(this.partners, this.model.reRestraints);
         },
         reRestraints() {
             // 被克制的英雄列表应该排除克制的英雄
             if (this.model.restraints.length <= 0) {
                 return this.partners;
             }
-            return this.herosFilter(this.partners, this.model.restraints);
+            return this.heroesFilter(this.partners, this.model.restraints);
         },
         redMings() {
             // 红色铭文列表
@@ -970,11 +970,11 @@ export default {
                     let res;
                     if (this._id) {
                         res = await this.$http.put(
-                            "/rest/heros/" + this._id,
+                            "/rest/heroes/" + this._id,
                             this.model
                         );
                     } else {
-                        res = await this.$http.post("/rest/heros", this.model);
+                        res = await this.$http.post("/rest/heroes", this.model);
                     }
                     if (res.status === 200) {
                         if (res.data.errno === 1) {
@@ -986,7 +986,7 @@ export default {
                             type: "success",
                             message: this._id ? "修改成功" : "新建成功",
                         });
-                        this.$router.push("/heros/list");
+                        this.$router.push("/heroes/list");
                     }
                 } else {
                     this.$message({
@@ -1015,7 +1015,7 @@ export default {
             }
             return str;
         },
-        herosFilter(all, arr1) {
+        heroesFilter(all, arr1) {
             // 全部英雄    已选被克制英雄或已选克制英雄
             let arr = JSON.parse(JSON.stringify(all));
             arr.map((hero) => {
@@ -1098,7 +1098,7 @@ export default {
         },
         async fetch() {
             // 获取当前英雄信息
-            const res = await this.$http.get("/rest/heros/" + this._id);
+            const res = await this.$http.get("/rest/heroes/" + this._id);
             // 对象合并，防止实例里的model的属性与获取到的属性不一致
             this.model = Object.assign({}, this.model, res.data);
         },
@@ -1114,8 +1114,8 @@ export default {
         },
         async fetchHeros() {
             // 获取英雄列表
-            const res = await this.$http.get("/rest/heros/selectlist");
-            this.heros = res.data;
+            const res = await this.$http.get("/rest/heroes/selectlist");
+            this.heroes = res.data;
         },
         async fetchSummoners() {
             // 获取召唤师技能
@@ -1153,7 +1153,7 @@ export default {
     beforeRouteEnter(to, from, next) {
         next((vm) => {
             vm.$refs.ruleForm.clearValidate(); // 清除表单验证错误
-            if (to.path == "/heros/detail/" + to.params.id) {
+            if (to.path == "/heroes/detail/" + to.params.id) {
                 vm.disableForm = true;
             } else {
                 vm.disableForm = false;

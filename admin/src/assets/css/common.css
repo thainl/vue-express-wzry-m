@@ -49,3 +49,7 @@
     width: 300px;
     margin-right: 10px;
 }
+
+.el-select-block {
+    width: 100%;
+}

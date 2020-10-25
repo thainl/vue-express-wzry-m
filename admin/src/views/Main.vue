@@ -13,8 +13,8 @@
                     </el-menu-item-group>
                     <el-menu-item-group>
                         <template slot="title">英雄</template>
-                        <el-menu-item index="/heros/create">新建英雄</el-menu-item>
-                        <el-menu-item index="/heros/list">英雄列表</el-menu-item>
+                        <el-menu-item index="/heroes/create">新建英雄</el-menu-item>
+                        <el-menu-item index="/heroes/list">英雄列表</el-menu-item>
                     </el-menu-item-group>
                 </el-submenu>
                 <el-submenu index="2">
@@ -47,13 +47,34 @@
                         <el-menu-item index="/admin_users/list">管理员列表</el-menu-item>
                     </el-menu-item-group>
                 </el-submenu>
+                <el-submenu index="4">
+                    <template slot="title"
+                        ><i class="el-icon-connection"></i>权限管理</template
+                    >
+                    <el-menu-item-group>
+                        <template slot="title">API接口</template>
+                        <el-menu-item index="/api_urls/create">新建API接口</el-menu-item>
+                        <el-menu-item index="/api_urls/list">API接口列表</el-menu-item>
+                    </el-menu-item-group>
+                    <el-menu-item-group>
+                        <template slot="title">后台权限</template>
+                        <el-menu-item index="/server_rights/create">新建后台权限</el-menu-item>
+                        <el-menu-item index="/server_rights/list">后台权限列表</el-menu-item>
+                        <el-menu-item index="/test">test</el-menu-item>
+                    </el-menu-item-group>
+                    <el-menu-item-group>
+                        <template slot="title">角色</template>
+                        <el-menu-item index="/roles/create">新建角色</el-menu-item>
+                        <el-menu-item index="/roles/list">角色列表</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
             </el-menu>
         </el-aside>
 
         <el-container>
             <el-header style="text-align: right; font-size: 12px">
                 <el-dropdown>
-                    <i class="el-icon-setting" style="margin-right: 15px;cursor: pointer"></i>
+                    <i class="el-icon-switch-button" style="margin-right: 15px;cursor: pointer"></i>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item @click.native="exit">退出</el-dropdown-item>
                     </el-dropdown-menu>

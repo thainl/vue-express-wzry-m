@@ -1,6 +1,6 @@
 <template>
     <div class="category-edit">
-        <h2>{{ _id ? "编辑" : "新建" }}分类</h2>
+        <h2>{{ _id ? "编辑" : "新建" }}后台权限</h2>
         <el-form
             @submit.native.prevent="save"
             ref="ruleForm"
@@ -8,23 +8,32 @@
             :model="model"
             label-width="120px"
         >
-            <el-form-item label="上级分类">
-                <el-select filterable v-model="model.parent" placeholder="请选择父级分类">
-                    <el-option selected label="__无__" :value="null"></el-option>
+            <el-form-item label="url" prop="url" :error="nameErrorTip">
+                <el-select filterable v-model="model.url" class="el-select-block" placeholder="选择API接口">
                     <el-option
-                        v-for="item in parents"
+                        v-for="(item) of apiUrls"
                         :key="item._id"
-                        :label="item.name"
+                        :label="item.path + '  ' + item.description"
                         :value="item._id"
+                    >
+                    <span>{{item.path}}</span>
+                    <span style="float: right">{{item.description}}</span>
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="接口方法" prop="method">
+                <el-select v-model="model.method" class="el-select-block" placeholder="选择接口的权限">
+                    <el-option
+                        v-for="(val, key, i) in apiMethods"
+                        :key="'mds'+i"
+                        :label="key"
+                        :value="val"
                     >
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="名称" prop="name" :error="nameErrorTip">
-                <el-input
-                    placeholder="输入分类名称"
-                    v-model="model.name"
-                ></el-input>
+            <el-form-item label="描述">
+                <el-input type="textarea" v-model="model.description"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" native-type="submit">{{
@@ -37,23 +46,35 @@
 
 <script>
 export default {
-    name: "CategoryEdit",
+    name: "ServerRightEdit",
     props: {
         id: String,
     },
     data() {
         return {
-            model: {
-                parent: null
+            apiMethods: {'查看 GET':'GET', '新增 POST': 'POST','修改 PUT':'PUT', '删除 DELETE': 'DELETE'},
+            methodType: {
+                POST: 'success',
+                PUT: 'warning',
+                DELETE: 'danger'
             },
-            parents: [],
+            apiUrls: [],
+            model: {
+            },
             rules: {
-                name: [
+                url: [
                     {
                         required: true,
-                        message: "请输入名称",
+                        message: "url不能为空",
                         trigger: "blur",
                     },
+                ],
+                method: [
+                    {
+                        required: true,
+                        message: "至少选择一种方法",
+                        trigger: "blur",
+                    } 
                 ],
             },
             nameErrorTip: ''
@@ -61,7 +82,7 @@ export default {
     },
     computed: {
         _id() {
-            if (this.$route.path == "/categories/create") {
+            if (this.$route.path == "/server_rights/create") {
                 return undefined;
             } else {
                 return this.id;
@@ -76,11 +97,11 @@ export default {
                     let res;
                     if (this._id) {
                         res = await this.$http.put(
-                            "/rest/categories/" + this._id,
+                            "/rest/server_rights/" + this._id,
                             this.model
                         );
                     } else {
-                        res = await this.$http.post("/rest/categories", this.model);
+                        res = await this.$http.post("/rest/server_rights", this.model);
                     }
                     if (res.status === 200) {
                         if(res.data.errno === 1) { // 用户名已存在
@@ -91,7 +112,7 @@ export default {
                             type: "success",
                             message: this._id ? "修改成功" : "新建成功",
                         });
-                        this.$router.push("/categories/list");
+                        this.$router.push("/server_rights/list");
                         }
                         
                     }
@@ -102,24 +123,22 @@ export default {
             
         },
         async fetch() {
-            const res = await this.$http.get("/rest/categories/" + this._id);
+            const res = await this.$http.get("/rest/server_rights/" + this._id);
             if (res.status === 200) {
                 this.model = res.data;
             }
         },
-        async fetchParents() {
-            const res = await this.$http.get("/rest/categories/selectlist");
-            if (res.status === 200) {
-                this.parents = res.data;
-            }
-        },
+        async fetchApiUrl() {
+            const res = await this.$http.get('/rest/api_urls');
+            this.apiUrls = res.data.items;
+        }
     },
     created() {
         this._id && this.fetch();
-        this.fetchParents();
+        this.fetchApiUrl();
     },
 };
 </script>
 
-<style scoped>
+<style>
 </style>

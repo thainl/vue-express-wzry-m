@@ -54,7 +54,7 @@ export default {
     },
     computed: {
         _id() {
-            if (this.$route.path == "/rest/articles/create") {
+            if (this.$route.path == "/articles/create") {
                 return undefined;
             } else {
                 return this.id;

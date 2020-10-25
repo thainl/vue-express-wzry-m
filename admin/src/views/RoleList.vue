@@ -1,42 +1,34 @@
 <template>
-    <div class="hero-list">
-        <h2>英雄列表</h2>
+    <div class="role-list">
+        <h2>角色列表</h2>
         <el-form @submit.native.prevent="search">
             <el-form-item class="el-form-search-item">
-                <el-input clearable v-model="searchKeyword" @clear="clearSearch" placeholder="搜索名称" prefix-icon="el-icon-search" ></el-input>
+                <el-input
+                    clearable
+                    v-model="searchKeyword"
+                    @clear="clearSearch"
+                    placeholder="搜索名称"
+                    prefix-icon="el-icon-search"
+                ></el-input>
                 <el-button native-type="submit" type="primary">搜索</el-button>
-                <el-button title="刷新" @click="searchKeyword ? search() : fetch()" icon="el-icon-refresh-left"></el-button>
+                <el-button
+                    title="刷新"
+                    @click="searchKeyword ? search() : fetch()"
+                    icon="el-icon-refresh-left"
+                ></el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="heroes">
+        <el-table :data="roles">
             <el-table-column prop="_id" label="id" width="220px">
             </el-table-column>
-            <el-table-column prop="name" label="英雄名称"> </el-table-column>
-            <el-table-column prop="categories[0].name" label="英雄分类">
-                <template v-slot="scope">
-                    <span>{{ scope.row.categories.map(v => v.name).join('/') }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column label="英雄头像">
-                <template v-slot="scope">
-                    <img
-                        v-if="scope.row.avatar"
-                        id="hero-icon"
-                        :src="scope.row.avatar"
-                        :alt="scope.row.name"
-                    />
-                    <template v-else>暂无头像</template>
-                </template>
-            </el-table-column>
-            <el-table-column fixed="right" label="操作" width="210">
+            <el-table-column prop="name" label="名称"> </el-table-column>
+            <el-table-column prop="description" label="描述"> </el-table-column>
+            <el-table-column fixed="right" label="操作" width="200">
                 <template v-slot="scope">
                     <el-button
-                        @click="$router.push(`/heroes/detail/${scope.row._id}`)"
-                        size="small"
-                        >详情</el-button
-                    >
-                    <el-button
-                        @click="$router.push(`/heroes/edit/${scope.row._id}`)"
+                        @click="
+                            $router.push(`/roles/edit/${scope.row._id}`)
+                        "
                         size="small"
                         >编辑</el-button
                     >
@@ -57,29 +49,39 @@
             :page-size="pageSize"
             :page-sizes="[5, 10, 20, 50, 100]"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="totalSize">
+            :total="totalSize"
+        >
         </el-pagination>
     </div>
 </template>
 
 <script>
 export default {
-    name: "ItemList",
+    name: "RoleList",
     data() {
         return {
-            heroes: [],
+            roles: [],
             pageSize: 10,
             currentPage: 1,
             totalSize: 0,
-            searchKeyword: '',
+            searchKeyword: "",
+            methodType: {
+                POST: "success",
+                PUT: "warning",
+                DELETE: "danger",
+            },
         };
     },
     methods: {
-        async search(e, reset){
-            if(!this.searchKeyword) return;
-            if(!reset) {this.currentPage = 1;}
-            const res = await this.$http.get(`/rest/heroes/search?keyword=${this.searchKeyword}&size=${this.pageSize}&page=${this.currentPage}`);
-            this.heroes = res.data.items;
+        async search(e, reset) {
+            if (!this.searchKeyword) return;
+            if (!reset) {
+                this.currentPage = 1;
+            }
+            const res = await this.$http.get(
+                `/rest/roles/search?keyword=${this.searchKeyword}&size=${this.pageSize}&page=${this.currentPage}`
+            );
+            this.roles = res.data.items;
             this.totalSize = res.data.totalCount;
         },
         clearSearch() {
@@ -95,20 +97,23 @@ export default {
             this.searchKeyword ? this.search(null, true) : this.fetch();
         },
         async fetch() {
-            const res = await this.$http.get(`/rest/heroes?size=${this.pageSize}&page=${this.currentPage}`);
+            const res = await this.$http.get(
+                `/rest/roles?size=${this.pageSize}&page=${this.currentPage}`
+            );
             if (res.status === 200) {
-                this.heroes = res.data.items;
+                this.roles = res.data.items;
                 this.totalSize = res.data.totalCount;
             }
-            
         },
         async remove(row) {
-            this.$confirm(`是否确定要删除英雄 "${row.name}"`, "提示", {
+            this.$confirm(`是否确定要删除角色 "${row.name}"`, "提示", {
                 confirmButtonText: "删除",
                 cancelButtonText: "取消",
                 type: "warning",
             }).then(async () => {
-                let res = await this.$http.delete("/rest/heroes/" + row._id);
+                let res = await this.$http.delete(
+                    "/rest/roles/" + row._id
+                );
                 if (res.data.success) {
                     this.$message({
                         type: "success",
@@ -116,7 +121,7 @@ export default {
                     });
                     this.fetch();
                 }
-            }).catch(() => {});
+            });
         },
     },
     created() {
@@ -126,8 +131,4 @@ export default {
 </script>
 
 <style>
-#hero-icon {
-    width: 50px;
-    height: 50px;
-}
 </style>

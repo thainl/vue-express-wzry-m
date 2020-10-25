@@ -12,6 +12,7 @@
             <el-table-column prop="_id" label="id" width="220px">
             </el-table-column>
             <el-table-column prop="name" label="用户名"> </el-table-column>
+            <el-table-column prop="role.name" label="角色"> </el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
                 <template v-slot="scope">
                     <el-button

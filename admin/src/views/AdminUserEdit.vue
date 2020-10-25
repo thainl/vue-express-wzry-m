@@ -14,8 +14,19 @@
                     v-model="model.name"
                 ></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
-                <el-input :placeholder=" _id ? '输入新密码' : '输入密码' " v-model="model.password" show-password></el-input>
+            <el-form-item label="密码" prop="password" :rules="[{required: _id ? false : true, message: '密码不能为空'}, {min: 6,max: 16, message: '密码长度为6~16位',trigger: 'blur'}]">
+                <el-input :placeholder=" _id ? '修改密码请输入新密码' : '输入密码' " v-model="model.password" show-password></el-input>
+            </el-form-item>
+            <el-form-item label="角色" prop="role">
+                <el-select v-model="model.role" class="el-select-block" placeholder="选择角色">
+                    <el-option
+                        v-for="item in roles"
+                        :key="item._id"
+                        :label="item.name"
+                        :value="item._id"
+                    >
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" native-type="submit">{{
@@ -34,6 +45,7 @@ export default {
     },
     data() {
         return {
+            roles: [],
             model: {},
             rules: {
                 name: [
@@ -43,26 +55,13 @@ export default {
                         trigger: "blur",
                     },
                 ],
-                password: [
-                    {
-                        required: true,
-                        message: "密码不能为空",
-                        trigger: "blur",
-                    },
-                    {
-                        min: 6,
-                        max: 16,
-                        message: "密码长度为6~16位",
-                        trigger: "blur",
-                    },
-                ],
             },
             nameErrorTip: "",
         };
     },
     computed: {
         _id() {
-            if (this.$route.path == "/rest/admin_users/create") {
+            if (this.$route.path == "/admin_users/create") {
                 return undefined;
             } else {
                 return this.id;
@@ -110,10 +109,15 @@ export default {
                 this.model = res.data;
             }
         },
+        async fetchRoles() {
+            const res = await this.$http.get("/rest/roles/selectlist");
+            this.roles = res.data;
+        },
     },
     created() {
         this._id && this.fetch();
-    }
+        this.fetchRoles();
+    },
 };
 </script>
 

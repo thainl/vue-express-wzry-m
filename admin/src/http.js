@@ -8,6 +8,7 @@ const http = axios.create({
 
 // 请求拦截
 http.interceptors.request.use(config => {
+    // console.log(config.url, config.method);
     if(localStorage.token) {
         config.headers.Authorization = 'Bearer ' + localStorage.token; // Bearer 为一种类型
     }
@@ -24,7 +25,7 @@ http.interceptors.response.use(res => {
     if(err.response.data.msg) {
         Vue.prototype.$message({
             type: 'error',
-            message: err.response.data.msg
+            message: err.response.data.msg + ' ' + err.response.status
         })
         if(err.response.status === 401) {
             // 状态码为401，跳转到登录页

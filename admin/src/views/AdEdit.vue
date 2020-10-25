@@ -110,7 +110,7 @@ export default {
     },
     computed: {
         _id() {
-            if (this.$route.path == "/rest/ads/create") {
+            if (this.$route.path == "/ads/create") {
                 return undefined;
             } else {
                 return this.id;

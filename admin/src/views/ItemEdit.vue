@@ -85,7 +85,7 @@ export default {
     },
     computed: {
         _id() {
-            if (this.$route.path == "/rest/items/create") {
+            if (this.$route.path == "/items/create") {
                 return undefined;
             } else {
                 return this.id;

@@ -57,23 +57,23 @@ const routes = [
       },
 
       {
-        path: 'heros/create',
+        path: 'heroes/create',
         name: 'HeroCreate',
         component: () => import('../views/HeroEdit.vue')
       },
       {
-        path: 'heros/list',
+        path: 'heroes/list',
         name: 'HeroList',
         component: () => import('../views/HeroList.vue')
       },
       {
-        path: 'heros/edit/:id',
+        path: 'heroes/edit/:id',
         name: 'HeroEdit',
         props: true,
         component: () => import('../views/HeroEdit.vue')
       },
       {
-        path: 'heros/detail/:id',
+        path: 'heroes/detail/:id',
         name: 'HeroDetail',
         props: true,
         component: () => import('../views/HeroEdit.vue')
@@ -128,6 +128,62 @@ const routes = [
         name: 'AdminUserEdit',
         props: true,
         component: () => import('../views/AdminUserEdit.vue')
+      },
+
+      {
+        path: 'server_rights/create',
+        name: 'ServerRightCreate',
+        component: () => import('../views/ServerRightEdit.vue')
+      },
+      {
+        path: 'server_rights/list',
+        name: 'ServerRightList',
+        component: () => import('../views/ServerRightList.vue')
+      },
+      {
+        path: 'server_rights/edit/:id',
+        name: 'ServerRightEdit',
+        props: true,
+        component: () => import('../views/ServerRightEdit.vue')
+      },
+
+      {
+        path: 'api_urls/create',
+        name: 'ApiUrlCreate',
+        component: () => import('../views/ApiUrlEdit.vue')
+      },
+      {
+        path: 'api_urls/list',
+        name: 'ApiUrlList',
+        component: () => import('../views/ApiUrlList.vue')
+      },
+      {
+        path: 'api_urls/edit/:id',
+        name: 'ApiUrlEdit',
+        props: true,
+        component: () => import('../views/ApiUrlEdit.vue')
+      },
+
+      {
+        path: 'roles/create',
+        name: 'RoleCreate',
+        component: () => import('../views/RoleEdit.vue')
+      },
+      {
+        path: 'roles/list',
+        name: 'RoleList',
+        component: () => import('../views/RoleList.vue')
+      },
+      {
+        path: 'roles/edit/:id',
+        name: 'RoleEdit',
+        props: true,
+        component: () => import('../views/RoleEdit.vue')
+      },
+
+      {
+        path: 'test',
+        component: () => import('../views/Test.vue')
       },
     ]
   },
