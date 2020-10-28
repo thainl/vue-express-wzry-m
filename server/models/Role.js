@@ -5,6 +5,14 @@ const schema = new mongoose.Schema({
     rights: [{
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'ServerRight'
+    }],
+    adminWebs: [{
+        web: { type: mongoose.SchemaTypes.ObjectId, ref: 'AdminWeb' },
+        rights: [{ type: String }]
+    }],
+    apiRights: [{
+        url: { type: mongoose.SchemaTypes.ObjectId, ref: 'ApiRight' },
+        rights: [{ type: String }]
     }]
 })
 

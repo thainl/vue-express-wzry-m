@@ -1,40 +1,36 @@
 module.exports = (options) => {
     const AdminUser = require("../models/AdminUser");
     const Role = require("../models/Role");
-    const ServerRight = require("../models/ServerRight");
     const assert = require('http-assert'); // 用于确保信息是否正确，抛出错误
     return async (req, res, next) => {
-        console.log("originalUrl: ", req.originalUrl);
-        console.log("baseUrl: ", req.baseUrl, req.method);
+        // console.log("originalUrl: ", req.originalUrl);
+        // console.log("baseUrl: ", req.baseUrl, req.method);
         // const id = req.user._id;
-        const user = await AdminUser.findOne({ name: "user1" });
+        const user = await AdminUser.findOne({ name: "aaa" });
         const role = await Role.findById(user.role)
-            .populate({ path: "rights", populate: { path: "url" } })
+            .populate({ path: "apiRights.url" })
             .lean();
 
-        let originalUrl = req.originalUrl;
-        if (req.query) {
-            originalUrl = originalUrl.split("?")[0];
-        }
-        const result = role.rights.filter((r) => {
+        let originalUrl = req.query ? req.originalUrl.split("?")[0] : req.originalUrl;
+        const result = role.apiRights.filter((r) => {
             let myPath = "/admin/api" + r.url.path;
             if (req.params.id) {
                 myPath = myPath.replace(":id", req.params.id);
             }
             return (
-                myPath === originalUrl && r.method === req.method.toUpperCase()
+                myPath === originalUrl && r.rights.indexOf(req.method.toUpperCase()) !== -1
             );
         });
         if (result.length === 1) {
             console.log(
                 "\x1B[36m%s\x1B[0m",
-                "有权限访问： " + result[0].description
+                "有权限访问： " + result[0].url.path + ' ' + req.method
             );
         }else {
             console.log('\x1B[31m%s\x1B[0m', '无权限访问： ' + originalUrl + ' ' + req.method);
             
         }
-        // assert(result.length, 422, '无权访问')
+        // assert(result.length, 401, '无权限进行此操作');
         next();
     };
 };

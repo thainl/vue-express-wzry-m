@@ -4,7 +4,7 @@
         <el-form @submit.native.prevent="search">
             <el-form-item class="el-form-search-item">
                 <el-input clearable v-model="searchKeyword" @clear="clearSearch" placeholder="搜索名称" prefix-icon="el-icon-search" ></el-input>
-                <el-button native-type="submit" type="primary">搜索</el-button>
+                <el-button native-type="submit" v-permission="{action: 'search', effect: 'disabled'}" type="primary">搜索</el-button>
                 <el-button title="刷新" @click="searchKeyword ? search() : fetch()" icon="el-icon-refresh-left"></el-button>
             </el-form-item>
         </el-form>
@@ -23,6 +23,7 @@
             <el-table-column fixed="right" label="操作" width="200">
                 <template v-slot="scope">
                     <el-button
+                        v-permission="{action: 'put', effect: 'disabled'}"
                         @click="
                             $router.push(`/items/edit/${scope.row._id}`)
                         "
@@ -30,6 +31,7 @@
                         >编辑</el-button
                     >
                     <el-button
+                        v-permission="{action: 'delete'}"
                         @click="remove(scope.row)"
                         type="danger"
                         size="small"

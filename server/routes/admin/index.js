@@ -7,6 +7,7 @@ const { Mongoose } = require('mongoose');
 const ApiUrl = require('../../models/ApiUrl');
 // 权限中间件
 const permissionMiddleware = require('../../middleware/permission');
+const Role = require('../../models/Role');
 module.exports = app => {
     const express = require('express');
     const router = express.Router({
@@ -15,11 +16,12 @@ module.exports = app => {
 
     async function isExistName (req) { // 验证名称是否已存在
         let findOptions = {name: req.body.name};
-        if(req.Model.modelName === 'Category') {
-            findOptions.parent = req.body.parent;
-        }else if(req.Model.modelName === 'ApiUrl') {
+        const modelName = req.Model.modelName;
+        if(modelName === 'Category' || modelName === 'Menu') {
+            findOptions.parent = req.body.parent; // 判断是在同父级下有相同名称
+        }else if(modelName === 'ApiRight') {
             findOptions = { path: req.body.path };
-        }else if(req.Model.modelName === 'ServerRight') {
+        }else if(modelName === 'ServerRight') {
             findOptions = { url: req.body.url, method: req.body.method }
         }else {
             return false;
@@ -50,7 +52,7 @@ module.exports = app => {
     async function getList(req, size, page) {
         size = size ? Number(size) : 200;
         page = page ? Number(page) : 1;
-        const items = await req.Model.find().setOptions(queryOptions(req)).sort({_id: -1}).skip((page - 1) * size).limit(size).lean();
+        const items = await req.Model.find().setOptions(queryOptions(req)).sort({_id: 1}).skip((page - 1) * size).limit(size).lean();
         const totalCount = await req.Model.countDocuments();
         return { totalCount, items };
     }
@@ -58,17 +60,20 @@ module.exports = app => {
     // 关联查询哪个字段
     function queryOptions(req) {
         const queryOptions = {};
+        const modelName = req.Model.modelName;
         // 关联字段查询为可选选项
-        if(req.Model.modelName === 'Category') {
-            queryOptions.populate = 'parent';
-        }else if(req.Model.modelName in { 'Hero': 1, 'Article': 1} ) {
+        if(modelName in {'Category': 1, 'Menu': 1} ) {
+            queryOptions.populate = [{path: 'parent', select: 'name', populate: { path: 'parent', select: 'name' }}, { path: 'page', select: 'name' }];
+        }else if(modelName in { 'Hero': 1, 'Article': 1} ) {
             queryOptions.populate = 'categories';
-        }else if(req.Model.modelName in { 'Item': 1, 'Ming': 1, 'ApiUrl': 1 } ) {
+        }else if(modelName in { 'Item': 1, 'Ming': 1, 'ApiRight': 1 } ) {
             queryOptions.populate = 'category';
-        }else if(req.Model.modelName === 'ServerRight') {
+        }else if(modelName === 'ServerRight') {
             queryOptions.populate = { path: 'url', populate: { path: 'category' } };
-        }else if(req.Model.modelName === 'AdminUser') {
+        }else if(modelName === 'AdminUser') {
             queryOptions.populate = 'role';
+        }else if(modelName === 'AdminWeb') {
+            queryOptions.populate = { path: 'menu', populate: { path: 'parent', populate: 'parent' } }
         }
         return queryOptions;
     }
@@ -97,7 +102,6 @@ module.exports = app => {
         size = size ? Number(size) : 10;
         const reg = new RegExp(keyword, 'i'); // 利用正则进行模糊查询
         const cate = await Category.find({name: { $regex: reg }}); // 查找分类
-        const url = req.Model.modelName === 'ServerRight' ? await ApiUrl.find({path: { $regex: reg }}) : ''; // 查询后台权限的路径
         // const result = await req.Model.find().setOptions(queryOptions(req)).find(
         //     {
         //         $or: [ // 多条件
@@ -125,8 +129,8 @@ module.exports = app => {
                     { categories: { $all: cate } },
                     { path: { $regex: reg } }, // 搜索接口路径
                     { description: { $regex: reg } },
-                    { url: url },
-                    { method: { $regex: reg } },
+                    { methods: { $regex: reg } },
+                    { rights: { $regex: reg } },
                 ]
                     
             },
@@ -211,10 +215,21 @@ module.exports = app => {
     app.get('/admin/api/userinfo', authMiddleware(), async(req, res) => {
         const token = String(req.headers.authorization || '').split(' ').pop();
         const { id } = jwt.verify(token, app.get('secret'));
-        const user = await AdminUser.findById(id);
+        const user = await AdminUser.findById(id).lean();
+        const role = await Role.find({_id: '5f954e99dd24202dec3b9881'}).populate({
+            path: 'adminWebs.web',
+            populate: {
+                path: 'menu',
+                populate: {
+                    path: 'parent',
+                    populate: 'parent'
+                }
+            }
+        }).lean();
+
+        user.adminWebs = role[0].adminWebs;
         res.send(user);
     })
-
 
     // 错误处理
     app.use(async(err, req, res, next) => {

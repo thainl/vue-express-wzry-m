@@ -85,7 +85,7 @@
                     ><i class="el-icon-plus"></i> 添加广告</el-button
                 >
             </div>
-            <el-button class="submit-btn" type="primary" native-type="submit">{{
+            <el-button class="submit-btn" v-permission="{action: _id ? 'put' : 'post', effect: 'disabled'}" type="primary" native-type="submit">{{
                 _id ? "保存" : "新建"
             }}</el-button>
         </el-form>

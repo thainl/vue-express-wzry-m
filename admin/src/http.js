@@ -7,12 +7,33 @@ const http = axios.create({
 })
 
 // 请求拦截
-http.interceptors.request.use(config => {
-    // console.log(config.url, config.method);
+http.interceptors.request.use(req => {
     if(localStorage.token) {
-        config.headers.Authorization = 'Bearer ' + localStorage.token; // Bearer 为一种类型
+        req.headers.Authorization = 'Bearer ' + localStorage.token; // Bearer 为一种类型
     }
-    return config;
+    // 拦截页面无权限的操作
+    const currentRoute = router.currentRoute; // 当前前端路由对象
+    // console.log(currentRoute);
+    // console.log(req);
+    const currentRouteRights = currentRoute.meta.rights;
+    if(currentRouteRights) {
+        let action = req.method.toUpperCase();
+        if(currentRoute.params.id && action === 'GET') {
+            // 点击编辑按钮时可认为是修改操作
+            // action = 'PUT';
+        }else if(/[\s\S]+(search)$/gi.test(req.url.split('?')[0]) && action === 'GET') {
+            // 点击搜索按钮操作
+            action = 'SEARCH';
+        }
+        let hasNoPermission = currentRouteRights.indexOf(action) === -1;
+        // console.log(currentRouteRights,action, hasNoPermission);
+        if(hasNoPermission) {
+            // Vue.prototype.$message.error('无权限进行此操作： ' + action);
+            Vue.prototype.$alert('无权限进行此操作： ' + action, '错误', {type: 'error'});
+            // return Promise.reject(new Error('无权限进行此操作'));
+        }
+    }
+    return req;
 }, err => {
     return Promise.reject(err);
 })

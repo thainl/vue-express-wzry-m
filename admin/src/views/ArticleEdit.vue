@@ -8,7 +8,7 @@
                     v-model="model.title"
                 ></el-input>
             </el-form-item>
-            <el-form-item label="分类" prop="categories">
+            <el-form-item label="分类" prop="categories" :rules="[{required: true, message: '至少选择一个分类', trigger: 'blur'}]">
                 <el-select
                     v-model="model.categories"
                     filterable

@@ -17,41 +17,77 @@
                     v-model="model.description"
                 ></el-input>
             </el-form-item>
-            <el-form-item label="权限" prop="method">
-                <el-select
-                    multiple
-                    v-model="model.rights"
-                    class="el-select-block"
-                    placeholder="选择权限"
-                >
-                    <el-option
-                        v-for="item in serverRights"
-                        :key="item._id"
-                        :label="item.url.path + ' ' + item.method"
-                        :value="item._id"
-                    >
-                    </el-option>
-                </el-select>
+            <el-form-item label="">
+                <el-tabs value="api" type="border-card">
+                    <el-tab-pane name="web" label="前端界面权限">
+                        <el-tree
+                            :data="adminWebTreeData"
+                            show-checkbox
+                            node-key="id"
+                            :indent="24"
+                            :expand-on-click-node="false"
+                            :check-on-click-node="true"
+                            :default-expand-all="1 ? true : false"
+                            :default-expanded-keys="[]"
+                            :default-checked-keys="defaultAdminWebCheckedKeys"
+                            ref="webTree"
+                            class="right-tree"
+                            @check="clickWebTree"
+                        >
+                            <!-- <template v-slot="{ data }">
+                                <span class="tree-item cate" v-if="data.category"><el-tag type="info">{{data.category}}</el-tag></span>
+                                <span class="tree-item" v-else-if="data.method"><el-tag :type="methodType[data.method]" class="method">{{data.method}}</el-tag><span>{{data.description}}</span></span>
+                                <span class="tree-item" v-else><el-tag type="info">{{data.path}}</el-tag><span>{{data.description}}</span></span>
+                            </template> -->
+                        </el-tree>
+                    </el-tab-pane>
+                    <el-tab-pane name="api" label="API接口权限">
+                        <el-tree
+                            :data="apiRightTreeData"
+                            show-checkbox
+                            node-key="id"
+                            :indent="24"
+                            :expand-on-click-node="false"
+                            :check-on-click-node="true"
+                            :default-expand-all="1 ? true : false"
+                            :default-expanded-keys="[]"
+                            :default-checked-keys="defaultApiRightCheckedKeys"
+                            class="right-tree"
+                            ref="apiTree"
+                            @check="clickApiTree"
+                        >
+                            <template v-slot="{ data }">
+                                <span class="tree-item cate" v-if="data.type == 'category'"><el-tag type="info">{{data.name}}</el-tag></span>
+                                <span class="tree-item" v-else-if="data.type == 'right'"><el-tag :type="methodType[data.right]" class="method">{{data.right}}</el-tag><span>{{data.desc}}</span></span>
+                                <span class="tree-item" v-else><el-tag type="info">{{data.path}}</el-tag><span style="color: #606266;margin-left: -5px;"> 接口</span></span>
+                            </template>
+                        </el-tree>
+                    </el-tab-pane>
+                    <el-tab-pane name="server" label="后台接口权限">
+                        <el-tree
+                            :data="serverRightTreeData"
+                            show-checkbox
+                            node-key="id"
+                            :indent="24"
+                            :expand-on-click-node="false"
+                            :check-on-click-node="true"
+                            :default-expand-all="1 ? true : false"
+                            :default-expanded-keys="[]"
+                            :default-checked-keys="defaultServerRightCheckedKeys"
+                            class="right-tree"
+                            @check="clickRightTree"
+                        >
+                            <template v-slot="{ data }">
+                                <span class="tree-item cate" v-if="data.category"><el-tag type="info">{{data.category}}</el-tag></span>
+                                <span class="tree-item" v-else-if="data.method"><el-tag :type="methodType[data.method]" class="method">{{data.method}}</el-tag><span>{{data.description}}</span></span>
+                                <span class="tree-item" v-else><el-tag type="info">{{data.path}}</el-tag><span>{{data.description}}</span></span>
+                            </template>
+                        </el-tree>
+                    </el-tab-pane>
+                </el-tabs>
             </el-form-item>
             <el-form-item>
-                <el-tree
-                    :data="treeData"
-                    show-checkbox
-                    node-key="id"
-                    :default-expanded-keys="[1, 2]"
-                    :default-checked-keys="defaultCheckedKeys"
-                    class="right-tree"
-                    @check="clickRight"
-                >
-                    <template v-slot="{ data }">
-                        <span class="tree-item cate" v-if="data.category"><el-tag type="info">{{data.category}}</el-tag></span>
-                        <span class="tree-item" v-else-if="data.method"><el-tag :type="methodType[data.method]" class="method">{{data.method}}</el-tag><span>{{data.description}}</span></span>
-                        <span class="tree-item" v-else><el-tag type="info">{{data.path}}</el-tag><span>{{data.description}}</span></span>
-                    </template>
-                </el-tree>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" native-type="submit">{{
+                <el-button class="w-100" v-permission="{action: _id ? 'put' : 'post', effect: 'disabled'}"  type="primary" native-type="submit">{{
                     _id ? "保存" : "新建"
                 }}</el-button>
             </el-form-item>
@@ -60,6 +96,7 @@
 </template>
 
 <script>
+import { makeWebTree } from '@/assets/js/utils.js';
 export default {
     name: "RoleEdit",
     props: {
@@ -67,10 +104,10 @@ export default {
     },
     data() {
         return {
+            apiRights: [],
             serverRights: [],
-            model: {
-                rights: []
-            },
+            adminWebs: [],
+            model: {},
             rules: {
                 name: [
                     {
@@ -90,6 +127,8 @@ export default {
                 PUT: "warning",
                 DELETE: "danger",
             },
+            defaultAdminWebCheckedKeys: [],
+            defaultApiRightCheckedKeys: [],
         };
     },
     computed: {
@@ -100,7 +139,7 @@ export default {
                 return this.id;
             }
         },
-        treeData() {
+        serverRightTreeData() {
             let data = [];
             if (this.serverRights.length > 0) {
                 let obj = {};
@@ -155,12 +194,62 @@ export default {
             }
             return data;
         },
-        defaultCheckedKeys() {
-            if(this.model.rights.length > 0) {
+        defaultServerRightCheckedKeys() {
+            if(this._id && this.model.rights && this.model.rights.length > 0) {
                 return this.model.rights
             }else {
                 return []
             }
+        },
+        
+        adminWebTreeData() {
+            let data = [];
+            if(this.adminWebs.length > 0) {
+                data = makeWebTree(this.adminWebs, true);
+            }
+            return data;
+        },
+        apiRightTreeData() {
+            let data = [];
+            if(this.apiRights.length > 0) {
+                const obj = {};
+                const uniqueCate = this.apiRights.reduce((arr, v) => {
+                    let cate = v.category;
+                    if(!obj[cate._id]) {
+                        obj[cate._id] = true;
+                        arr.push(cate);
+                    }
+                    return arr;
+                }, [])
+                data = uniqueCate.map((cate, i) => {
+                    cate.id= i + 1;
+                    cate.label = cate.name;
+                    cate.type = 'category';
+                    cate.children = [];
+                    this.apiRights.forEach((api) => {
+                        if(api.category._id === cate._id) {
+                            api.id = api._id;
+                            api.label = api.path + ' ' + '接口'
+                            api.type = 'url';
+                            api.children = [];
+                            let methodDesc = api.description.split('、');
+                            api.methods.forEach((m, k) => {
+                                api.children.push({
+                                    label: m + ' ' +methodDesc[k],
+                                    id: m + '-' + api._id,
+                                    type: 'right',
+                                    right: m,
+                                    desc: methodDesc[k],
+                                    parentId: api._id
+                                })
+                            })
+                            cate.children.push(api);
+                        }
+                    })
+                    return cate;
+                })
+            }
+            return data;
         }
     },
     methods: {
@@ -205,16 +294,100 @@ export default {
             const res = await this.$http.get("/rest/server_rights");
             this.serverRights = res.data.items;
         },
-        clickRight(node, tree) {
+        async fetchAdminWebs() {
+            const res = await this.$http.get("/rest/admin_webs");
+            this.adminWebs = res.data.items;
+        },
+        async fetchApiRights() {
+            const res = await this.$http.get("/rest/api_rights");
+            this.apiRights = res.data.items;
+        },
+        clickRightTree(node, tree) {
             // 选中树形图触发
             let res = tree.checkedKeys.slice();
             // 过滤掉父节点的id
             this.model.rights = res.filter(item => typeof item !== 'number');
         },
+        clickWebTree(node, tree) {
+            // 选中树形图触发
+            const { checkedNodes } = tree;
+            this.model.adminWebs = this.checkTree(checkedNodes, 'web');
+        },
+        clickApiTree(node, tree) {
+            const { checkedNodes } = tree;
+            this.model.apiRights = this.checkTree(checkedNodes, 'url');
+        },
+        checkTree(arr, key) {
+            /**
+             * arr 以选中的节点
+             * key 角色表中字段的键值
+             */
+            let rightNodes = arr.filter( v => v.type === 'right'); // 只要选择的权限节点
+            let obj = {};
+            rightNodes.forEach((r) => {
+                if(obj[r.parentId]) {
+                    obj[r.parentId].push(r.right);
+                }else {
+                    // 页面id为键，值为含有权限的数组
+                    obj[r.parentId] = [r.right];
+                }
+            })
+            let data = [];
+            for(let item of Object.entries(obj)) {
+                let rObj = {
+                    rights: item[1]
+                }
+                rObj[key] = item[0]
+                data.push(rObj);
+            }
+            return data
+        },
+        getDefaultTreeCheckedKeys(arr, key) {
+            /**
+             * arr 角色的权限列表
+             * key 权限列表项中权限的key
+             */
+            let tree = key == 'web' ? this.$refs.webTree : this.$refs.apiTree;
+            return arr.reduce((res, p) => {
+                let node = tree.getNode(p[key]); // 根据节点的id获取节点
+                if(node) {
+                    p.rights.forEach(r => {
+                        node.data.children.forEach(c => {
+                            if(r === c.right) {
+                                res.push(c.id); // 只需要获取最小层级的节点即可
+                            }
+                        })
+                    })
+                }
+                return res;
+            }, [])
+        },
+        getDefaultAdminWebCheckedKeys() {
+            if(this._id && this.model.adminWebs) {
+                return this.getDefaultTreeCheckedKeys(this.model.adminWebs, 'web');
+            }else {
+                return [];
+            }
+        },
+        getDefaultApiRightCheckedKeys() {
+            if(this._id && this.model.apiRights) {
+                return this.getDefaultTreeCheckedKeys(this.model.apiRights, 'url');
+            }else {
+                return [];
+            }
+        }
     },
     created() {
         this._id && this.fetch();
         this.fetchServerRights();
+        this.fetchAdminWebs();
+        this.fetchApiRights();
+    },
+    mounted() {
+        this._id && setTimeout(()=>{
+            this.defaultAdminWebCheckedKeys = this.getDefaultAdminWebCheckedKeys();
+            this.defaultApiRightCheckedKeys = this.getDefaultApiRightCheckedKeys();
+        },500)
     },
 };
 </script>

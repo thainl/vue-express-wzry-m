@@ -1,6 +1,6 @@
 <template>
-    <div class="ad-list">
-        <h2>广告位列表</h2>
+    <div class="menu-list">
+        <h2>菜单列表</h2>
         <el-form @submit.native.prevent="search">
             <el-form-item class="el-form-search-item">
                 <el-input clearable v-model="searchKeyword" @clear="clearSearch" placeholder="搜索名称" prefix-icon="el-icon-search" ></el-input>
@@ -8,22 +8,30 @@
                 <el-button title="刷新" @click="searchKeyword ? search() : fetch()" icon="el-icon-refresh-left"></el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="ads">
+        <el-table :data="menus">
             <el-table-column prop="_id" label="id" width="220px">
             </el-table-column>
-            <el-table-column prop="name" label="广告位名称"> </el-table-column>
-            <el-table-column
-                label="广告数量">
-                <template v-slot="scope">
-                    {{scope.row.items.length}}
+            <el-table-column prop="name" label="菜单名称"> </el-table-column>
+            <el-table-column prop="parent" label="层级">
+                <template v-slot="{ row: { parent } }">
+                    <span v-if="!parent" title="菜单的分类"><el-tag type="warning">分类</el-tag></span>
+                    <span v-else-if="parent && !parent.parent" title="菜单的分组，父级为菜单分类"><el-tag type="info">分组</el-tag></span>
+                    <span v-else title="真正的菜单选项，父级为菜单分组"><el-tag>菜单</el-tag></span>
                 </template>
-                </el-table-column>
+            </el-table-column>
+            <el-table-column prop="parent.name" label="父级菜单"> </el-table-column>
+            <el-table-column prop="description" label="描述"> </el-table-column>
+            <el-table-column prop="isShow" label="是否显示">
+                <template v-slot="scope">
+                    <el-tag :type="scope.row.isShow ? 'success' : 'info'">{{scope.row.isShow ? '显示' : '隐藏'}}</el-tag>
+                </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
                 <template v-slot="scope">
                     <el-button
                         v-permission="{action: 'put', effect: 'disabled'}"
                         @click="
-                            $router.push(`/ads/edit/${scope.row._id}`)
+                            $router.push(`/menus/edit/${scope.row._id}`)
                         "
                         size="small"
                         >编辑</el-button
@@ -53,10 +61,10 @@
 
 <script>
 export default {
-    name: "AdList",
+    name: "MenuList",
     data() {
         return {
-            ads: [],
+            menus: [],
             pageSize: 10,
             currentPage: 1,
             totalSize: 0,
@@ -67,8 +75,8 @@ export default {
         async search(e, reset){
             if(!this.searchKeyword) return;
             if(!reset) {this.currentPage = 1;}
-            const res = await this.$http.get(`/rest/ads/search?keyword=${this.searchKeyword}&size=${this.pageSize}&page=${this.currentPage}`);
-            this.ads = res.data.items;
+            const res = await this.$http.get(`/rest/menus/search?keyword=${this.searchKeyword}&size=${this.pageSize}&page=${this.currentPage}`);
+            this.menus = res.data.items;
             this.totalSize = res.data.totalCount;
         },
         clearSearch() {
@@ -84,19 +92,19 @@ export default {
             this.searchKeyword ? this.search(null, true) : this.fetch();
         },
         async fetch() {
-            const res = await this.$http.get(`/rest/ads?size=${this.pageSize}&page=${this.currentPage}`);
+            const res = await this.$http.get(`/rest/menus?size=${this.pageSize}&page=${this.currentPage}`);
             if(res.status === 200) {
-                this.ads = res.data.items;
+                this.menus = res.data.items;
                 this.totalSize = res.data.totalCount;
             }
         },
         async remove(row) {
-        this.$confirm(`是否确定要删除广告位 "${row.name}"`, '提示', {
+        this.$confirm(`是否确定要删除菜单 "${row.name}"`, '提示', {
             confirmButtonText: '删除',
             cancelButtonText: '取消',
             type: "warning"
         }).then(async ()=> {
-            let res = await this.$http.delete('/rest/ads/' + row._id);
+            let res = await this.$http.delete('/rest/menus/' + row._id);
             if(res.data.success) {
                 this.$message({
                     type:'success',
@@ -104,7 +112,7 @@ export default {
                 });
                 this.fetch();
             }
-        }).catch(() => {});
+        })
             
         }
     },
@@ -115,8 +123,4 @@ export default {
 </script>
 
 <style>
-#item-icon {
-    width: 50px;
-    height: 50px;
-}
 </style>

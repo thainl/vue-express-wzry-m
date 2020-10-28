@@ -1,6 +1,6 @@
 <template>
     <div class="category-list">
-        <h2>API接口列表</h2>
+        <h2>API地址列表</h2>
         <el-form @submit.native.prevent="search">
             <el-form-item class="el-form-search-item">
                 <el-input
@@ -21,7 +21,7 @@
         <el-table :data="api_urls">
             <el-table-column prop="_id" label="id" width="220px">
             </el-table-column>
-            <el-table-column prop="path" label="API接口url"> </el-table-column>
+            <el-table-column prop="path" label="API地址url"> </el-table-column>
             <el-table-column prop="description" label="描述"> </el-table-column>
             <el-table-column prop="category.name" label="分类"> </el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
@@ -102,7 +102,7 @@ export default {
             }
         },
         async remove(row) {
-            this.$confirm(`是否确定要删除API接口 "${row.path}"`, "提示", {
+            this.$confirm(`是否确定要删除API地址 "${row.path}"`, "提示", {
                 confirmButtonText: "删除",
                 cancelButtonText: "取消",
                 type: "warning",

@@ -32,7 +32,7 @@
                             v-model="model.name"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="分类" prop="categories">
+                    <el-form-item label="分类" prop="categories" :rules="[{required: true, message: '至少选择一个分类', trigger: 'blur'}]">
                         <el-select
                             v-model="model.categories"
                             multiple
@@ -864,6 +864,7 @@
                     v-if="!disableForm"
                     type="primary"
                     native-type="submit"
+                    v-permission="{action: _id ? 'put' : 'post', effect: 'disabled'}"
                     >{{ _id ? "保存" : "新建" }}</el-button
                 >
             </div>

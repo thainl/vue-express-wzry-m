@@ -7,7 +7,7 @@
                     clearable
                     v-model="searchKeyword"
                     @clear="clearSearch"
-                    placeholder="搜索名称"
+                    placeholder="搜索接口"
                     prefix-icon="el-icon-search"
                 ></el-input>
                 <el-button native-type="submit" type="primary">搜索</el-button>
@@ -19,9 +19,9 @@
             </el-form-item>
         </el-form>
         <el-table :data="server_rights">
-            <el-table-column prop="_id" label="id" width="220px">
+            <el-table-column prop="_id" label="id" sortable width="220px">
             </el-table-column>
-            <el-table-column prop="url.path" label="API接口"> </el-table-column>
+            <el-table-column prop="url.path" label="API地址"> </el-table-column>
             <el-table-column prop="description" label="描述"> </el-table-column>
             <el-table-column prop="methods" label="接口方法">
                 <template v-slot="scope">

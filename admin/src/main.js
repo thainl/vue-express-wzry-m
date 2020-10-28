@@ -25,6 +25,25 @@ Vue.mixin({
   },
 })
 
+// 按钮权限自定义指令
+Vue.directive('permission', {
+  inserted(el, binding) {
+    let rights = router.currentRoute.meta.rights;
+    const {action, effect} = binding.value;
+    if(rights) {
+      if(rights.indexOf(action.toUpperCase()) === -1) {
+        if(effect == 'disabled') {
+          el.disabled = true;
+          el.title = '无操作权限';
+          el.classList.add('is-disabled');
+        }else {
+          el.parentNode.removeChild(el);
+        }
+      }
+    }
+  }
+})
+
 new Vue({
   router,
   render: h => h(App)

@@ -1,6 +1,6 @@
 <template>
-    <div class="api-url-edit">
-        <h2>{{ _id ? "编辑" : "新建" }}API地址</h2>
+    <div class="api-right-edit">
+        <h2>{{ _id ? "编辑" : "新建" }}接口权限</h2>
         <el-form
             @submit.native.prevent="save"
             ref="ruleForm"
@@ -8,20 +8,16 @@
             :model="model"
             label-width="120px"
         >
-            <el-form-item label="path" prop="path" :error="nameErrorTip">
+            <el-form-item label="接口地址" prop="path" :error="nameErrorTip">
                 <el-input
-                    placeholder="输入api接口地址, 前缀/admin/api不用填"
+                    placeholder="输入API接口地址，前缀/admin/api不用填"
                     v-model="model.path"
                 ></el-input>
             </el-form-item>
-            <el-form-item label="分类" prop="category">
-                <el-select
-                    v-model="model.category"
-                    filterable
-                    placeholder="选择接口所对应的模型"
-                >
+            <el-form-item label="操作的模型" prop="category">
+                <el-select clearable v-model="model.category" class="el-select-block" placeholder="选择接口所对应的模型">
                     <el-option
-                        v-for="item in ApiCategories"
+                        v-for="(item) of ApiCategories"
                         :key="item._id"
                         :label="item.name"
                         :value="item._id"
@@ -29,11 +25,22 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="描述">
-                <el-input type="textarea" v-model="model.description"></el-input>
+            <el-form-item label="接口方法" prop="methods">
+                <el-select multiple v-model="model.methods" class="el-select-block" placeholder="选择权限">
+                    <el-option
+                        v-for="(val, key, i) in apiMethods"
+                        :key="'tmds'+i"
+                        :label="key"
+                        :value="val"
+                    >
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="描述" prop="description">
+                <el-input type="textarea" v-model="model.description" placeholder="描述与接口方法对应，用、分隔"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" native-type="submit">{{
+                <el-button v-permission="{action: _id ? 'put' : 'post', effect: 'disabled'}" type="primary" native-type="submit">{{
                     _id ? "保存" : "新建"
                 }}</el-button>
             </el-form-item>
@@ -43,7 +50,7 @@
 
 <script>
 export default {
-    name: "ApiUrlEdit",
+    name: "ApiRightEdit",
     props: {
         id: String,
     },
@@ -60,6 +67,7 @@ export default {
         }
         return {
             categories: [],
+            apiMethods: {'查看 GET':'GET', '新增 POST': 'POST','修改 PUT':'PUT', '删除 DELETE': 'DELETE'},
             model: {
             },
             rules: {
@@ -77,7 +85,25 @@ export default {
                 category: [
                     {
                         required: true,
-                        message: '必须要选分类',
+                        message: '不能为空',
+                        trigger: 'blur',
+                    }
+                ],
+                methods: [
+                    {
+                        required: true,
+                        message: '接口请求方式不能为空',
+                        trigger: 'blur'
+                    }
+                ],
+                description: [
+                    {
+                        required: true,
+                        message: '接口权限描述不能为空',
+                        trigger: 'blur'
+                    },
+                    {
+                        validator: this.descValidator,
                         trigger: 'blur'
                     }
                 ]
@@ -87,7 +113,7 @@ export default {
     },
     computed: {
         _id() {
-            if (this.$route.path == "/api_urls/create") {
+            if (this.$route.path == "/api_rights/create") {
                 return undefined;
             } else {
                 return this.id;
@@ -96,7 +122,7 @@ export default {
         ApiCategories() {
             return this.categories.filter(cate => {
                 if(cate.parent)
-                    return cate.parent.name == '权限分类';
+                    return cate.parent.name == '接口权限分类';
             })
         }
     },
@@ -108,11 +134,11 @@ export default {
                     let res;
                     if (this._id) {
                         res = await this.$http.put(
-                            "/rest/api_urls/" + this._id,
+                            "/rest/api_rights/" + this._id,
                             this.model
                         );
                     } else {
-                        res = await this.$http.post("/rest/api_urls", this.model);
+                        res = await this.$http.post("/rest/api_rights", this.model);
                     }
                     if (res.status === 200) {
                         if(res.data.errno === 1) { // 用户名已存在
@@ -123,7 +149,7 @@ export default {
                             type: "success",
                             message: this._id ? "修改成功" : "新建成功",
                         });
-                        this.$router.push("/api_urls/list");
+                        this.$router.push("/api_rights/list");
                         }
                         
                     }
@@ -134,7 +160,7 @@ export default {
             
         },
         async fetch() {
-            const res = await this.$http.get("/rest/api_urls/" + this._id);
+            const res = await this.$http.get("/rest/api_rights/" + this._id);
             if (res.status === 200) {
                 this.model = res.data;
             }
@@ -142,6 +168,13 @@ export default {
         async fetchCategories() {
             const res = await this.$http.get('/rest/categories');
             this.categories = res.data.items;
+        },
+        descValidator(rule, val, cb){
+            if(val.split('、').length != this.model.methods.length) {
+                cb(new Error('描述格式不正确'))
+            }else {
+                cb();
+            }
         }
     },
     created() {

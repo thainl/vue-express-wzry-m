@@ -9,7 +9,7 @@
             label-width="120px"
         >
             <el-form-item label="url" prop="url" :error="nameErrorTip">
-                <el-select filterable v-model="model.url" class="el-select-block" placeholder="选择API接口">
+                <el-select filterable v-model="model.url" class="el-select-block" placeholder="选择API地址">
                     <el-option
                         v-for="(item) of apiUrls"
                         :key="item._id"
@@ -22,7 +22,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="接口方法" prop="method">
-                <el-select v-model="model.method" class="el-select-block" placeholder="选择接口的权限">
+                <el-select v-model="model.method" class="el-select-block" placeholder="选择接口方法">
                     <el-option
                         v-for="(val, key, i) in apiMethods"
                         :key="'mds'+i"

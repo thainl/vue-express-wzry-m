@@ -27,7 +27,7 @@
                 ></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" native-type="submit">{{
+                <el-button type="primary" v-permission="{action: _id ? 'put' : 'post', effect: 'disabled'}" native-type="submit">{{
                     _id ? "保存" : "新建"
                 }}</el-button>
             </el-form-item>
@@ -121,5 +121,5 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 </style>

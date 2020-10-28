@@ -1,13 +1,13 @@
 <template>
-    <div class="role-list">
-        <h2>角色列表</h2>
+    <div class="api-right-list">
+        <h2>接口权限列表</h2>
         <el-form @submit.native.prevent="search">
             <el-form-item class="el-form-search-item">
                 <el-input
                     clearable
                     v-model="searchKeyword"
                     @clear="clearSearch"
-                    placeholder="搜索名称"
+                    placeholder="搜索页面"
                     prefix-icon="el-icon-search"
                 ></el-input>
                 <el-button native-type="submit" v-permission="{action: 'search', effect: 'disabled'}" type="primary">搜索</el-button>
@@ -18,17 +18,25 @@
                 ></el-button>
             </el-form-item>
         </el-form>
-        <el-table :data="roles">
-            <el-table-column prop="_id" label="id" width="220px">
+        <el-table :data="api_rights">
+            <el-table-column prop="_id" label="id" sortable width="220px">
             </el-table-column>
-            <el-table-column prop="name" label="名称"> </el-table-column>
-            <el-table-column prop="description" label="描述"> </el-table-column>
+            <el-table-column prop="path" label="接口路径"> </el-table-column>
+            <el-table-column prop="category.name" label="操作模型"> </el-table-column>
+            <el-table-column prop="methods" label="接口权限">
+                <template v-slot="{row: {methods}}">
+                    <el-tag v-for="(item, i) of methods" :key="'rtag'+i" :type="methodType[item]">
+                        {{ item }}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column prop="description" label="描述"></el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
                 <template v-slot="scope">
                     <el-button
                         v-permission="{action: 'put', effect: 'disabled'}"
                         @click="
-                            $router.push(`/roles/edit/${scope.row._id}`)
+                            $router.push(`/api_rights/edit/${scope.row._id}`)
                         "
                         size="small"
                         >编辑</el-button
@@ -59,10 +67,10 @@
 
 <script>
 export default {
-    name: "RoleList",
+    name: "ApiRightList",
     data() {
         return {
-            roles: [],
+            api_rights: [],
             pageSize: 10,
             currentPage: 1,
             totalSize: 0,
@@ -81,9 +89,9 @@ export default {
                 this.currentPage = 1;
             }
             const res = await this.$http.get(
-                `/rest/roles/search?keyword=${this.searchKeyword}&size=${this.pageSize}&page=${this.currentPage}`
+                `/rest/api_rights/search?keyword=${this.searchKeyword}&size=${this.pageSize}&page=${this.currentPage}`
             );
-            this.roles = res.data.items;
+            this.api_rights = res.data.items;
             this.totalSize = res.data.totalCount;
         },
         clearSearch() {
@@ -100,21 +108,21 @@ export default {
         },
         async fetch() {
             const res = await this.$http.get(
-                `/rest/roles?size=${this.pageSize}&page=${this.currentPage}`
+                `/rest/api_rights?size=${this.pageSize}&page=${this.currentPage}`
             );
             if (res.status === 200) {
-                this.roles = res.data.items;
+                this.api_rights = res.data.items;
                 this.totalSize = res.data.totalCount;
             }
         },
         async remove(row) {
-            this.$confirm(`是否确定要删除角色 "${row.name}"`, "提示", {
+            this.$confirm(`是否确定要删除接口权限 "${row.path}"`, "提示", {
                 confirmButtonText: "删除",
                 cancelButtonText: "取消",
                 type: "warning",
             }).then(async () => {
                 let res = await this.$http.delete(
-                    "/rest/roles/" + row._id
+                    "/rest/api_rights/" + row._id
                 );
                 if (res.data.success) {
                     this.$message({
@@ -133,4 +141,7 @@ export default {
 </script>
 
 <style>
+.el-tag {
+    margin: 0 2px;
+}
 </style>
