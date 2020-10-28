@@ -3,10 +3,7 @@ module.exports = (options) => {
     const Role = require("../models/Role");
     const assert = require('http-assert'); // 用于确保信息是否正确，抛出错误
     return async (req, res, next) => {
-        // console.log("originalUrl: ", req.originalUrl);
-        // console.log("baseUrl: ", req.baseUrl, req.method);
-        // const id = req.user._id;
-        const user = await AdminUser.findOne({ name: "aaa" });
+        const user = req.user;
         const role = await Role.findById(user.role)
             .populate({ path: "apiRights.url" })
             .lean();
@@ -30,7 +27,7 @@ module.exports = (options) => {
             console.log('\x1B[31m%s\x1B[0m', '无权限访问： ' + originalUrl + ' ' + req.method);
             
         }
-        // assert(result.length, 401, '无权限进行此操作');
+        assert(result.length, 422, '无权限进行此操作');
         next();
     };
 };

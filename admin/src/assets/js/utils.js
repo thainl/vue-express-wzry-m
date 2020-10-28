@@ -1,3 +1,10 @@
+let rightMapping = {
+    'GET': '获取数据',
+    'POST': '新增操作',
+    'PUT': '修改操作',
+    'DELETE': '删除操作',
+    'SEARCH': '搜索操作',
+}
 function makePageItem(item, isTree) {
     item.type = "page";
     if (isTree) {
@@ -10,6 +17,7 @@ function makePageItem(item, isTree) {
                 type: "right",
                 right: r,
                 parentId: item._id,
+                desc: rightMapping[r],
             };
         });
     }

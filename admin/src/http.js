@@ -8,13 +8,11 @@ const http = axios.create({
 
 // 请求拦截
 http.interceptors.request.use(req => {
-    if(localStorage.token) {
-        req.headers.Authorization = 'Bearer ' + localStorage.token; // Bearer 为一种类型
+    if(sessionStorage.token) {
+        req.headers.Authorization = 'Bearer ' + sessionStorage.token; // Bearer 为一种类型
     }
     // 拦截页面无权限的操作
     const currentRoute = router.currentRoute; // 当前前端路由对象
-    // console.log(currentRoute);
-    // console.log(req);
     const currentRouteRights = currentRoute.meta.rights;
     if(currentRouteRights) {
         let action = req.method.toUpperCase();
@@ -28,9 +26,8 @@ http.interceptors.request.use(req => {
         let hasNoPermission = currentRouteRights.indexOf(action) === -1;
         // console.log(currentRouteRights,action, hasNoPermission);
         if(hasNoPermission) {
-            // Vue.prototype.$message.error('无权限进行此操作： ' + action);
             Vue.prototype.$alert('无权限进行此操作： ' + action, '错误', {type: 'error'});
-            // return Promise.reject(new Error('无权限进行此操作'));
+            return Promise.reject(new Error('无权限进行此操作'));
         }
     }
     return req;

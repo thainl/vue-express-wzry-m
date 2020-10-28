@@ -118,40 +118,6 @@ const routerMapping = {
         component: () => import("../views/AdminUserEdit.vue"),
     },
 
-    "/server_rights/create": {
-        path: "/server_rights/create",
-        name: "ServerRightCreate",
-        component: () => import("../views/ServerRightEdit.vue"),
-    },
-    "/server_rights/list": {
-        path: "/server_rights/list",
-        name: "ServerRightList",
-        component: () => import("../views/ServerRightList.vue"),
-    },
-    "/server_rights/edit/:id": {
-        path: "/server_rights/edit/:id",
-        name: "ServerRightEdit",
-        props: true,
-        component: () => import("../views/ServerRightEdit.vue"),
-    },
-
-    "/api_urls/create": {
-        path: "/api_urls/create",
-        name: "ApiUrlCreate",
-        component: () => import("../views/ApiUrlEdit.vue"),
-    },
-    "/api_urls/list": {
-        path: "/api_urls/list",
-        name: "ApiUrlList",
-        component: () => import("../views/ApiUrlList.vue"),
-    },
-    "/api_urls/edit/:id": {
-        path: "/api_urls/edit/:id",
-        name: "ApiUrlEdit",
-        props: true,
-        component: () => import("../views/ApiUrlEdit.vue"),
-    },
-
     "/roles/create": {
         path: "/roles/create",
         name: "RoleCreate",
@@ -232,215 +198,181 @@ const routes = [
         name: "Main",
         component: Main,
         children: [
-            {
-                path: "/categories/create",
-                name: "CategoryCreate",
-                component: () => import("../views/CategoryEdit.vue"),
-            },
-            {
-                path: "/categories/list",
-                name: "CategoryList",
-                component: () => import("../views/CategoryList.vue"),
-            },
-            {
-                path: "/categories/edit/:id",
-                name: "CategoryEdit",
-                props: true,
-                component: () => import("../views/CategoryEdit.vue"),
-            },
+            // {
+            //     path: "/categories/create",
+            //     name: "CategoryCreate",
+            //     component: () => import("../views/CategoryEdit.vue"),
+            // },
+            // {
+            //     path: "/categories/list",
+            //     name: "CategoryList",
+            //     component: () => import("../views/CategoryList.vue"),
+            // },
+            // {
+            //     path: "/categories/edit/:id",
+            //     name: "CategoryEdit",
+            //     props: true,
+            //     component: () => import("../views/CategoryEdit.vue"),
+            // },
 
-            {
-                path: "/items/create",
-                name: "ItemCreate",
-                component: () => import("../views/ItemEdit.vue"),
-            },
-            {
-                path: "/items/list",
-                name: "ItemList",
-                component: () => import("../views/ItemList.vue"),
-            },
-            {
-                path: "/items/edit/:id",
-                name: "ItemEdit",
-                props: true,
-                component: () => import("../views/ItemEdit.vue"),
-            },
+            // {
+            //     path: "/items/create",
+            //     name: "ItemCreate",
+            //     component: () => import("../views/ItemEdit.vue"),
+            // },
+            // {
+            //     path: "/items/list",
+            //     name: "ItemList",
+            //     component: () => import("../views/ItemList.vue"),
+            // },
+            // {
+            //     path: "/items/edit/:id",
+            //     name: "ItemEdit",
+            //     props: true,
+            //     component: () => import("../views/ItemEdit.vue"),
+            // },
 
-            {
-                path: "/heroes/create",
-                name: "HeroCreate",
-                component: () => import("../views/HeroEdit.vue"),
-            },
-            {
-                path: "/heroes/list",
-                name: "HeroList",
-                component: () => import("../views/HeroList.vue"),
-            },
-            {
-                path: "/heroes/edit/:id",
-                name: "HeroEdit",
-                props: true,
-                component: () => import("../views/HeroEdit.vue"),
-            },
-            {
-                path: "/heroes/detail/:id",
-                name: "HeroDetail",
-                props: true,
-                component: () => import("../views/HeroEdit.vue"),
-            },
+            // {
+            //     path: "/heroes/create",
+            //     name: "HeroCreate",
+            //     component: () => import("../views/HeroEdit.vue"),
+            // },
+            // {
+            //     path: "/heroes/list",
+            //     name: "HeroList",
+            //     component: () => import("../views/HeroList.vue"),
+            // },
+            // {
+            //     path: "/heroes/edit/:id",
+            //     name: "HeroEdit",
+            //     props: true,
+            //     component: () => import("../views/HeroEdit.vue"),
+            // },
+            // {
+            //     path: "/heroes/detail/:id",
+            //     name: "HeroDetail",
+            //     props: true,
+            //     component: () => import("../views/HeroEdit.vue"),
+            // },
 
-            {
-                path: "/articles/create",
-                name: "ArticleCreate",
-                component: () => import("../views/ArticleEdit.vue"),
-            },
-            {
-                path: "/articles/list",
-                name: "ArticleList",
-                component: () => import("../views/ArticleList.vue"),
-            },
-            {
-                path: "/articles/edit/:id",
-                name: "ArticleEdit",
-                props: true,
-                component: () => import("../views/ArticleEdit.vue"),
-            },
+            // {
+            //     path: "/articles/create",
+            //     name: "ArticleCreate",
+            //     component: () => import("../views/ArticleEdit.vue"),
+            // },
+            // {
+            //     path: "/articles/list",
+            //     name: "ArticleList",
+            //     component: () => import("../views/ArticleList.vue"),
+            // },
+            // {
+            //     path: "/articles/edit/:id",
+            //     name: "ArticleEdit",
+            //     props: true,
+            //     component: () => import("../views/ArticleEdit.vue"),
+            // },
 
-            {
-                path: "/ads/create",
-                name: "AdCreate",
-                component: () => import("../views/AdEdit.vue"),
-            },
-            {
-                path: "/ads/list",
-                name: "AdList",
-                component: () => import("../views/AdList.vue"),
-            },
-            {
-                path: "/ads/edit/:id",
-                name: "AdEdit",
-                props: true,
-                component: () => import("../views/AdEdit.vue"),
-            },
+            // {
+            //     path: "/ads/create",
+            //     name: "AdCreate",
+            //     component: () => import("../views/AdEdit.vue"),
+            // },
+            // {
+            //     path: "/ads/list",
+            //     name: "AdList",
+            //     component: () => import("../views/AdList.vue"),
+            // },
+            // {
+            //     path: "/ads/edit/:id",
+            //     name: "AdEdit",
+            //     props: true,
+            //     component: () => import("../views/AdEdit.vue"),
+            // },
 
-            {
-                path: "/admin_users/create",
-                name: "AdminUserCreate",
-                component: () => import("../views/AdminUserEdit.vue"),
-            },
-            {
-                path: "/admin_users/list",
-                name: "AdminUserList",
-                component: () => import("../views/AdminUserList.vue"),
-            },
-            {
-                path: "/admin_users/edit/:id",
-                name: "AdminUserEdit",
-                props: true,
-                component: () => import("../views/AdminUserEdit.vue"),
-            },
+            // {
+            //     path: "/admin_users/create",
+            //     name: "AdminUserCreate",
+            //     component: () => import("../views/AdminUserEdit.vue"),
+            // },
+            // {
+            //     path: "/admin_users/list",
+            //     name: "AdminUserList",
+            //     component: () => import("../views/AdminUserList.vue"),
+            // },
+            // {
+            //     path: "/admin_users/edit/:id",
+            //     name: "AdminUserEdit",
+            //     props: true,
+            //     component: () => import("../views/AdminUserEdit.vue"),
+            // },
 
-            {
-                path: "/server_rights/create",
-                name: "ServerRightCreate",
-                component: () => import("../views/ServerRightEdit.vue"),
-            },
-            {
-                path: "/server_rights/list",
-                name: "ServerRightList",
-                component: () => import("../views/ServerRightList.vue"),
-            },
-            {
-                path: "/server_rights/edit/:id",
-                name: "ServerRightEdit",
-                props: true,
-                component: () => import("../views/ServerRightEdit.vue"),
-            },
+            // {
+            //     path: "/roles/create",
+            //     name: "RoleCreate",
+            //     component: () => import("../views/RoleEdit.vue"),
+            // },
+            // {
+            //     path: "/roles/list",
+            //     name: "RoleList",
+            //     component: () => import("../views/RoleList.vue"),
+            // },
+            // {
+            //     path: "/roles/edit/:id",
+            //     name: "RoleEdit",
+            //     props: true,
+            //     component: () => import("../views/RoleEdit.vue"),
+            // },
 
-            {
-                path: "/api_urls/create",
-                name: "ApiUrlCreate",
-                component: () => import("../views/ApiUrlEdit.vue"),
-            },
-            {
-                path: "/api_urls/list",
-                name: "ApiUrlList",
-                component: () => import("../views/ApiUrlList.vue"),
-            },
-            {
-                path: "/api_urls/edit/:id",
-                name: "ApiUrlEdit",
-                props: true,
-                component: () => import("../views/ApiUrlEdit.vue"),
-            },
+            // {
+            //     path: "/menus/create",
+            //     name: "MenuCreate",
+            //     component: () => import("../views/MenuEdit.vue"),
+            // },
+            // {
+            //     path: "/menus/list",
+            //     name: "MenuList",
+            //     component: () => import("../views/MenuList.vue"),
+            // },
+            // {
+            //     path: "/menus/edit/:id",
+            //     name: "MenuEdit",
+            //     props: true,
+            //     component: () => import("../views/MenuEdit.vue"),
+            // },
 
-            {
-                path: "/roles/create",
-                name: "RoleCreate",
-                component: () => import("../views/RoleEdit.vue"),
-            },
-            {
-                path: "/roles/list",
-                name: "RoleList",
-                component: () => import("../views/RoleList.vue"),
-            },
-            {
-                path: "/roles/edit/:id",
-                name: "RoleEdit",
-                props: true,
-                component: () => import("../views/RoleEdit.vue"),
-            },
+            // {
+            //     path: "/admin_webs/create",
+            //     name: "AdminWebCreate",
+            //     component: () => import("../views/AdminWebEdit.vue"),
+            // },
+            // {
+            //     path: "/admin_webs/list",
+            //     name: "AdminWebList",
+            //     component: () => import("../views/AdminWebList.vue"),
+            // },
+            // {
+            //     path: "/admin_webs/edit/:id",
+            //     name: "AdminWebEdit",
+            //     props: true,
+            //     component: () => import("../views/AdminWebEdit.vue"),
+            // },
 
-            {
-                path: "/menus/create",
-                name: "MenuCreate",
-                component: () => import("../views/MenuEdit.vue"),
-            },
-            {
-                path: "/menus/list",
-                name: "MenuList",
-                component: () => import("../views/MenuList.vue"),
-            },
-            {
-                path: "/menus/edit/:id",
-                name: "MenuEdit",
-                props: true,
-                component: () => import("../views/MenuEdit.vue"),
-            },
-
-            {
-                path: "/admin_webs/create",
-                name: "AdminWebCreate",
-                component: () => import("../views/AdminWebEdit.vue"),
-            },
-            {
-                path: "/admin_webs/list",
-                name: "AdminWebList",
-                component: () => import("../views/AdminWebList.vue"),
-            },
-            {
-                path: "/admin_webs/edit/:id",
-                name: "AdminWebEdit",
-                props: true,
-                component: () => import("../views/AdminWebEdit.vue"),
-            },
-
-            {
-                path: "/api_rights/create",
-                name: "ApiRightCreate",
-                component: () => import("../views/ApiRightEdit.vue"),
-            },
-            {
-                path: "/api_rights/list",
-                name: "ApiRightList",
-                component: () => import("../views/ApiRightList.vue"),
-            },
-            {
-                path: "/api_rights/edit/:id",
-                name: "ApiRightEdit",
-                props: true,
-                component: () => import("../views/ApiRightEdit.vue"),
-            },
+            // {
+            //     path: "/api_rights/create",
+            //     name: "ApiRightCreate",
+            //     component: () => import("../views/ApiRightEdit.vue"),
+            // },
+            // {
+            //     path: "/api_rights/list",
+            //     name: "ApiRightList",
+            //     component: () => import("../views/ApiRightList.vue"),
+            // },
+            // {
+            //     path: "/api_rights/edit/:id",
+            //     name: "ApiRightEdit",
+            //     props: true,
+            //     component: () => import("../views/ApiRightEdit.vue"),
+            // },
         ],
 	},
 	{
@@ -457,7 +389,7 @@ const router = new VueRouter({
 
 
 router.beforeEach((to, from, next) => {
-    if (!to.meta.isPublic && !localStorage.token) {
+    if (!to.meta.isPublic && !sessionStorage.token) {
         // 不是公开可以访问的页面 并且 无token
         Vue.prototype.$message({ type: "error", message: "请先登录" });
         next("/login");
@@ -466,6 +398,9 @@ router.beforeEach((to, from, next) => {
         let reg = new RegExp('/edit/'+to.params.id, 'i');
         if(reg.test(to.path) && from.meta.rights.indexOf('PUT') === -1) {
             Vue.prototype.$alert('无权限进行此操作： 编辑', '错误', {type: 'error'});
+            return Promise.reject(new Error('无权限进行此操作'));
+        }else {
+            next();
         }
     }else {
         next();
@@ -480,7 +415,7 @@ router.$addRoutes = (routes)=> {
 }
 
 export function initDynamicRoutes() {
-	if(localStorage.token && localStorage.adminWebs) {
+	if(sessionStorage.token && sessionStorage.adminWebs) {
 		let mainRouteIndex;
 		const routes = router.options.routes; // 所有路由集合
 		routes.forEach((r, i) => {
@@ -488,7 +423,7 @@ export function initDynamicRoutes() {
 				mainRouteIndex = i; // 获取首页路由在路由集合的索引
 			}
 		})
-		const adminWebs = JSON.parse(localStorage.getItem('adminWebs'));
+		const adminWebs = JSON.parse(sessionStorage.getItem('adminWebs'));
 		// routes[mainRouteIndex].children.splice(0, routes[mainRouteIndex].children.length - 1);
 		adminWebs.forEach((w, i) => {
 			let temp = routerMapping[w.web.path];

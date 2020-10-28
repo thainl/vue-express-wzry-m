@@ -7,7 +7,7 @@ module.exports = options => {
         assert(token, 401, 'token不存在，请先登录'); // 抛出错误，在最后统一处理
         const { id } = jwt.verify(token, req.app.get('secret')); // 校验解密token
         assert(id, 401, '无效的token，请重新登录');
-        req.user = await AdminUser.findById(id);
+        req.user = await AdminUser.findById(id).lean();
         assert(req.user, 401, '请登录');
         next();
     }

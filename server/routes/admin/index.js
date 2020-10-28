@@ -4,7 +4,6 @@ const AdminUser = require('../../models/AdminUser');
 const Category = require('../../models/Category');
 const assert = require('http-assert'); // 用于确保信息是否正确，抛出错误
 const { Mongoose } = require('mongoose');
-const ApiUrl = require('../../models/ApiUrl');
 // 权限中间件
 const permissionMiddleware = require('../../middleware/permission');
 const Role = require('../../models/Role');
@@ -21,8 +20,6 @@ module.exports = app => {
             findOptions.parent = req.body.parent; // 判断是在同父级下有相同名称
         }else if(modelName === 'ApiRight') {
             findOptions = { path: req.body.path };
-        }else if(modelName === 'ServerRight') {
-            findOptions = { url: req.body.url, method: req.body.method }
         }else {
             return false;
         }
@@ -68,8 +65,6 @@ module.exports = app => {
             queryOptions.populate = 'categories';
         }else if(modelName in { 'Item': 1, 'Ming': 1, 'ApiRight': 1 } ) {
             queryOptions.populate = 'category';
-        }else if(modelName === 'ServerRight') {
-            queryOptions.populate = { path: 'url', populate: { path: 'category' } };
         }else if(modelName === 'AdminUser') {
             queryOptions.populate = 'role';
         }else if(modelName === 'AdminWeb') {
@@ -177,7 +172,7 @@ module.exports = app => {
     const resourceMiddleware = require('../../middleware/resource');
 
     // 通用的CRUD操作
-    app.use('/admin/api/rest/:resource',  resourceMiddleware(), router)
+    app.use('/admin/api/rest/:resource', authMiddleware(), resourceMiddleware(), router)
 
     // 上传图片
     const multer = require('multer');
@@ -213,10 +208,8 @@ module.exports = app => {
     })
 
     app.get('/admin/api/userinfo', authMiddleware(), async(req, res) => {
-        const token = String(req.headers.authorization || '').split(' ').pop();
-        const { id } = jwt.verify(token, app.get('secret'));
-        const user = await AdminUser.findById(id).lean();
-        const role = await Role.find({_id: '5f954e99dd24202dec3b9881'}).populate({
+        const user = req.user;
+        const role = await Role.find({_id: user.role}).populate({
             path: 'adminWebs.web',
             populate: {
                 path: 'menu',
@@ -226,7 +219,6 @@ module.exports = app => {
                 }
             }
         }).lean();
-
         user.adminWebs = role[0].adminWebs;
         res.send(user);
     })

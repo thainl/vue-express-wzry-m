@@ -29,7 +29,7 @@
                         >编辑</el-button
                     >
                     <el-button
-                        v-permission="{action: 'delete'}"
+                        v-permission="{action: 'delete', effect: 'disabled'}"
                         @click="remove(scope.row)"
                         type="danger"
                         size="small"

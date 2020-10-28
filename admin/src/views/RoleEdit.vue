@@ -17,72 +17,59 @@
                     v-model="model.description"
                 ></el-input>
             </el-form-item>
-            <el-form-item label="">
-                <el-tabs value="api" type="border-card">
-                    <el-tab-pane name="web" label="前端界面权限">
-                        <el-tree
-                            :data="adminWebTreeData"
-                            show-checkbox
-                            node-key="id"
-                            :indent="24"
-                            :expand-on-click-node="false"
-                            :check-on-click-node="true"
-                            :default-expand-all="1 ? true : false"
-                            :default-expanded-keys="[]"
-                            :default-checked-keys="defaultAdminWebCheckedKeys"
-                            ref="webTree"
-                            class="right-tree"
-                            @check="clickWebTree"
-                        >
-                            <!-- <template v-slot="{ data }">
-                                <span class="tree-item cate" v-if="data.category"><el-tag type="info">{{data.category}}</el-tag></span>
-                                <span class="tree-item" v-else-if="data.method"><el-tag :type="methodType[data.method]" class="method">{{data.method}}</el-tag><span>{{data.description}}</span></span>
-                                <span class="tree-item" v-else><el-tag type="info">{{data.path}}</el-tag><span>{{data.description}}</span></span>
-                            </template> -->
-                        </el-tree>
-                    </el-tab-pane>
-                    <el-tab-pane name="api" label="API接口权限">
-                        <el-tree
-                            :data="apiRightTreeData"
-                            show-checkbox
-                            node-key="id"
-                            :indent="24"
-                            :expand-on-click-node="false"
-                            :check-on-click-node="true"
-                            :default-expand-all="1 ? true : false"
-                            :default-expanded-keys="[]"
-                            :default-checked-keys="defaultApiRightCheckedKeys"
-                            class="right-tree"
-                            ref="apiTree"
-                            @check="clickApiTree"
-                        >
-                            <template v-slot="{ data }">
-                                <span class="tree-item cate" v-if="data.type == 'category'"><el-tag type="info">{{data.name}}</el-tag></span>
-                                <span class="tree-item" v-else-if="data.type == 'right'"><el-tag :type="methodType[data.right]" class="method">{{data.right}}</el-tag><span>{{data.desc}}</span></span>
-                                <span class="tree-item" v-else><el-tag type="info">{{data.path}}</el-tag><span style="color: #606266;margin-left: -5px;"> 接口</span></span>
-                            </template>
-                        </el-tree>
-                    </el-tab-pane>
-                    <el-tab-pane name="server" label="后台接口权限">
-                        <el-tree
-                            :data="serverRightTreeData"
-                            show-checkbox
-                            node-key="id"
-                            :indent="24"
-                            :expand-on-click-node="false"
-                            :check-on-click-node="true"
-                            :default-expand-all="1 ? true : false"
-                            :default-expanded-keys="[]"
-                            :default-checked-keys="defaultServerRightCheckedKeys"
-                            class="right-tree"
-                            @check="clickRightTree"
-                        >
-                            <template v-slot="{ data }">
-                                <span class="tree-item cate" v-if="data.category"><el-tag type="info">{{data.category}}</el-tag></span>
-                                <span class="tree-item" v-else-if="data.method"><el-tag :type="methodType[data.method]" class="method">{{data.method}}</el-tag><span>{{data.description}}</span></span>
-                                <span class="tree-item" v-else><el-tag type="info">{{data.path}}</el-tag><span>{{data.description}}</span></span>
-                            </template>
-                        </el-tree>
+            <el-form-item>
+                <el-tabs type="border-card">
+                    <el-tab-pane label="权限">
+                        <div class="right-wrapper d-flex">
+                            <div class="flex-1">
+                                <h4>前端界面权限:</h4>
+                                <el-tree
+                                    :data="adminWebTreeData"
+                                    show-checkbox
+                                    node-key="id"
+                                    :indent="44"
+                                    :expand-on-click-node="false"
+                                    :check-on-click-node="true"
+                                    :default-expand-all="1 ? true : false"
+                                    :default-expanded-keys="[]"
+                                    :default-checked-keys="defaultAdminWebCheckedKeys"
+                                    ref="webTree"
+                                    class="right-tree"
+                                    @check="clickWebTree"
+                                >
+                                    <template v-slot="{ data }">
+                                        <span class="tree-item cate" v-if="data.type=='cate'"><el-tag type="info">{{data.label}}</el-tag></span>
+                                        <span class="tree-item" v-else-if="data.type=='right'"><el-tag :type="methodType[data.right]" class="method">{{data.right}}</el-tag><span>{{data.desc}}</span></span>
+                                        <span class="tree-item" v-else-if="data.type =='page'"><el-tag type="info">{{data.label.replace('页面', '')}}</el-tag><span style="color: #606266;margin-left: -5px;">页面</span></span>
+                                        <span class="tree-item" v-else-if="data.type =='group'"><el-tag class="group" type="info">{{data.name}}</el-tag><span style="color: #606266;margin-left: -5px;">分组</span></span>
+
+                                    </template>
+                                </el-tree>
+                            </div>
+                            <div class="flex-1">
+                                <h4>API接口权限:</h4>
+                                <el-tree
+                                    :data="apiRightTreeData"
+                                    show-checkbox
+                                    node-key="id"
+                                    :indent="44"
+                                    :expand-on-click-node="false"
+                                    :check-on-click-node="true"
+                                    :default-expand-all="1 ? true : false"
+                                    :default-expanded-keys="[]"
+                                    :default-checked-keys="defaultApiRightCheckedKeys"
+                                    class="right-tree"
+                                    ref="apiTree"
+                                    @check="clickApiTree"
+                                >
+                                    <template v-slot="{ data }">
+                                        <span class="tree-item cate" v-if="data.type == 'category'"><el-tag type="info">{{data.name}}</el-tag></span>
+                                        <span class="tree-item" v-else-if="data.type == 'right'"><el-tag :type="methodType[data.right]" class="method">{{data.right}}</el-tag><span>{{data.desc}}</span></span>
+                                        <span class="tree-item" v-else><el-tag type="info">{{data.path}}</el-tag><span style="color: #606266;margin-left: -5px;"> 接口</span></span>
+                                    </template>
+                                </el-tree>
+                            </div>
+                        </div>
                     </el-tab-pane>
                 </el-tabs>
             </el-form-item>
@@ -105,7 +92,6 @@ export default {
     data() {
         return {
             apiRights: [],
-            serverRights: [],
             adminWebs: [],
             model: {},
             rules: {
@@ -139,69 +125,6 @@ export default {
                 return this.id;
             }
         },
-        serverRightTreeData() {
-            let data = [];
-            if (this.serverRights.length > 0) {
-                let obj = {};
-                let uniqueCate = this.serverRights.reduce((arr, item) => {
-                    // 提取接口地址的分类
-                    if (!obj[item.url.category.name]) {
-                        obj[item.url.category.name] = true;
-                        arr.push({
-                            category: item.url.category.name,
-                        });
-                    }
-                    return arr;
-                }, []);
-                let uniqueUrl = this.serverRights.reduce((arr, item) => {
-                    // 提取同样的url地址
-                    if(!obj[item.url.path]) {
-                        obj[item.url.path] = true;
-                        arr.push({
-                            path: item.url.path,
-                            description: item.url.description,
-                            cate: item.url.category.name
-                        })
-                    }
-                    return arr
-                }, [])
-
-                data = uniqueCate.map((cate, i) => {
-                    let cateName = cate.category;
-                    cate.label = cateName;
-                    cate.id = i + 1;
-                    cate.children = [];
-                    uniqueUrl.map((u, j) => {
-                        if(u.cate === cate.category) {
-                            u.label = u.path + ' ' + u.description;
-                            u.id = Number(cate.id + '000' + j) + 1;
-                            u.children = [];
-                            this.serverRights.forEach(v => {
-                                if(v.url.path === u.path) {
-                                    u.children.push(
-                                        Object.assign({
-                                            label: v.method + ' ' + v.description,
-                                            id: v._id
-                                        }, v)
-                                    )
-                                }
-                            })
-                            cate.children.push(u)
-                        }
-                    })
-                    return cate;
-                });
-            }
-            return data;
-        },
-        defaultServerRightCheckedKeys() {
-            if(this._id && this.model.rights && this.model.rights.length > 0) {
-                return this.model.rights
-            }else {
-                return []
-            }
-        },
-        
         adminWebTreeData() {
             let data = [];
             if(this.adminWebs.length > 0) {
@@ -290,10 +213,6 @@ export default {
                 this.model = res.data;
             }
         },
-        async fetchServerRights() {
-            const res = await this.$http.get("/rest/server_rights");
-            this.serverRights = res.data.items;
-        },
         async fetchAdminWebs() {
             const res = await this.$http.get("/rest/admin_webs");
             this.adminWebs = res.data.items;
@@ -301,12 +220,6 @@ export default {
         async fetchApiRights() {
             const res = await this.$http.get("/rest/api_rights");
             this.apiRights = res.data.items;
-        },
-        clickRightTree(node, tree) {
-            // 选中树形图触发
-            let res = tree.checkedKeys.slice();
-            // 过滤掉父节点的id
-            this.model.rights = res.filter(item => typeof item !== 'number');
         },
         clickWebTree(node, tree) {
             // 选中树形图触发
@@ -379,7 +292,6 @@ export default {
     },
     created() {
         this._id && this.fetch();
-        this.fetchServerRights();
         this.fetchAdminWebs();
         this.fetchApiRights();
     },
@@ -400,7 +312,12 @@ export default {
     line-height: 18px;
 }
 .right-tree .el-tag.el-tag--info {
-    color: #303133;
+    color: #2f3542;
+    font-size: 14px;
+    box-sizing: content-box;
+    padding: 1px 10px;
+    line-height: 19px;
+    background-color: #f3f3f3;
 }
 .right-tree .tree-item {
     display: flex;
@@ -414,6 +331,15 @@ export default {
 }
 .right-tree .el-tree-node__content {
     height: 28px;
+}
+
+.right-wrapper {
+    padding: 0 20px;
+}
+
+.right-tree .el-tag.el-tag--info.group {
+    background: #dedede;
+    color: #94989c;
 }
 
 </style>

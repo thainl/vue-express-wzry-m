@@ -13,11 +13,7 @@ body {
 </style>
 
 <script>
-// import { initDynamicRoutes } from '@/router/index.js';
 export default {
 	name: "App",
-	// created() {
-	// 	initDynamicRoutes();
-	// },
 };
 </script>

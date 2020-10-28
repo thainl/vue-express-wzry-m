@@ -2,7 +2,7 @@
     <el-container style="height: 100vh">
         <el-aside width="200px">
             <el-menu :default-active="$route.path" :router="true"  unique-opened>
-                <el-submenu index="11">
+                <!-- <el-submenu index="11">
                     <template slot="title"
                         ><i class="el-icon-message"></i>内容管理</template
                     >
@@ -51,16 +51,6 @@
                     <template slot="title"
                         ><i class="el-icon-connection"></i>权限管理</template
                     >
-                    <!-- <el-menu-item-group>
-                        <template slot="title">API地址</template>
-                        <el-menu-item index="/api_urls/create">新建API地址</el-menu-item>
-                        <el-menu-item index="/api_urls/list">API地址列表</el-menu-item>
-                    </el-menu-item-group>
-                    <el-menu-item-group>
-                        <template slot="title">后台权限</template>
-                        <el-menu-item index="/server_rights/create">新建后台权限</el-menu-item>
-                        <el-menu-item index="/server_rights/list">后台权限列表</el-menu-item>
-                    </el-menu-item-group> -->
                     <el-menu-item-group>
                         <template slot="title">接口权限</template>
                         <el-menu-item index="/api_rights/create">新建接口权限</el-menu-item>
@@ -86,7 +76,7 @@
                         <el-menu-item index="/admin_users/create">新建管理员</el-menu-item>
                         <el-menu-item index="/admin_users/list">管理员列表</el-menu-item>
                     </el-menu-item-group>
-                </el-submenu>
+                </el-submenu> -->
                 <el-submenu v-for="(cate, i) of menuData" :key="cate._id" :index="i+1 + ''">
                     <template slot="title"
                         ><i :class="cate.icon"></i>{{cate.name}}</template
@@ -148,7 +138,7 @@ export default {
     computed: {
         menuData() {
             let res = [];
-            if(0 && this.user.adminWebs && this.user.adminWebs.length > 0) {
+            if(this.user.adminWebs && this.user.adminWebs.length > 0) {
                 let arr = this.user.adminWebs.map(v => v.web);
                 res = makeWebTree(arr);
             }
@@ -157,7 +147,8 @@ export default {
     },
     methods: {
         exit() {
-            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('adminWebs');
             this.$message({
                 type: 'success',
                 message: '退出成功'
@@ -167,7 +158,7 @@ export default {
         async getUserInfo() {
             const res = await this.$http.get('/userinfo');
             this.user = res.data;
-            localStorage.setItem('adminWebs', JSON.stringify(res.data.adminWebs));
+            sessionStorage.setItem('adminWebs', JSON.stringify(res.data.adminWebs));
             initDynamicRoutes();
         }
     },

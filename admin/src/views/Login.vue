@@ -44,7 +44,8 @@ export default {
 					this.nameErrorTip = res.data.msg;
 					return;
 				}
-				localStorage.token = res.data.token;
+				// sessionStorage.token = res.data.token;
+				sessionStorage.setItem('token', res.data.token)
 				this.$router.push('/');
 				this.$message({
 					type: 'success',
