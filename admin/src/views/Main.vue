@@ -123,6 +123,9 @@
     color: #606266;
     background: #f4f4f5;
 }
+.el-submenu i[class^="el-icon"] {
+    vertical-align: text-top;
+}
 </style>
 
 <script>
