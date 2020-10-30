@@ -57,7 +57,7 @@
                 <NewsListCardItem v-for="(item, i) of category.list" :key="'newli'+i" :item="item" />
             </template>
         </ListCard>
-        <ListCard class="list-card-heroes" iconPosX="-6.72rem" iconPosY="-10.68rem" :list="heroesList" moreLink="/">
+        <ListCard class="list-card-heroes" iconPosX="-6.72rem" iconPosY="-10.68rem" :list="heroList" moreLink="/hero-list">
             英雄列表
             <template #headContent>
                 <div>
@@ -146,7 +146,7 @@ export default {
             ],
             
             newsList: [],
-            heroesList: [],
+            heroList: [],
         };
     },
     methods: {
@@ -156,7 +156,7 @@ export default {
         },
         async fetchHeroesList() {
             const res = await this.$http.get('/heroes/list-simple');
-            this.heroesList = res.data;
+            this.heroList = res.data;
         },
     },
     created() {

@@ -23,8 +23,6 @@ const schema = new mongoose.Schema({
         consume: { type: Number }, // 技能消耗
         cooldowns: [{ type: Number }], // 技能冷却
     }],
-    // items1: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Item' }], // 顺风出装
-    // items2: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Item' }], // 逆风出装
     recommendedSkill1: { type: String }, // 主升技能，存放了技能_id, 需要先保存技能才能生成_id
     recommendedSkill2: { type: String }, // 富升技能
     recommendedSummoners: [{ type: mongoose.SchemaTypes.ObjectId, ref: 'Summoner' }],

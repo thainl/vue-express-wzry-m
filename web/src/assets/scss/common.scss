@@ -42,6 +42,14 @@ html {
     white-space: nowrap;
 }
 
+.prompt {
+    display: none;
+    padding: 13px 0 21px;
+    color: #7a7a80;
+    font-size: 13px;
+    line-height: 20px;
+}
+
 * {
     box-sizing: border-box;
     outline: none;
@@ -52,7 +60,6 @@ body {
     font: 0.48rem/1.5 "Helvetica Neue",Helvetica,STHeiTi,'\5FAE\8F6F\96C5\9ED1',sans-serif;
     background: #f1f1f1;
     -webkit-font-smoothing: antialiased;
-    -webkit-box-sizing: border-box;
     /* 清除点击高亮 */
     -webkit-tap-highlight-color: transparent;
     /* 清除iOS上默认按钮和输入框样式 */
@@ -75,7 +82,9 @@ h1, h2, h3, h4, h5, h6 {
 p {
     margin: 0;
 }
-
+i {
+    font-style: normal;
+}
 ul {
     list-style: none;
     margin: 0;

@@ -30,6 +30,24 @@ const routes = [
         component: () => import("../views/HeroDetail.vue"),
     },
     {
+        path: "/skin-carousel/:id",
+        name: "SkinCarousel",
+        props: true,
+        component: () => import("../views/SkinCarousel.vue"),
+    },
+    {
+        path: "/hero-one-img/:id",
+        name: "HeroOneImg",
+        props: true,
+        component: () => import("../views/HeroOneImg.vue"),
+    },
+    {
+        path: "/hero-list",
+        name: "HeroList",
+        component: () => import("../views/HeroList.vue"),
+    },
+
+    {
         path: "/about",
         name: "About",
         // route level code-splitting

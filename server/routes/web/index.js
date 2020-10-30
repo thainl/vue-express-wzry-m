@@ -226,7 +226,23 @@ module.exports = (app) => {
 
     // 获取英雄详情
     router.get('/heroes/:id', async (req, res) => {
-        const data = await Hero.findById(req.params.id).populate('categories').lean();
+        const data = await Hero.findById(req.params.id)
+            .populate('categories')
+            .populate([
+                {
+                    path: 'recommendedMings',
+                    select: { name: 1, icon: 1, effect: 1 }
+                },
+                {
+                    path: 'recommendedSummoners recommendedItem1.items recommendedItem2.items ',
+                    select: { name: 1, icon: 1 } 
+                },
+                {
+                    path: 'restraints.hero reRestraints.hero partners.hero',
+                    select: { name: 1, avatar: 1}
+                }
+            ])
+            .lean();
         if(data.skins && data.skins.length > 0) {
             data.title = data.skins[0].name;
             data.banner = data.skins[0].banner;
@@ -234,7 +250,13 @@ module.exports = (app) => {
         res.send(data);
     })
 
+    // 获取英雄皮肤列表
+    router.get('/heroes/:id/skins', async (req, res) => {
+        const data = await Hero.findById(req.params.id)
+            .select({ name: 1, skins: 1 })
+            .lean();
+        res.send(data);
+    })
     
-
     app.use('/web/api', router);
 };

@@ -1,6 +1,6 @@
 <template>
-    <div class="list-card bg-white">
-        <div class="card-head">
+    <div class="list-card bg-white" :style="{padding: `0 ${paddingXMapping[paddingXSize]}`}">
+        <div v-if="!hideHead" class="card-head">
             <div class="card-head-title d-flex jc-between">
                 <h3 class="fs-xl"><i class="card-head-icon spirte-1" :style="{backgroundPosition: `${iconPosX} ${iconPosY}`}"></i><slot></slot></h3>
                 <router-link v-if="moreLink" :to="moreLink" class="card-head-more-link spirte-1"></router-link>
@@ -14,7 +14,7 @@
                 </ul>
             </div>
             <div class="card-swiper">
-                <swiper :autoHeight="true" ref="cardSwiper" :options="{ autoHeight: true }" @slide-change="()=>activeIndex = $refs.cardSwiper.swiper.realIndex">
+                <swiper ref="cardSwiper" :options="{ autoHeight: true }" @slide-change="()=>activeIndex = $refs.cardSwiper.swiper.realIndex">
                     <swiper-slide v-for="(n, i) of list" :key="'csi'+i">
                         <slot name="swiperItem" :category="n"></slot>
                     </swiper-slide>
@@ -41,11 +41,26 @@ export default {
         },
         moreLink: {
             type: String,
+        },
+        hideHead: {
+            type: Boolean,
+            default: false
+        },
+        paddingXSize: {
+            type: String,
+            default: 'normal',
+            validator(val){
+                return ['normal', 'small'].indexOf(val) !== -1;
+            }
         }
     },
     data() {
         return {
             activeIndex: 0,
+            paddingXMapping: {
+                normal: '0.68rem',
+                small: '0.4rem'
+            }
         }
     },
 }
@@ -55,7 +70,6 @@ export default {
 @import '../assets/scss/_variable';
 .list-card {
     margin-top: 12.5px;
-    padding: 0 17px;
     .card-head {
         border-bottom: 1px solid #e9ecee;
         .card-head-title {

@@ -7,8 +7,8 @@
                     <p class="text-grey-1">团队成就更多</p>
                 </div>
             </div>
-            <a href="##" class="download-app-link spirte-1"></a>
-            <a href="##" v-if="type == 'heroDetail'" class="more-link text-white">更多英雄<span class="fs-xl"> &gt;</span></a>
+            <a href="##" v-if="showLink" class="download-app-link spirte-1"></a>
+            <a href="/hero-list" v-if="type == 'heroDetail'" class="more-link text-white">更多英雄<span class="fs-xl"> &gt;</span></a>
         </div>
 </template>
 
@@ -18,6 +18,10 @@
         props: {
             type: {
                 type: String
+            },
+            showLink: {
+                type: Boolean,
+                default: true
             }
         }
     }
