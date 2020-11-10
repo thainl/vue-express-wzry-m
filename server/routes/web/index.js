@@ -4,6 +4,7 @@ module.exports = (app) => {
     const Category = mongoose.model('Category');
     const Article = mongoose.model('Article');
     const Hero = mongoose.model('Hero');
+    const Ad = mongoose.model('Ad');
     const Item = mongoose.model('Item');
     const Ming = mongoose.model('Ming');
     const Summoner = mongoose.model('Summoner');
@@ -256,6 +257,11 @@ module.exports = (app) => {
             .select({ name: 1, skins: 1 })
             .lean();
         res.send(data);
+    })
+
+    router.get('/banner/home', async (req, res) => {
+        const data = await Ad.findOne({name: 'homeBanner'}).lean();
+        res.send(data.items);
     })
     
     app.use('/web/api', router);

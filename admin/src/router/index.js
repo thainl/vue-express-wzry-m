@@ -436,7 +436,6 @@ export function initDynamicRoutes() {
 		router.$addRoutes(routes);
 		// console.log(router);
 	}else {
-		console.log('初始化动态路由失败');
 		return;
 	}
 }

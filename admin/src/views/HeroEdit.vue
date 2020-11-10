@@ -10,6 +10,7 @@
                 size="mini"
                 icon="el-icon-edit"
                 circle
+                v-permission="{action: 'put'}"
             ></el-button>
         </h2>
         <el-form

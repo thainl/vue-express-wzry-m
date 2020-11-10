@@ -4,25 +4,17 @@
             <swiper
                 ref="homeSwiper"
                 :options="swiperOptions"
+                v-if="bannerList.length > 1"
             >
-                <swiper-slide
-                    ><img
-                        class="swiper-img w-100 h-100"
-                        src="https://ossweb-img.qq.com/upload/adw/image/20201010/1152bf8bae5e8a4fabf9b34fa77c736c.jpeg"
-                        alt=""
-                /></swiper-slide>
-                <swiper-slide
-                    ><img
-                        class="swiper-img w-100 h-100"
-                        src="https://ossweb-img.qq.com/upload/adw/image/20201010/1152bf8bae5e8a4fabf9b34fa77c736c.jpeg"
-                        alt=""
-                /></swiper-slide>
-                <swiper-slide
-                    ><img
-                        class="swiper-img w-100 h-100"
-                        src="https://ossweb-img.qq.com/upload/adw/image/20201010/1152bf8bae5e8a4fabf9b34fa77c736c.jpeg"
-                        alt=""
-                /></swiper-slide>
+                <swiper-slide v-for="item of bannerList" :key="item._id">
+                    <a :href="item.url">
+                        <img
+                            class="swiper-img w-100 h-100"
+                            :src="item.image"
+                            alt=""
+                        />
+                    </a>
+                </swiper-slide>
                 <div
                     class="swiper-pagination home-swiper-pagination"
                     slot="pagination"
@@ -147,6 +139,7 @@ export default {
             
             newsList: [],
             heroList: [],
+            bannerList: [],
         };
     },
     methods: {
@@ -158,10 +151,15 @@ export default {
             const res = await this.$http.get('/heroes/list-simple');
             this.heroList = res.data;
         },
+        async fetchBannerList() {
+            const res = await this.$http.get('/banner/home');
+            this.bannerList = res.data;
+        },
     },
     created() {
         this.fetchNewsList();
         this.fetchHeroesList();
+        this.fetchBannerList();
     },
     components: {
         ListCard,

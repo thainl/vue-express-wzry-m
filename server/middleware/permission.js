@@ -1,5 +1,4 @@
 module.exports = (options) => {
-    const AdminUser = require("../models/AdminUser");
     const Role = require("../models/Role");
     const assert = require('http-assert'); // 用于确保信息是否正确，抛出错误
     return async (req, res, next) => {
@@ -18,15 +17,15 @@ module.exports = (options) => {
                 myPath === originalUrl && r.rights.indexOf(req.method.toUpperCase()) !== -1
             );
         });
-        if (result.length === 1) {
-            console.log(
-                "\x1B[36m%s\x1B[0m",
-                "有权限访问： " + result[0].url.path + ' ' + req.method
-            );
-        }else {
-            console.log('\x1B[31m%s\x1B[0m', '无权限访问： ' + originalUrl + ' ' + req.method);
+        // if (result.length === 1) {
+        //     console.log(
+        //         "\x1B[36m%s\x1B[0m",
+        //         "有权限访问： " + result[0].url.path + ' ' + req.method
+        //     );
+        // }else {
+        //     console.log('\x1B[31m%s\x1B[0m', '无权限访问： ' + originalUrl + ' ' + req.method);
             
-        }
+        // }
         assert(result.length, 422, '无权限进行此操作');
         next();
     };

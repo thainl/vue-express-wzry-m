@@ -1,30 +1,42 @@
 <template>
-    <div class="top-bar-com spirte-1 d-flex jc-between" :class="{'hero-top-bar': type == 'heroDetail'}">
-            <div class="logo d-flex">
-                <a href="/" class="logo-img spirte-1"></a>
-                <div class="logo-txt d-flex flex-column jc-center">
-                    <h1 class="text-white fs-md">王者荣耀<span v-if="type == 'heroDetail'" class="desc">攻略站</span></h1>
-                    <p class="text-grey-1">团队成就更多</p>
-                </div>
+    <div
+        class="top-bar-com spirte-1 d-flex jc-between"
+        :class="{ 'hero-top-bar': type == 'heroDetail' }"
+    >
+        <div class="logo d-flex">
+            <a href="/" class="logo-img spirte-1"></a>
+            <div class="logo-txt d-flex flex-column jc-center">
+                <h1 class="text-white fs-md">
+                    王者荣耀<span v-if="type == 'heroDetail'" class="desc"
+                        >攻略站</span
+                    >
+                </h1>
+                <p class="text-grey-1">团队成就更多</p>
             </div>
-            <a href="##" v-if="showLink" class="download-app-link spirte-1"></a>
-            <a href="/hero-list" v-if="type == 'heroDetail'" class="more-link text-white">更多英雄<span class="fs-xl"> &gt;</span></a>
         </div>
+        <a href="##" v-if="showLink" class="download-app-link spirte-1"></a>
+        <router-link
+            to="/hero-list"
+            v-if="type == 'heroDetail'"
+            class="more-link text-white"
+            >更多英雄<span class="fs-xl"> &gt;</span></router-link
+        >
+    </div>
 </template>
 
 <script>
-    export default {
-        name: 'TopBar',
-        props: {
-            type: {
-                type: String
-            },
-            showLink: {
-                type: Boolean,
-                default: true
-            }
-        }
-    }
+export default {
+    name: "TopBar",
+    props: {
+        type: {
+            type: String,
+        },
+        showLink: {
+            type: Boolean,
+            default: true,
+        },
+    },
+};
 </script>
 
 <style lang="scss">
@@ -66,7 +78,7 @@
     .more-link {
         margin-top: 11px;
         margin-right: 20px;
-        
+
         span.fs-xl {
             font-weight: bold;
             vertical-align: -1px;
@@ -76,7 +88,7 @@
 .hero-top-bar {
     .logo {
         .logo-txt {
-            >p{
+            > p {
                 display: none;
             }
             h1 {

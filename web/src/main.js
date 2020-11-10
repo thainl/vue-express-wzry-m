@@ -13,7 +13,7 @@ Vue.use(VueAwesomeSwiper, /* { default global options } */)
 
 import axios from 'axios';
 Vue.prototype.$http = axios.create({
-  baseURL: 'http://localhost:2887/web/api'
+  baseURL: process.env.VUE_APP_API_URL || '/web/api'
 })
 
 import FastClick from './assets/js/fastclick';
