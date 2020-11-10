@@ -10,7 +10,7 @@
 						<el-input show-password v-model="model.password"></el-input>
 					</el-form-item>
 					<el-form-item>
-						<el-button native-type="submit" type="primary">登录</el-button>
+						<el-button class="w-100" native-type="submit" type="primary">登录</el-button>
 					</el-form-item>
 				</el-form>
 			</el-card>

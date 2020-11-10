@@ -80,6 +80,7 @@
                     :headers="getAuthHeaders()"
                     :show-file-list="false"
                     :on-success="handleIconSuccess"
+                    :on-error="handleUploadError"
                     accept=".png,.jpg,.jpeg,.gif,.webp"
                     title="点击选择图片上传"
                 >
@@ -154,7 +155,6 @@ export default {
                     let res;
                     // 把文字转为html字符串
                     if (this.model._effect) {
-                        console.log(1);
                         this.$set(
                             this.model,
                             "effect",

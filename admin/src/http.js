@@ -16,10 +16,7 @@ http.interceptors.request.use(req => {
     const currentRouteRights = currentRoute.meta.rights;
     if(currentRouteRights) {
         let action = req.method.toUpperCase();
-        if(currentRoute.params.id && action === 'GET') {
-            // 点击编辑按钮时可认为是修改操作
-            // action = 'PUT';
-        }else if(/[\s\S]+(search)$/gi.test(req.url.split('?')[0]) && action === 'GET') {
+        if(/[\s\S]+(search)$/gi.test(req.url.split('?')[0]) && action === 'GET') {
             // 点击搜索按钮操作
             action = 'SEARCH';
         }
@@ -40,6 +37,7 @@ http.interceptors.response.use(res => {
     return res;
 }, err => {
     // 状态码大于等于400都会被处理
+    console.log(err);
     if(err.response.data.msg) {
         Vue.prototype.$message({
             type: 'error',

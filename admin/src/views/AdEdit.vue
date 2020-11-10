@@ -73,6 +73,7 @@
                         :show-file-list="false"
                         accept=".png,.jpg,.jpeg,.gif,.webp"
                         :on-success="(res) => $set(item, 'image', res.url)"
+                        :on-error="handleUploadError"
                         title="点击选择图片上传"
                     >
                         <img v-if="item.image" :src="item.image" class="icon" />

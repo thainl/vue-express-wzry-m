@@ -98,6 +98,7 @@
                                 :headers="getAuthHeaders()"
                                 :show-file-list="false"
                                 :on-success="handleIconSuccess"
+                                :on-error="handleUploadError"
                                 title="点击选择图片上传"
                             >
                                 <img
@@ -186,6 +187,7 @@
                                     :show-file-list="false"
                                     accept=".png,.jpg,.jpeg,.gif,.webp"
                                     :on-success="(res) => $set(item, 'icon', res.url)"
+                                    :on-error="handleUploadError"
                                     title="点击选择图片上传"
                                 >
                                     <img
@@ -803,6 +805,7 @@
                                 :show-file-list="false"
                                 accept=".png,.jpg,.jpeg,.gif,.webp"
                                 :on-success="(res) => $set(item, 'img', res.url)"
+                                :on-error="handleUploadError"
                                 title="点击选择图片上传"
                             >
                                 <img
