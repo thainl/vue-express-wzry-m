@@ -549,8 +549,10 @@ export default {
                     display: block;
                     height: 48px;
                     width: 48px;
+                    margin-right: 12px;
                 }
                 .desc {
+                    flex: 1;
                     padding-top: 2.5px;
                     width: 293px;
                     font-size: 13px;
