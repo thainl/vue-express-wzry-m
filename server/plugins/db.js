@@ -1,6 +1,8 @@
+const { dbConnectUrl } = require('./dbConfig');
+
 module.exports = app => {
     const mongoose = require('mongoose');
-    mongoose.connect('mongodb://127.0.0.1:27017/node-vue-moba', {
+    mongoose.connect(dbConnectUrl, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
 		useFindAndModify: false
