@@ -1,6 +1,6 @@
 async function isExistName(req) {
     // 验证名称是否已存在
-    let findOptions = { name: req.body.name };
+    let findOptions = { name: req.body.name || '' };
     const modelName = req.Model.modelName;
     if (modelName === "Category" || modelName === "Menu") {
         findOptions.parent = req.body.parent; // 判断是在同父级下有相同名称
