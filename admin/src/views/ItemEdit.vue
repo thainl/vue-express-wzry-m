@@ -104,13 +104,14 @@
 </template>
 
 <script>
-import validatorMixin from "@/assets/js/validatorMixin.js";
+import validatorMixin from "@/libs/validatorMixin.js";
+import editPageMixin from '@/libs/editPageMixin.js';
+import fetchCategoriesMixin from '@/libs/fetchCategoriesMixin.js';
+import { updateResourceItem, createResourceItem, getResourceItem } from '@/libs/api.js';
+
 export default {
     name: "ItemEdit",
-    mixins: [validatorMixin],
-    props: {
-        id: String,
-    },
+    mixins: [validatorMixin, editPageMixin, fetchCategoriesMixin],
     data() {
         const numValidator = (rules, val, cb) => {
             if (val && !/^[\d]+$/g.test(val)) {
@@ -120,7 +121,6 @@ export default {
             }
         };
         return {
-            categories: [],
             model: {},
             rules: {
                 name: [
@@ -130,17 +130,9 @@ export default {
                 price: [{ validator: numValidator, trigger: "blur" }],
                 totalPrice: [{ validator: numValidator, trigger: "blur" }],
             },
-            nameErrorTip: "",
         };
     },
     computed: {
-        _id() {
-            if (this.$route.path == "/items/create") {
-                return undefined;
-            } else {
-                return this.id;
-            }
-        },
         itemCategories() {
             return this.categories.filter((cate) => {
                 if (cate.parent) return cate.parent.name == "物品分类";
@@ -169,12 +161,9 @@ export default {
                         );
                     }
                     if (this._id) {
-                        res = await this.$http.put(
-                            "/rest/items/" + this._id,
-                            this.model
-                        );
+                        res = await updateResourceItem('items', this._id, this.model)
                     } else {
-                        res = await this.$http.post("/rest/items", this.model);
+                        res = await createResourceItem('items', this.model);
                     }
                     if (res.status === 200) {
                         if (res.data.errno === 1) {
@@ -195,7 +184,7 @@ export default {
             });
         },
         async fetch() {
-            const res = await this.$http.get("/rest/items/" + this._id);
+            const res = await getResourceItem('items', this._id);
             if (res.status === 200) {
                 this.model = res.data;
                 this.$set(
@@ -208,12 +197,6 @@ export default {
                     "_description",
                     this.htmlToText(this.model.description)
                 );
-            }
-        },
-        async fetchCategories() {
-            const res = await this.$http.get("/rest/categories/selectlist");
-            if (res.status === 200) {
-                this.categories = res.data;
             }
         },
         handleIconSuccess(res) {
@@ -238,12 +221,5 @@ export default {
             }
         },
     },
-    created() {
-        this._id && this.fetch();
-        this.fetchCategories();
-    },
 };
 </script>
-
-<style>
-</style>

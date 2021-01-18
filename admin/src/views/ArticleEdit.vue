@@ -40,26 +40,20 @@
 </template>
 
 <script>
+import editPageMixin from '@/libs/editPageMixin.js';
+import fetchCategoriesMixin from '@/libs/fetchCategoriesMixin.js';
+import { uploadImage } from '@/libs/api.js';
 import { VueEditor } from "vue2-editor";
+
 export default {
     name: "ArticleEdit",
-    props: {
-        id: String,
-    },
+    mixins: [fetchCategoriesMixin, editPageMixin],
     data() {
         return {
-            categories: [],
             model: {},
         };
     },
     computed: {
-        _id() {
-            if (this.$route.path == "/articles/create") {
-                return undefined;
-            } else {
-                return this.id;
-            }
-        },
         articleCategories() {
             return this.categories.filter(cate => {
                 if(cate.parent) return cate.parent.name == '新闻分类';
@@ -67,54 +61,14 @@ export default {
         },
     },
     methods: {
-        save() {
-            this.$refs.ruleForm.validate(async valid => {
-                if(valid) {
-                    let res;
-                    if (this._id) {
-                        res = await this.$http.put(
-                            "/rest/articles/" + this._id,
-                            this.model
-                        );
-                    } else {
-                        res = await this.$http.post("/rest/articles", this.model);
-                    }
-                    if (res.status === 200) {
-                        this.$message({
-                            type: "success",
-                            message: this._id ? "修改成功" : "新建成功",
-                        });
-                        this.$router.push("/articles/list");
-                    }
-                }else {
-                    return false;
-                }
-            })
-        },
-        async fetch() {
-            const res = await this.$http.get("/rest/articles/" + this._id);
-            if (res.status === 200) {
-                this.model = res.data;
-            }
-        },
-        async fetchCategories() {
-            const res = await this.$http.get('/rest/categories/selectlist');
-            if(res.status === 200) {
-                this.categories = res.data;
-            }
-        },
         async handleImageAdded (file, Editor, cursorLocation, resetUploader) {
             const formData = new FormData();
             formData.append("file", file);
-            const res = await this.$http.post('/upload', formData);
+            const res = await uploadImage(formData);
             if(res.status === 200)
             Editor.insertEmbed(cursorLocation, "image", res.data.url);
             resetUploader();
         }
-    },
-    created() {
-        this._id && this.fetch();
-        this.fetchCategories();
     },
     components: {
         VueEditor

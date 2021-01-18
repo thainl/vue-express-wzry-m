@@ -94,67 +94,20 @@
 </template>
 
 <script>
-import validatorMixin from '@/assets/js/validatorMixin.js';
+import validatorMixin from '@/libs/validatorMixin.js';
+import editPageMixin from '@/libs/editPageMixin.js';
+
 export default {
     name: "AdEdit",
-    mixins: [validatorMixin],
-    props: {
-        id: String,
-    },
+    mixins: [validatorMixin, editPageMixin],
     data() {
         return {
             model: {
                 items: [],
             },
-            nameErrorTip: ''
         };
     },
-    computed: {
-        _id() {
-            if (this.$route.path == "/ads/create") {
-                return undefined;
-            } else {
-                return this.id;
-            }
-        },
-    },
     methods: {
-        save() {
-            this.$refs.ruleForm.validate(async (valid) => {
-                if (valid) {
-                    let res;
-                    if (this._id) {
-                        res = await this.$http.put(
-                            "/rest/ads/" + this._id,
-                            this.model
-                        );
-                    } else {
-                        res = await this.$http.post("/rest/ads", this.model);
-                    }
-                    if (res.status === 200) {
-                        if(res.data.errno === 1) { // 用户名已存在
-                            this.nameErrorTip = res.data.msg;
-                            return;
-                        }else {
-                            this.$message({
-                                type: "success",
-                                message: this._id ? "修改成功" : "新建成功",
-                            });
-                            this.$router.push("/ads/list");
-                        }
-                        
-                    }
-                } else {
-                    return false;
-                }
-            });
-        },
-        async fetch() {
-            const res = await this.$http.get("/rest/ads/" + this._id);
-            if (res.status === 200) {
-                this.model = res.data;
-            }
-        },
         removeAdItem(ad, index) {
             if (ad.title || ad.url || ad.description || ad.image) {
                 // 确定删除表单项提示框
@@ -171,9 +124,6 @@ export default {
                 this.model.items.splice(index, 1);
             }
         },
-    },
-    created() {
-        this._id && this.fetch();
     },
 };
 </script>

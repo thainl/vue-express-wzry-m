@@ -1,5 +1,5 @@
 <template>
-    <el-container style="height: 100vh">
+    <el-container style="height: 100vh" class="main-page">
         <el-aside width="200px">
             <el-menu :default-active="$route.path" :router="true"  unique-opened>
                 <!-- <el-submenu index="11">
@@ -129,8 +129,9 @@
 </style>
 
 <script>
-import { makeWebTree } from '@/assets/js/utils.js';
+import { makeWebTree } from '@/libs/utils.js';
 import { initDynamicRoutes } from '@/router/index.js';
+import { getLoginUserInfo } from '../libs/api';
 export default {
     name: 'Main',
     data() {
@@ -159,7 +160,7 @@ export default {
             this.$router.push('/login');
         },
         async getUserInfo() {
-            const res = await this.$http.get('/userinfo');
+            const res = await getLoginUserInfo();
             this.user = res.data;
             sessionStorage.setItem('adminWebs', JSON.stringify(res.data.adminWebs));
             initDynamicRoutes();

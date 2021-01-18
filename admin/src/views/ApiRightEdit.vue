@@ -49,11 +49,12 @@
 </template>
 
 <script>
+import editPageMixin from '@/libs/editPageMixin.js';
+import fetchCategoriesMixin from '@/libs/fetchCategoriesMixin.js';
+
 export default {
     name: "ApiRightEdit",
-    props: {
-        id: String,
-    },
+    mixins: [editPageMixin, fetchCategoriesMixin],
     data() {
         let pathValidator = (rule, val, cb) => {
             if(/[\s\S]+\/$/gi.test(val)) {
@@ -66,7 +67,6 @@ export default {
             }
         }
         return {
-            categories: [],
             apiMethods: {'查看 GET':'GET', '新增 POST': 'POST','修改 PUT':'PUT', '删除 DELETE': 'DELETE'},
             model: {
             },
@@ -108,17 +108,9 @@ export default {
                     }
                 ]
             },
-            nameErrorTip: ''
         };
     },
     computed: {
-        _id() {
-            if (this.$route.path == "/api_rights/create") {
-                return undefined;
-            } else {
-                return this.id;
-            }
-        },
         ApiCategories() {
             return this.categories.filter(cate => {
                 if(cate.parent)
@@ -127,48 +119,6 @@ export default {
         }
     },
     methods: {
-        save() {
-            this.nameErrorTip = '';
-            this.$refs.ruleForm.validate(async (valid) => {
-                if (valid) {
-                    let res;
-                    if (this._id) {
-                        res = await this.$http.put(
-                            "/rest/api_rights/" + this._id,
-                            this.model
-                        );
-                    } else {
-                        res = await this.$http.post("/rest/api_rights", this.model);
-                    }
-                    if (res.status === 200) {
-                        if(res.data.errno === 1) { // 用户名已存在
-                            this.nameErrorTip = res.data.msg;
-                            return;
-                        }else {
-                            this.$message({
-                            type: "success",
-                            message: this._id ? "修改成功" : "新建成功",
-                        });
-                        this.$router.push("/api_rights/list");
-                        }
-                        
-                    }
-                } else {
-                    return false;
-                }
-            });
-            
-        },
-        async fetch() {
-            const res = await this.$http.get("/rest/api_rights/" + this._id);
-            if (res.status === 200) {
-                this.model = res.data;
-            }
-        },
-        async fetchCategories() {
-            const res = await this.$http.get('/rest/categories');
-            this.categories = res.data.items;
-        },
         descValidator(rule, val, cb){
             if(val.split('、').length != this.model.methods.length) {
                 cb(new Error('描述格式不正确'))
@@ -177,12 +127,5 @@ export default {
             }
         }
     },
-    created() {
-        this._id && this.fetch();
-        this.fetchCategories();
-    },
 };
 </script>
-
-<style>
-</style>

@@ -38,11 +38,12 @@
 </template>
 
 <script>
+import editPageMixin from '@/libs/editPageMixin.js';
+import { getResourceSimpleList } from '@/libs/api.js';
+
 export default {
     name: "AdminUserEdit",
-    props: {
-        id: String,
-    },
+    mixins: [editPageMixin],
     data() {
         return {
             roles: [],
@@ -56,70 +57,16 @@ export default {
                     },
                 ],
             },
-            nameErrorTip: "",
         };
     },
-    computed: {
-        _id() {
-            if (this.$route.path == "/admin_users/create") {
-                return undefined;
-            } else {
-                return this.id;
-            }
-        },
-    },
     methods: {
-        save() {
-            this.nameErrorTip = "";
-            this.$refs.ruleForm.validate(async (valid) => {
-                if (valid) {
-                    let res;
-                    if (this._id) {
-                        res = await this.$http.put(
-                            "/rest/admin_users/" + this._id,
-                            this.model
-                        );
-                    } else {
-                        res = await this.$http.post(
-                            "/rest/admin_users",
-                            this.model
-                        );
-                    }
-                    if (res.status === 200) {
-                        if (res.data.errno === 1) {
-                            // 用户名已存在
-                            this.nameErrorTip = res.data.msg;
-                            return;
-                        } else {
-                            this.$message({
-                                type: "success",
-                                message: this._id ? "修改成功" : "新建成功",
-                            });
-                            this.$router.push("/admin_users/list");
-                        }
-                    }
-                } else {
-                    return false;
-                }
-            });
-        },
-        async fetch() {
-            const res = await this.$http.get("/rest/admin_users/" + this._id);
-            if (res.status === 200) {
-                this.model = res.data;
-            }
-        },
         async fetchRoles() {
-            const res = await this.$http.get("/rest/roles/selectlist");
+            const res = await getResourceSimpleList('roles');
             this.roles = res.data;
         },
     },
     created() {
-        this._id && this.fetch();
         this.fetchRoles();
     },
 };
 </script>
-
-<style>
-</style>

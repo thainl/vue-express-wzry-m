@@ -66,11 +66,12 @@
 
 <script>
 import iconArr from '@/assets/js/iconArr';
+import editPageMixin from '@/libs/editPageMixin.js';
+import { getResourceSimpleList } from '@/libs/api.js';
+
 export default {
     name: "MenuEdit",
-    props: {
-        id: String,
-    },
+    mixins: [editPageMixin],
     data() {
         return {
             iconArr,
@@ -88,17 +89,9 @@ export default {
                     },
                 ],
             },
-            nameErrorTip: ''
         };
     },
     computed: {
-        _id() {
-            if (this.$route.path == "/menus/create") {
-                return undefined;
-            } else {
-                return this.id;
-            }
-        },
         parentMenus() {
             return this.parents.filter( m => {
                 if(!m.parent || m.parent && !m.parent.parent) {
@@ -108,53 +101,14 @@ export default {
         }
     },
     methods: {
-        save() {
-            this.nameErrorTip = '';
-            this.$refs.ruleForm.validate(async (valid) => {
-                if (valid) {
-                    let res;
-                    if (this._id) {
-                        res = await this.$http.put(
-                            "/rest/menus/" + this._id,
-                            this.model
-                        );
-                    } else {
-                        res = await this.$http.post("/rest/menus", this.model);
-                    }
-                    if (res.status === 200) {
-                        if(res.data.errno === 1) { // 用户名已存在
-                            this.nameErrorTip = res.data.msg;
-                            return;
-                        }else {
-                            this.$message({
-                            type: "success",
-                            message: this._id ? "修改成功" : "新建成功",
-                        });
-                        this.$router.push("/menus/list");
-                        }
-                        
-                    }
-                } else {
-                    return false;
-                }
-            });
-            
-        },
-        async fetch() {
-            const res = await this.$http.get("/rest/menus/" + this._id);
-            if (res.status === 200) {
-                this.model = res.data;
-            }
-        },
         async fetchParents() {
-            const res = await this.$http.get("/rest/menus/selectlist");
+            const res = await getResourceSimpleList('menus');
             if (res.status === 200) {
                 this.parents = res.data;
             }
         },
     },
     created() {
-        this._id && this.fetch();
         this.fetchParents();
     },
 };

@@ -36,11 +36,12 @@
 </template>
 
 <script>
+import editPageMixin from '@/libs/editPageMixin.js';
+import { getResourceSimpleList } from '@/libs/api.js';
+
 export default {
     name: "CategoryEdit",
-    props: {
-        id: String,
-    },
+    mixins: [editPageMixin],
     data() {
         return {
             model: {
@@ -56,70 +57,18 @@ export default {
                     },
                 ],
             },
-            nameErrorTip: ''
         };
     },
-    computed: {
-        _id() {
-            if (this.$route.path == "/categories/create") {
-                return undefined;
-            } else {
-                return this.id;
-            }
-        },
-    },
     methods: {
-        save() {
-            this.nameErrorTip = '';
-            this.$refs.ruleForm.validate(async (valid) => {
-                if (valid) {
-                    let res;
-                    if (this._id) {
-                        res = await this.$http.put(
-                            "/rest/categories/" + this._id,
-                            this.model
-                        );
-                    } else {
-                        res = await this.$http.post("/rest/categories", this.model);
-                    }
-                    if (res.status === 200) {
-                        if(res.data.errno === 1) { // 用户名已存在
-                            this.nameErrorTip = res.data.msg;
-                            return;
-                        }else {
-                            this.$message({
-                            type: "success",
-                            message: this._id ? "修改成功" : "新建成功",
-                        });
-                        this.$router.push("/categories/list");
-                        }
-                        
-                    }
-                } else {
-                    return false;
-                }
-            });
-            
-        },
-        async fetch() {
-            const res = await this.$http.get("/rest/categories/" + this._id);
-            if (res.status === 200) {
-                this.model = res.data;
-            }
-        },
         async fetchParents() {
-            const res = await this.$http.get("/rest/categories/selectlist");
+            const res = await getResourceSimpleList('categories');
             if (res.status === 200) {
                 this.parents = res.data;
             }
         },
     },
     created() {
-        this._id && this.fetch();
         this.fetchParents();
     },
 };
 </script>
-
-<style>
-</style>

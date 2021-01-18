@@ -13,6 +13,10 @@ async function getResourceList(model, page, size, sort, search) {
     );
 }
 
+async function getResourceSimpleList(model) {
+    return await http.get('/rest/' + model + '/selectlist');
+}
+
 async function deleteResourceItem(model, id) {
     if (!id) throw new Error("要删除的id不能为空");
     return await http.delete("/rest/" + model + "/" + id);
@@ -39,13 +43,19 @@ async function getLoginUserInfo() {
     return await http.get('/user_info');
 }
 
+async function uploadImage(data) {
+    return await http.post('/upload', data);
+}
+
 export {
     createResourceItem,
     getResourceList,
+    getResourceSimpleList,
     deleteResourceItem,
     deleteResources,
     getResourceItem,
     updateResourceItem,
     adminUserLogin,
     getLoginUserInfo,
+    uploadImage,
 };

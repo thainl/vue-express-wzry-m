@@ -83,12 +83,13 @@
 </template>
 
 <script>
-import { makeWebTree } from '@/assets/js/utils.js';
+import { makeWebTree } from '@/libs/utils.js';
+import editPageMixin from '@/libs/editPageMixin.js';
+import { getResourceList } from '@/libs/api.js';
+
 export default {
     name: "RoleEdit",
-    props: {
-        id: String,
-    },
+    mixins: [editPageMixin],
     data() {
         return {
             apiRights: [],
@@ -103,7 +104,6 @@ export default {
                     },
                 ],
             },
-            nameErrorTip: "",
             defaultProps: {
                 children: "children",
                 label: "label",
@@ -118,13 +118,6 @@ export default {
         };
     },
     computed: {
-        _id() {
-            if (this.$route.path == "/roles/create") {
-                return undefined;
-            } else {
-                return this.id;
-            }
-        },
         adminWebTreeData() {
             let data = [];
             if(this.adminWebs.length > 0) {
@@ -176,49 +169,12 @@ export default {
         }
     },
     methods: {
-        save() {
-            this.nameErrorTip = "";
-            this.$refs.ruleForm.validate(async (valid) => {
-                if (valid) {
-                    let res;
-                    if (this._id) {
-                        res = await this.$http.put(
-                            "/rest/roles/" + this._id,
-                            this.model
-                        );
-                    } else {
-                        res = await this.$http.post("/rest/roles", this.model);
-                    }
-                    if (res.status === 200) {
-                        if (res.data.errno === 1) {
-                            // 用户名已存在
-                            this.nameErrorTip = res.data.msg;
-                            return;
-                        } else {
-                            this.$message({
-                                type: "success",
-                                message: this._id ? "修改成功" : "新建成功",
-                            });
-                            this.$router.push("/roles/list");
-                        }
-                    }
-                } else {
-                    return false;
-                }
-            });
-        },
-        async fetch() {
-            const res = await this.$http.get("/rest/roles/" + this._id);
-            if (res.status === 200) {
-                this.model = res.data;
-            }
-        },
         async fetchAdminWebs() {
-            const res = await this.$http.get("/rest/admin_webs");
+            const res = await getResourceList('admin_webs');
             this.adminWebs = res.data.items;
         },
         async fetchApiRights() {
-            const res = await this.$http.get("/rest/api_rights");
+            const res = await getResourceList('api_rights');
             this.apiRights = res.data.items;
         },
         clickWebTree(node, tree) {
@@ -291,7 +247,6 @@ export default {
         }
     },
     created() {
-        this._id && this.fetch();
         this.fetchAdminWebs();
         this.fetchApiRights();
     },

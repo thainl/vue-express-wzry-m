@@ -55,11 +55,12 @@
 </template>
 
 <script>
+import editPageMixin from '@/libs/editPageMixin.js';
+import { getResourceList } from '@/libs/api.js';
+
 export default {
     name: "AdminWebEdit",
-    props: {
-        id: String,
-    },
+    mixins: [editPageMixin],
     data() {
         let pathValidator = (rule, val, cb) => {
             if(/[\s\S]+\/$/gi.test(val)) {
@@ -107,17 +108,9 @@ export default {
                     }
                 ],
             },
-            nameErrorTip: ''
         };
     },
     computed: {
-        _id() {
-            if (this.$route.path == "/admin_webs/create") {
-                return undefined;
-            } else {
-                return this.id;
-            }
-        },
         menuList() {
             return this.menus.filter(m => {
                 if(m.parent) {
@@ -134,55 +127,13 @@ export default {
         }
     },
     methods: {
-        save() {
-            this.nameErrorTip = '';
-            this.$refs.ruleForm.validate(async (valid) => {
-                if (valid) {
-                    let res;
-                    if (this._id) {
-                        res = await this.$http.put(
-                            "/rest/admin_webs/" + this._id,
-                            this.model
-                        );
-                    } else {
-                        res = await this.$http.post("/rest/admin_webs", this.model);
-                    }
-                    if (res.status === 200) {
-                        if(res.data.errno === 1) { // 用户名已存在
-                            this.nameErrorTip = res.data.msg;
-                            return;
-                        }else {
-                            this.$message({
-                            type: "success",
-                            message: this._id ? "修改成功" : "新建成功",
-                        });
-                        this.$router.push("/admin_webs/list");
-                        }
-                        
-                    }
-                } else {
-                    return false;
-                }
-            });
-            
-        },
-        async fetch() {
-            const res = await this.$http.get("/rest/admin_webs/" + this._id);
-            if (res.status === 200) {
-                this.model = res.data;
-            }
-        },
         async fetchMenus() {
-            const res = await this.$http.get('/rest/menus');
+            const res = await getResourceList('menus');
             this.menus = res.data.items;
         }
     },
     created() {
-        this._id && this.fetch();
         this.fetchMenus();
     },
 };
 </script>
-
-<style>
-</style>

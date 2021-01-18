@@ -877,17 +877,17 @@
 </template>
 
 <script>
-import validatorMixin from '@/assets/js/validatorMixin.js';
+import validatorMixin from '@/libs/validatorMixin.js';
+import editPageMixin from '@/libs/editPageMixin.js';
+import fetchCategoriesMixin from '@/libs/fetchCategoriesMixin.js';
+import { getResourceSimpleList } from '@/libs/api.js';
+
 export default {
     name: "HeroEdit",
-    mixins: [validatorMixin],
-    props: {
-        id: String,
-    },
+    mixins: [validatorMixin, editPageMixin, fetchCategoriesMixin],
     data() {
         return {
             disableForm: false, // 是否禁用表单
-            categories: [], // 分类列表
             items: [], // 准备列表
             heroes: [], // 英雄列表
             summoners: [], // 召唤师技能列表
@@ -920,17 +920,9 @@ export default {
                 ],
                 avatar: [{ validator: this.validatePic, trigger: "blur" }],
             },
-            nameErrorTip: "",
         };
     },
     computed: {
-        _id() {
-            if (this.$route.path == "/heroes/create") {
-                return undefined;
-            } else {
-                return this.id;
-            }
-        },
         partners() {
             // 搭档的英雄应该排除自己
             return this.heroes.filter((hero) => hero.name !== this.model.name);
@@ -968,41 +960,6 @@ export default {
         },
     },
     methods: {
-        save() {
-            this.nameErrorTip = "";
-            this.$refs.ruleForm.validate(async (valid) => {
-                if (valid) {
-                    let res;
-                    if (this._id) {
-                        res = await this.$http.put(
-                            "/rest/heroes/" + this._id,
-                            this.model
-                        );
-                    } else {
-                        res = await this.$http.post("/rest/heroes", this.model);
-                    }
-                    if (res.status === 200) {
-                        if (res.data.errno === 1) {
-                            // 用户名已存在
-                            this.nameErrorTip = res.data.msg;
-                            return;
-                        }
-                        this.$message({
-                            type: "success",
-                            message: this._id ? "修改成功" : "新建成功",
-                        });
-                        this.$router.push("/heroes/list");
-                    }
-                } else {
-                    this.$message({
-                        type: "error",
-                        message: "表单存在错误，请检查",
-                        offset: 220,
-                    });
-                    return false;
-                }
-            });
-        },
         textToHtml(str) {
             if (str) {
                 let res = str.replace(/\n/g, "<br/>");
@@ -1101,35 +1058,24 @@ export default {
                 cb();
             }
         },
-        async fetch() {
-            // 获取当前英雄信息
-            const res = await this.$http.get("/rest/heroes/" + this._id);
-            // 对象合并，防止实例里的model的属性与获取到的属性不一致
-            this.model = Object.assign({}, this.model, res.data);
-        },
-        async fetchCategories() {
-            // 获取分类列表
-            const res = await this.$http.get("/rest/categories/selectlist");
-            this.categories = res.data;
-        },
         async fetchItems() {
             // 获取装备列表
-            const res = await this.$http.get("/rest/items/selectlist");
+            const res = await getResourceSimpleList('items');
             this.items = res.data;
         },
         async fetchHeros() {
             // 获取英雄列表
-            const res = await this.$http.get("/rest/heroes/selectlist");
+            const res = await getResourceSimpleList("heroes");
             this.heroes = res.data;
         },
         async fetchSummoners() {
             // 获取召唤师技能
-            const res = await this.$http.get('/rest/summoners/selectlist');
+            const res = await getResourceSimpleList('summoners');
             this.summoners = res.data;
         },
         async fetchMings() {
             // 获取铭文列表
-            const res = await this.$http.get('/rest/mings/selectlist');
+            const res = await getResourceSimpleList('mings');
             this.mings = res.data;
         },
         handleIconSuccess(res) {
@@ -1148,8 +1094,6 @@ export default {
         }
     },
     created() {
-        this._id && this.fetch();
-        this.fetchCategories();
         this.fetchItems();
         this.fetchHeros();
         this.fetchSummoners();
