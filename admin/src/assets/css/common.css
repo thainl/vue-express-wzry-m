@@ -65,3 +65,9 @@
 .w-100 {
     width: 100%;
 }
+
+.main-page .el-main h2 {
+    text-align: center;
+    color: rgba(0, 0, 0, .75);
+    font-weight: 600;
+}
