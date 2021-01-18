@@ -244,7 +244,7 @@ module.exports = (app) => {
         res.send({ token });
     });
 
-    app.get("/admin/api/userinfo", authMiddleware(), async (req, res) => {
+    app.get("/admin/api/user_info", authMiddleware(), async (req, res) => {
         const user = req.user;
         const role = await Role.find({ _id: user.role })
             .populate({
