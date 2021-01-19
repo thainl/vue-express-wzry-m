@@ -3,14 +3,13 @@
         <h2>
             {{ disableForm ? "查看" : _id ? "编辑" : "新建" }}英雄
             <el-button
-                @click="$router.push(`/heroes/edit/${_id}`)"
+                @click="disableForm=false"
                 v-if="disableForm"
                 title="编辑英雄"
-                type="primary"
                 size="mini"
                 icon="el-icon-edit"
                 circle
-                v-permission="{action: 'put'}"
+                v-permission="{action: 'put', effect: 'disabled'}"
             ></el-button>
         </h2>
         <el-form
@@ -887,7 +886,7 @@ export default {
     mixins: [validatorMixin, editPageMixin, fetchCategoriesMixin],
     data() {
         return {
-            disableForm: false, // 是否禁用表单
+            disableForm: Object.prototype.hasOwnProperty.call(this.$route.query, 'view') ? true : false, // 是否禁用表单
             items: [], // 准备列表
             heroes: [], // 英雄列表
             summoners: [], // 召唤师技能列表
@@ -1098,16 +1097,7 @@ export default {
         this.fetchHeros();
         this.fetchSummoners();
         this.fetchMings();
-    },
-    beforeRouteEnter(to, from, next) {
-        next((vm) => {
-            vm.$refs.ruleForm.clearValidate(); // 清除表单验证错误
-            if (to.path == "/heroes/detail/" + to.params.id) {
-                vm.disableForm = true;
-            } else {
-                vm.disableForm = false;
-            }
-        });
+        console.log(this.$route);
     },
 };
 </script>

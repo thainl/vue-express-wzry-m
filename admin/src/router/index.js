@@ -60,12 +60,6 @@ const routerMapping = {
         props: true,
         component: () => import("../views/HeroEdit.vue"),
     },
-    "/heroes/detail/:id": {
-        path: "/heroes/detail/:id",
-        name: "HeroDetail",
-        props: true,
-        component: () => import("../views/HeroEdit.vue"),
-    },
 
     "/articles/create": {
         path: "/articles/create",

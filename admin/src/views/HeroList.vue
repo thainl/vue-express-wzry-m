@@ -31,9 +31,10 @@
             <el-table-column fixed="right" label="操作" width="210">
                 <template v-slot="scope">
                     <el-button
-                        @click="$router.push(`/heroes/detail/${scope.row._id}`)"
+                        v-permission="{action: 'put', effect: 'disabled'}"
+                        @click="$router.push(`/heroes/edit/${scope.row._id}?view`)"
                         size="small"
-                        >详情</el-button
+                        >查看</el-button
                     >
                     <el-button
                         v-permission="{action: 'put', effect: 'disabled'}"
