@@ -234,14 +234,17 @@ module.exports = (app) => {
     app.post("/admin/api/login", async (req, res) => {
         // 查找用户
         const { name, password } = req.body;
+        let data = {};
         const user = await AdminUser.findOne({ name }).select("+password"); // 读取password字段
-        assert(user, 422, "用户不存在");
-        // 检验密码
-        const isValid = require("bcrypt").compareSync(password, user.password);
-        assert(isValid, 422, "密码错误");
-        // 返回token
-        let token = jwt.sign({ id: user._id }, app.get("secret")); // 生成密钥（要传递的信息， 密钥）
-        res.send({ token });
+        if(!user) {
+            data = {error: 1, msg: '用户不存在'}
+        } else if (!require("bcrypt").compareSync(password, user.password)) {
+            data = {error: 2, msg: '密码错误'};
+        } else {
+            let token = jwt.sign({ id: user._id }, app.get("secret")); // 生成密钥（要传递的信息， 密钥）
+            data = { ok: 1, token }
+        }
+        res.send(data);
     });
 
     app.get("/admin/api/user_info", authMiddleware(), async (req, res) => {

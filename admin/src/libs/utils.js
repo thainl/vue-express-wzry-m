@@ -1,3 +1,5 @@
+import cryptoJS from 'crypto-js';
+
 let rightMapping = {
     'GET': '获取数据',
     'POST': '新增操作',
@@ -120,7 +122,12 @@ function getCategoryParents(cate) {
     return arr.join(" > ");
 }
 
+function encryptWithMD5(str) {
+    return cryptoJS.MD5(str).toString();
+}
+
 export {
     makeWebTree,
-    getCategoryParents
+    getCategoryParents,
+    encryptWithMD5
 };
