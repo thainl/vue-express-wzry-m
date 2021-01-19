@@ -117,7 +117,6 @@ function getCategoryParents(cate) {
         }
     }
     fn(cate);
-    console.log(arr.join('>'));
     return arr.join(" > ");
 }
 
