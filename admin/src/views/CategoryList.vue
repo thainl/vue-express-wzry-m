@@ -11,7 +11,11 @@
         <el-table :data="categories">
             <el-table-column prop="_id" label="id" width="220px">
             </el-table-column>
-            <el-table-column prop="parent.name" label="父级分类"> </el-table-column>
+            <el-table-column prop="parent.name" label="父级分类">
+                <template v-slot="scope">
+                        <span v-if="scope.row.parent" :title="getCategoryParents(scope.row)">{{ scope.row.parent.name }}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="name" label="分类名称"> </el-table-column>
             <el-table-column fixed="right" label="操作" width="200">
                 <template v-slot="scope">
@@ -47,6 +51,8 @@
 </template>
 
 <script>
+import { getCategoryParents } from '@/libs/utils.js';
+
 export default {
     name: "CategoryList",
     data() {
@@ -101,7 +107,8 @@ export default {
             }
         })
             
-        }
+        },
+        getCategoryParents
     },
     created() {
         this.fetch();

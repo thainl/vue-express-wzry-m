@@ -28,7 +28,7 @@ function makePageItem(item, isTree) {
  * @param {array} arr 后台页面集合
  * @param {boolean} isTree 是要生成树形图
  */
-export function makeWebTree(arr, isTree) {
+function makeWebTree(arr, isTree) {
     let hasMenu = []; // 有对应菜单的页面
     let noMenu = []; // 无对应菜单的页面
     let resData = [];
@@ -105,3 +105,23 @@ export function makeWebTree(arr, isTree) {
     }
     return resData;
 }
+
+function getCategoryParents(cate) {
+    let arr = [];
+    function fn(cate) {
+        arr.unshift(cate.name);
+        if (cate.parent) {
+            fn(cate.parent);
+        } else {
+            return false;
+        }
+    }
+    fn(cate);
+    console.log(arr.join('>'));
+    return arr.join(" > ");
+}
+
+export {
+    makeWebTree,
+    getCategoryParents
+};
