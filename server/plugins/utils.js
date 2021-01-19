@@ -1,6 +1,6 @@
 async function isExistName(req) {
     // 验证名称是否已存在
-    let findOptions = { name: req.body.name || '' };
+    let findOptions = { name: req.body.name || "" };
     const modelName = req.Model.modelName;
     if (modelName === "Category" || modelName === "Menu") {
         findOptions.parent = req.body.parent; // 判断是在同父级下有相同名称
@@ -58,8 +58,20 @@ function getSortObj(str) {
     }
 }
 
+async function deleteResource(req, res) {
+    let arr = req.params.id ? new Array(req.params.id) : req.body;
+    const result = await req.Model.deleteMany({ _id: { $in: arr } });
+    // const result = await req.Model.updateMany({ _id: { $in: arr } }, { $set: { isDeleted: true } });
+    console.log(result);
+    if(result.deleteCount || result.ok) {
+        res.send({ success: true });
+    }
+    return result;
+}
+
 module.exports = {
-    isExistName, 
+    isExistName,
     queryOptions,
-    getSortObj
+    getSortObj,
+    deleteResource,
 };

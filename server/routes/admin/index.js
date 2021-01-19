@@ -6,8 +6,8 @@ const {
     getSortObj,
     queryOptions,
     isExistName,
+    deleteResource,
 } = require("../../plugins/utils");
-const assert = require("http-assert"); // 用于确保信息是否正确，抛出错误
 
 // 权限中间件
 const permissionMiddleware = require("../../middleware/permission");
@@ -177,9 +177,16 @@ module.exports = (app) => {
 
     // 删除资源
     router.delete("/:id", permissionMiddleware(), async (req, res) => {
-        await req.Model.findByIdAndRemove(req.params.id);
-        res.send({ success: true });
+        await deleteResource(req, res);
     });
+
+    router.delete("/", permissionMiddleware(), async (req, res) => {
+        const result = await deleteResource(req);
+        console.log(result);
+        if(result.deleteCount || result.ok) {
+            res.send({ success: true });
+        }
+    })
 
     // 登录检验中间件
     const authMiddleware = require("../../middleware/auth");
