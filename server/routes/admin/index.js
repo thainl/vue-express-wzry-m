@@ -180,12 +180,9 @@ module.exports = (app) => {
         await deleteResource(req, res);
     });
 
+    // 批量删除
     router.delete("/", permissionMiddleware(), async (req, res) => {
-        const result = await deleteResource(req);
-        console.log(result);
-        if(result.deleteCount || result.ok) {
-            res.send({ success: true });
-        }
+        await deleteResource(req, res);
     })
 
     // 登录检验中间件

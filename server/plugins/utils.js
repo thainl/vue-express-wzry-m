@@ -62,7 +62,6 @@ async function deleteResource(req, res) {
     let arr = req.params.id ? new Array(req.params.id) : req.body;
     const result = await req.Model.deleteMany({ _id: { $in: arr } });
     // const result = await req.Model.updateMany({ _id: { $in: arr } }, { $set: { isDeleted: true } });
-    console.log(result);
     if(result.deleteCount || result.ok) {
         res.send({ success: true });
     }

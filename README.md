@@ -6,7 +6,7 @@
 ## server 文件夹为服务端
 
 - npm install 
-- npm run serve
+- npm run dev
 
 ## web 文件夹为移动web端
 
