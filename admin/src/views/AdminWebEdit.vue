@@ -7,6 +7,8 @@
             :rules="rules"
             :model="model"
             label-width="120px"
+            v-loading="isFetching"
+            element-loading-text="Loading..."
         >
             <el-form-item label="名称" prop="name" :error="nameErrorTip">
                 <el-input v-model="model.name" placeholder="以 页面 两个字结尾"></el-input>

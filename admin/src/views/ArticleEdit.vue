@@ -1,14 +1,41 @@
 <template>
     <div class="article-edit">
         <h2>{{ _id ? "编辑" : "新建" }}文章</h2>
-        <el-form @submit.native.prevent="save" ref="ruleForm" :model="model" label-width="120px">
-            <el-form-item label="标题" prop="title" :rules="[{ required: true, message: '文章标题不能为空', trigger: 'blur' }]">
+        <el-form
+            @submit.native.prevent="save"
+            ref="ruleForm"
+            :model="model"
+            label-width="120px"
+            v-loading="isFetching"
+            element-loading-text="Loading..."
+        >
+            <el-form-item
+                label="标题"
+                prop="title"
+                :rules="[
+                    {
+                        required: true,
+                        message: '文章标题不能为空',
+                        trigger: 'blur',
+                    },
+                ]"
+            >
                 <el-input
                     placeholder="输入文章名称"
                     v-model="model.title"
                 ></el-input>
             </el-form-item>
-            <el-form-item label="分类" prop="categories" :rules="[{required: true, message: '至少选择一个分类', trigger: 'blur'}]">
+            <el-form-item
+                label="分类"
+                prop="categories"
+                :rules="[
+                    {
+                        required: true,
+                        message: '至少选择一个分类',
+                        trigger: 'blur',
+                    },
+                ]"
+            >
                 <el-select
                     v-model="model.categories"
                     filterable
@@ -27,8 +54,22 @@
             <el-form-item label="作者" prop="author">
                 <el-input v-model="model.author"></el-input>
             </el-form-item>
-            <el-form-item label="内容" prop="body" :rules="[{ required: true, message: '文章内容不能为空', trigger: 'blur' }]">
-                <vue-editor v-model="model.body" useCustomImageHandler @image-added="handleImageAdded"></vue-editor>
+            <el-form-item
+                label="内容"
+                prop="body"
+                :rules="[
+                    {
+                        required: true,
+                        message: '文章内容不能为空',
+                        trigger: 'blur',
+                    },
+                ]"
+            >
+                <vue-editor
+                    v-model="model.body"
+                    useCustomImageHandler
+                    @image-added="handleImageAdded"
+                ></vue-editor>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" native-type="submit">{{
@@ -40,9 +81,9 @@
 </template>
 
 <script>
-import editPageMixin from '@/libs/editPageMixin.js';
-import fetchCategoriesMixin from '@/libs/fetchCategoriesMixin.js';
-import { uploadImage } from '@/libs/api.js';
+import editPageMixin from "@/libs/editPageMixin.js";
+import fetchCategoriesMixin from "@/libs/fetchCategoriesMixin.js";
+import { uploadImage } from "@/libs/api.js";
 import { VueEditor } from "vue2-editor";
 
 export default {
@@ -55,24 +96,24 @@ export default {
     },
     computed: {
         articleCategories() {
-            return this.categories.filter(cate => {
-                if(cate.parent) return cate.parent.name == '新闻分类';
+            return this.categories.filter((cate) => {
+                if (cate.parent) return cate.parent.name == "新闻分类";
             });
         },
     },
     methods: {
-        async handleImageAdded (file, Editor, cursorLocation, resetUploader) {
+        async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
             const formData = new FormData();
             formData.append("file", file);
             const res = await uploadImage(formData);
-            if(res.status === 200)
-            Editor.insertEmbed(cursorLocation, "image", res.data.url);
+            if (res.status === 200)
+                Editor.insertEmbed(cursorLocation, "image", res.data.url);
             resetUploader();
-        }
+        },
     },
     components: {
-        VueEditor
-    }
+        VueEditor,
+    },
 };
 </script>
 

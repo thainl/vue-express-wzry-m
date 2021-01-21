@@ -7,6 +7,8 @@
             :model="model"
             :rules="rules"
             label-width="120px"
+            v-loading="isFetching"
+            element-loading-text="Loading..."
         >
             <el-form-item label="用户名" prop="name" :error="nameErrorTip">
                 <el-input

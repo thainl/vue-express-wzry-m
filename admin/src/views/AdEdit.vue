@@ -6,6 +6,8 @@
             ref="ruleForm"
             :model="model"
             label-width="120px"
+            v-loading="isFetching"
+            element-loading-text="Loading..."
         >
             <el-form-item
                 label="名称"

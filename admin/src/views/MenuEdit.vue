@@ -7,6 +7,8 @@
             :rules="rules"
             :model="model"
             label-width="120px"
+            v-loading="isFetching"
+            element-loading-text="Loading..."
         >
             <el-form-item label="上级菜单">
                 <el-tooltip style="margin: 4px" effect="dark" content="一级为分类，二级为分组，三级才是真正的菜单" placement="top-start">

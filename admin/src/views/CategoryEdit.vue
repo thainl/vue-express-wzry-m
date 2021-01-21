@@ -7,6 +7,8 @@
             :rules="rules"
             :model="model"
             label-width="120px"
+            v-loading="isFetching"
+            element-loading-text="Loading..."
         >
             <el-form-item label="上级分类">
                 <el-select filterable v-model="model.parent" placeholder="请选择父级分类">

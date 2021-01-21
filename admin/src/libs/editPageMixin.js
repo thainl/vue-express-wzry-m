@@ -8,6 +8,7 @@ export default {
         return {
             nameErrorTip: '',
             modelName: this.$route.path.match(/\/(\w+?)\//i)[1], // 对应操作模型的名称
+            isFetching: false,
         }
     },
     computed: {
@@ -53,10 +54,12 @@ export default {
             });
         },
         async fetch() {
+            this.isFetching = true;
             // 获取当前要编辑的信息
             const res = await getResourceItem(this.modelName, this._id);
             // 对象合并，防止实例里的model的属性与获取到的属性不一致
             this.model = Object.assign({}, this.model, res.data);
+            this.isFetching = false;
         },
     },
     created() {

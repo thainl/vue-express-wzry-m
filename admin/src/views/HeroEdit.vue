@@ -19,6 +19,8 @@
             :model="model"
             :rules="rules"
             label-width="120px"
+            v-loading="isFetching"
+            element-loading-text="Loading..."
         >
             <el-tabs value="basic" type="border-card">
                 <el-tab-pane name="basic" label="基础信息">

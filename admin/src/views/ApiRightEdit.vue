@@ -7,6 +7,8 @@
             :rules="rules"
             :model="model"
             label-width="120px"
+            v-loading="isFetching"
+            element-loading-text="Loading..."
         >
             <el-form-item label="接口地址" prop="path" :error="nameErrorTip">
                 <el-input
