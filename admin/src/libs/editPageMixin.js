@@ -38,7 +38,7 @@ export default {
                                 type: "success",
                                 message: this._id ? "修改成功" : "新建成功",
                             });
-                            this.$router.push("/" + this.modelName + "/list");
+                            this.$router.push("/" + this.modelName + "/list" + (this._id ? '' : '?sort=_id:-1'));
                         }
                         
                     }
