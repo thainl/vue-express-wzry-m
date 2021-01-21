@@ -1,20 +1,47 @@
 <template>
     <div class="hero-list">
-        <h2>英雄列表</h2>
-        <el-form @submit.native.prevent="search">
-            <el-form-item class="el-form-search-item">
-                <el-input clearable v-model="searchKeyword" @clear="clearSearch" placeholder="搜索名称" prefix-icon="el-icon-search" ></el-input>
-                <el-button native-type="submit" v-permission="{action: 'search', effect: 'disabled'}" type="primary">搜索</el-button>
-                <el-button title="刷新" @click="searchKeyword ? search() : fetch()" icon="el-icon-refresh-left"></el-button>
-            </el-form-item>
-        </el-form>
-        <el-table :data="heroes">
-            <el-table-column prop="_id" label="id" width="220px">
+        <h2>{{ this.listName }}列表</h2>
+        <ListForm
+            :fetch="fetch"
+            :search="search"
+            :clear="clearSearch"
+            :deleteMany="handleClickDeleteMany"
+            :selectedListLength="selectedList.length"
+            :searchKeyword="searchKeyword"
+            :modelName="modelName"
+            :listName="listName"
+            :loading="isFetching"
+            :searching="isSearching"
+            @keywordChange="searchKeyword = $event"
+        />
+        <el-table
+            v-loading="isFetching"
+            element-loading-text="Loading..."
+            :data="listData"
+            @selection-change="handleSelectionChange"
+            @sort-change="handleSortChange"
+        >
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column
+                prop="_id"
+                label="id"
+                width="220px"
+                sortable="custom"
+                :sort-orders="sortOrder"
+            >
             </el-table-column>
-            <el-table-column prop="name" label="英雄名称"> </el-table-column>
+            <el-table-column
+                prop="name"
+                label="英雄名称"
+                sortable="custom"
+                :sort-orders="sortOrder"
+            >
+            </el-table-column>
             <el-table-column prop="categories[0].name" label="英雄分类">
                 <template v-slot="scope">
-                    <span>{{ scope.row.categories.map(v => v.name).join('/') }}</span>
+                    <span>{{
+                        scope.row.categories.map((v) => v.name).join("/")
+                    }}</span>
                 </template>
             </el-table-column>
             <el-table-column label="英雄头像">
@@ -30,101 +57,32 @@
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="210">
                 <template v-slot="scope">
-                    <el-button
-                        v-permission="{action: 'put', effect: 'disabled'}"
-                        @click="$router.push(`/heroes/edit/${scope.row._id}?view`)"
-                        size="small"
-                        >查看</el-button
-                    >
-                    <el-button
-                        v-permission="{action: 'put', effect: 'disabled'}"
-                        @click="$router.push(`/heroes/edit/${scope.row._id}`)"
-                        size="small"
-                        >编辑</el-button
-                    >
-                    <el-button
-                        v-permission="{action: 'delete', effect: 'disabled'}"
-                        @click="remove(scope.row)"
-                        type="danger"
-                        size="small"
-                        >删除</el-button
-                    >
+                    <ListOptionsBtn
+                        :modelName="modelName"
+                        :row="scope.row"
+                        :deleteOne="handleClickDeleteOne"
+                        showViewBtn
+                    />
                 </template>
             </el-table-column>
         </el-table>
-        <el-pagination
-            background
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-size="pageSize"
-            :page-sizes="[5, 10, 20, 50, 100]"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalSize">
-        </el-pagination>
+        <ListPagination
+            :handleSizeChange="handleSizeChange"
+            :handleCurrPageChange="handleCurrPageChange"
+            :currentPage="currentPage"
+            :pageSize="pageSize"
+            :totalSize="totalSize"
+            :disabled="isFetching"
+        />
     </div>
 </template>
 
 <script>
+import listPageMixin from "@/libs/listPageMixin.js";
+
 export default {
     name: "ItemList",
-    data() {
-        return {
-            heroes: [],
-            pageSize: 10,
-            currentPage: 1,
-            totalSize: 0,
-            searchKeyword: '',
-        };
-    },
-    methods: {
-        async search(e, reset){
-            if(!this.searchKeyword) return;
-            if(!reset) {this.currentPage = 1;}
-            const res = await this.$http.get(`/rest/heroes/search?keyword=${this.searchKeyword}&size=${this.pageSize}&page=${this.currentPage}`);
-            this.heroes = res.data.items;
-            this.totalSize = res.data.totalCount;
-        },
-        clearSearch() {
-            this.fetch();
-            this.currentPage = 1;
-        },
-        handleSizeChange(size) {
-            this.pageSize = size;
-            this.searchKeyword ? this.search(null, true) : this.fetch();
-        },
-        handleCurrentChange(p) {
-            this.currentPage = p;
-            this.searchKeyword ? this.search(null, true) : this.fetch();
-        },
-        async fetch() {
-            const res = await this.$http.get(`/rest/heroes?size=${this.pageSize}&page=${this.currentPage}`);
-            if (res.status === 200) {
-                this.heroes = res.data.items;
-                this.totalSize = res.data.totalCount;
-            }
-            
-        },
-        async remove(row) {
-            this.$confirm(`是否确定要删除英雄 "${row.name}"`, "提示", {
-                confirmButtonText: "删除",
-                cancelButtonText: "取消",
-                type: "warning",
-            }).then(async () => {
-                let res = await this.$http.delete("/rest/heroes/" + row._id);
-                if (res.data.success) {
-                    this.$message({
-                        type: "success",
-                        message: "删除成功",
-                    });
-                    this.fetch();
-                }
-            }).catch(() => {});
-        },
-    },
-    created() {
-        this.fetch();
-    },
+    mixins: [listPageMixin],
 };
 </script>
 

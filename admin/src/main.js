@@ -41,6 +41,8 @@ Vue.directive("permission", {
             if (rights.indexOf(action.toUpperCase()) === -1) {
                 if (effect == "disabled") {
                     el.disabled = true;
+                    el.querySelector('input') && (el.querySelector('input').disabled = true);
+                    el.querySelector('button') && (el.querySelector('button').disabled = true);
                     el.title = "无操作权限";
                     el.classList.add("is-disabled");
                 } else {

@@ -24,7 +24,11 @@ async function deleteResourceItem(model, id) {
 
 async function deleteResources(model, arr) {
     if (!Array.isArray(arr)) return;
-    return await http.delete("/rest/" + model, { data: arr });
+    return await http({
+        method: 'delete',
+        url: "/rest/" + model,
+        data: arr
+    });
 }
 
 async function getResourceItem(model, id) {
