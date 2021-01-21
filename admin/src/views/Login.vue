@@ -47,7 +47,10 @@ export default {
     name: "Login",
     data() {
         return {
-            model: {},
+            model: {
+                name: 'user1',
+                password: '123456'
+            },
             rules: {
                 name: [
                     {
