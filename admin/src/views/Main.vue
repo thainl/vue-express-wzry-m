@@ -93,13 +93,14 @@
 
         <el-container>
             <el-header style="text-align: right; font-size: 12px">
+                <span class="username">{{user.name || '未登录'}}</span>
                 <el-dropdown>
-                    <i class="el-icon-switch-button" style="margin-right: 15px;cursor: pointer"></i>
+                    <i class="el-icon-arrow-down" style="margin-right: 15px;cursor: pointer"></i>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.native="exit">退出</el-dropdown-item>
+                        <el-dropdown-item @click.native="goToWeb" icon="el-icon-mobile">前台</el-dropdown-item>
+                        <el-dropdown-item @click.native="exit" icon="el-icon-switch-button">退出</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
-                <span>{{user.name || '未登录'}}</span>
             </el-header>
 
             <el-main>
@@ -110,21 +111,24 @@
 </template>
 
 <style>
-.el-header {
+.main-page .el-header {
     background-color: #b3c0d1;
     color: #333;
     line-height: 60px;
 }
 
-.el-aside {
+.main-page .el-aside {
     color: #333;
 }
-.el-menu-item-group__title {
+.main-page .el-menu-item-group__title {
     color: #606266;
     background: #f4f4f5;
 }
-.el-submenu i[class^="el-icon"] {
+.main-page .el-submenu i[class^="el-icon"] {
     vertical-align: text-top;
+}
+.main-page .username {
+    margin-right: 8px;
 }
 </style>
 
@@ -158,6 +162,9 @@ export default {
                 message: '退出成功'
             });
             this.$router.push('/login');
+        },
+        goToWeb() {
+            window.open(location.origin);
         },
         async getUserInfo() {
             const res = await getLoginUserInfo();
