@@ -99,6 +99,8 @@
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item @click.native="goToWeb" icon="el-icon-mobile">前台</el-dropdown-item>
                         <el-dropdown-item @click.native="exit" icon="el-icon-switch-button">退出</el-dropdown-item>
+                        <el-dropdown-item @click.native="goToGithub" divided>github</el-dropdown-item>
+                        <el-dropdown-item @click.native="goToGitee">gitee</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-header>
@@ -165,6 +167,12 @@ export default {
         },
         goToWeb() {
             window.open(location.origin);
+        },
+        goToGithub() {
+            window.open('https://github.com/thainl/vue-express-wzry-m');
+        },
+        goToGitee() {
+            window.open('https://gitee.com/thainl/vue-node-moba');
         },
         async getUserInfo() {
             const res = await getLoginUserInfo();
