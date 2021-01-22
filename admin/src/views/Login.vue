@@ -30,6 +30,7 @@
                             class="w-100"
                             native-type="submit"
                             type="primary"
+                            :loading="isLoading"
                             >登录</el-button
                         >
                     </el-form-item>
@@ -48,8 +49,8 @@ export default {
     data() {
         return {
             model: {
-                name: 'user1',
-                password: '123456'
+                name: "user1",
+                password: "123456",
             },
             rules: {
                 name: [
@@ -75,10 +76,12 @@ export default {
             },
             nameErrorTip: "",
             pwdErrorTip: "",
+            isLoading: false,
         };
     },
     methods: {
         login() {
+            this.isLoading = true;
             this.nameErrorTip = "";
             this.pwdErrorTip = "";
             this.$refs.ruleForm.validate(async (valid) => {
@@ -89,10 +92,12 @@ export default {
                     if (res.data.error === 1) {
                         this.nameErrorTip = res.data.msg;
                         this.setPwd(this._pwd);
+                        this.isLoading = false;
                         return;
                     } else if (res.data.error === 2) {
                         this.pwdErrorTip = res.data.msg;
                         this.setPwd(this._pwd);
+                        this.isLoading = false;
                         return;
                     } else if (res.data.token) {
                         sessionStorage.setItem("token", res.data.token);
@@ -102,6 +107,7 @@ export default {
                             message: "登录成功",
                         });
                     }
+                    this.isLoading = false;
                 } else {
                     this._pwd && this.setPwd(this._pwd);
                     return false;
