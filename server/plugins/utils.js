@@ -58,16 +58,6 @@ function getSortObj(str) {
     }
 }
 
-async function deleteResource(req, res) {
-    let arr = req.params.id ? new Array(req.params.id) : req.body;
-    // const result = await req.Model.deleteMany({ _id: { $in: arr } });
-    const result = await req.Model.updateMany({ _id: { $in: arr } }, { $set: { isDeleted: true } }); // 软删除
-    if (result.deleteCount || result.ok) {
-        res.send({ success: true });
-    }
-    return result;
-}
-
 // schema 查询的前置中间件，过滤掉已软删除的数据
 function findMiddleware(next) {
     this.where({ isDeleted: { $ne: true } });
@@ -78,6 +68,5 @@ module.exports = {
     isExistName,
     queryOptions,
     getSortObj,
-    deleteResource,
     findMiddleware,
 };
