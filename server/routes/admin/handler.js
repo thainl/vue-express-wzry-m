@@ -35,7 +35,7 @@ async function getResourceList(req) {
                 { body: { $regex: req.query.search, $options: "$i" } }, // 也可以这样写，忽略大小写
                 { parent: cate },
                 { category: cate },
-                { categories: { $all: cate } },
+                { categories: { $in: cate } },
                 { path: { $regex: reg } }, // 搜索接口路径
                 { description: { $regex: reg } },
                 { methods: { $regex: reg } },
