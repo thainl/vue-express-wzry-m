@@ -2,11 +2,6 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Main from "../views/Main.vue";
 
-// const originalPush = VueRouter.prototype.push
-// VueRouter.prototype.push = function push(location) {
-//   return originalPush.call(this, location).catch(err => err)
-// }
-
 Vue.use(VueRouter);
 
 const routerMapping = {
@@ -208,7 +203,6 @@ const routes = [
             //     props: true,
             //     component: () => import("../views/CategoryEdit.vue"),
             // },
-
             // {
             //     path: "/items/create",
             //     name: "ItemCreate",
@@ -225,7 +219,6 @@ const routes = [
             //     props: true,
             //     component: () => import("../views/ItemEdit.vue"),
             // },
-
             // {
             //     path: "/heroes/create",
             //     name: "HeroCreate",
@@ -248,7 +241,6 @@ const routes = [
             //     props: true,
             //     component: () => import("../views/HeroEdit.vue"),
             // },
-
             // {
             //     path: "/articles/create",
             //     name: "ArticleCreate",
@@ -265,7 +257,6 @@ const routes = [
             //     props: true,
             //     component: () => import("../views/ArticleEdit.vue"),
             // },
-
             // {
             //     path: "/ads/create",
             //     name: "AdCreate",
@@ -282,7 +273,6 @@ const routes = [
             //     props: true,
             //     component: () => import("../views/AdEdit.vue"),
             // },
-
             // {
             //     path: "/admin_users/create",
             //     name: "AdminUserCreate",
@@ -299,7 +289,6 @@ const routes = [
             //     props: true,
             //     component: () => import("../views/AdminUserEdit.vue"),
             // },
-
             // {
             //     path: "/roles/create",
             //     name: "RoleCreate",
@@ -316,7 +305,6 @@ const routes = [
             //     props: true,
             //     component: () => import("../views/RoleEdit.vue"),
             // },
-
             // {
             //     path: "/menus/create",
             //     name: "MenuCreate",
@@ -333,7 +321,6 @@ const routes = [
             //     props: true,
             //     component: () => import("../views/MenuEdit.vue"),
             // },
-
             // {
             //     path: "/admin_webs/create",
             //     name: "AdminWebCreate",
@@ -350,7 +337,6 @@ const routes = [
             //     props: true,
             //     component: () => import("../views/AdminWebEdit.vue"),
             // },
-
             // {
             //     path: "/api_rights/create",
             //     name: "ApiRightCreate",
@@ -368,70 +354,68 @@ const routes = [
             //     component: () => import("../views/ApiRightEdit.vue"),
             // },
         ],
-	},
-	{
-		path: '*',
-		name: 'NotFound',
-		component: ()=> import('../views/NotFound.vue')
-	}
+    },
+    {
+        path: "*",
+        name: "NotFound",
+        component: () => import("../views/NotFound.vue"),
+    },
 ];
 
 const router = new VueRouter({
     routes,
 });
 
-
-
 router.beforeEach((to, from, next) => {
     if (!to.meta.isPublic && !sessionStorage.token) {
         // 不是公开可以访问的页面 并且 无token
         Vue.prototype.$message({ type: "error", message: "请先登录" });
         next("/login");
-    }else if(to.params.id && from.meta.rights) {
+    } else if (to.params.id && from.meta.rights) {
         // 对列表的编辑按钮进行权限控制
-        let reg = new RegExp('/edit/'+to.params.id, 'i');
-        if(reg.test(to.path) && from.meta.rights.indexOf('PUT') === -1) {
-            Vue.prototype.$alert('无权限进行此操作： 编辑', '错误', {type: 'error'});
-            return Promise.reject(new Error('无权限进行此操作'));
-        }else {
+        let reg = new RegExp("/edit/" + to.params.id, "i");
+        if (reg.test(to.path) && from.meta.rights.indexOf("PUT") === -1) {
+            Vue.prototype.$alert("无权限进行此操作： 编辑", "错误", {
+                type: "error",
+            });
+            return Promise.reject(new Error("无权限进行此操作"));
+        } else {
             next();
         }
-    }else {
+    } else {
         next();
     }
 });
 
-router.$addRoutes = (routes)=> {
-	// 自定义一个$addRoutes的方法
-	// 通过新建一个全新的 Router，然后将新的 Router.matcher 赋给当前页面的管理 Router，以达到更新路由配置的目的。自定义的$addRoutes，就是实现这个功能
-	router.matcher = new VueRouter().matcher;
-	router.addRoutes(routes);
-}
+router.$addRoutes = (routes) => {
+    // 自定义一个$addRoutes的方法
+    // 通过新建一个全新的 Router，然后将新的 Router.matcher 赋给当前页面的管理 Router，以达到更新路由配置的目的。自定义的$addRoutes，就是实现这个功能
+    router.matcher = new VueRouter().matcher;
+    router.addRoutes(routes);
+};
 
 export function initDynamicRoutes() {
-	if(sessionStorage.token && sessionStorage.adminWebs) {
-		let mainRouteIndex;
-		const routes = router.options.routes; // 所有路由集合
-		routes.forEach((r, i) => {
-			if(r.path === '/' && r.name ==='Main') {
-				mainRouteIndex = i; // 获取首页路由在路由集合的索引
-			}
-		})
-		const adminWebs = JSON.parse(sessionStorage.getItem('adminWebs'));
-		// routes[mainRouteIndex].children.splice(0, routes[mainRouteIndex].children.length - 1);
-		adminWebs.forEach((w, i) => {
-			let temp = routerMapping[w.web.path];
-			if(temp && !routes[mainRouteIndex].children[i]) { 
-				// 如果索引已经存在，则不添加，因为初始化动态路由在app.vue和main.vue页面都会调用
-				temp.meta = {rights: w.rights};
-				routes[mainRouteIndex].children.push(temp); // 往首页路由添加子路由
-			}
-		})
-		router.$addRoutes(routes);
-		// console.log(router);
-	}else {
-		return;
-	}
+    if (sessionStorage.token && sessionStorage.adminWebs) {
+        let mainRouteIndex;
+        const routes = router.options.routes; // 所有路由集合
+        routes.forEach((r, i) => {
+            if (r.path === "/" && r.name === "Main") {
+                mainRouteIndex = i; // 获取首页路由在路由集合的索引
+            }
+        });
+        const adminWebs = JSON.parse(sessionStorage.getItem("adminWebs"));
+        routes[mainRouteIndex].children = []; // 每次添加前清空
+        adminWebs.forEach((w) => {
+            let temp = routerMapping[w.web.path];
+            if (temp) {
+                temp.meta = { rights: w.rights };
+                routes[mainRouteIndex].children.push(temp); // 往首页路由添加子路由
+            }
+        });
+        router.$addRoutes(routes);
+    } else {
+        return;
+    }
 }
 
 initDynamicRoutes(); // 先在当前文件调用一次，刷新后就不会失效了
