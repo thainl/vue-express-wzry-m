@@ -1,5 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const fs = require('mz/fs');
 const AdminUser = require("../../models/AdminUser");
 const Category = require("../../models/Category");
 const {
@@ -12,6 +13,7 @@ const {
 // 权限中间件
 const permissionMiddleware = require("../../middleware/permission");
 const Role = require("../../models/Role");
+const oss = require('../../plugins/oss');
 
 module.exports = (app) => {
     const router = express.Router({
@@ -221,6 +223,7 @@ module.exports = (app) => {
             );
         },
     });
+
     const upload = multer({ storage });
     app.post(
         "/admin/api/upload",
@@ -229,7 +232,11 @@ module.exports = (app) => {
         upload.single("file"),
         async (req, res) => {
             const file = req.file;
-            file.url = `http://127.0.0.1:2887/uploads/${file.filename}`;
+            // file.url = `http://127.0.0.1:2887/uploads/${file.filename}`; // 上传到本地
+            
+            const result = await oss.put('uploads/' + file.filename, file.path); // 上传到阿里oss
+            await fs.unlink(file.path); // 上传至oss后删除本地文件
+            file.url = result.url
             res.send(file);
         }
     );
