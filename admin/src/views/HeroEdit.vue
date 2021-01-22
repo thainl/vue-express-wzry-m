@@ -1099,7 +1099,6 @@ export default {
         this.fetchHeros();
         this.fetchSummoners();
         this.fetchMings();
-        console.log(this.$route);
     },
 };
 </script>
