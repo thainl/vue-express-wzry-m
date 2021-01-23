@@ -123,6 +123,7 @@ function getCategoryParents(cate) {
 }
 
 function encryptWithMD5(str) {
+    if(str === undefined || str === '') return undefined;
     return cryptoJS.MD5(str).toString();
 }
 
