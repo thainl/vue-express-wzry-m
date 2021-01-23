@@ -24,6 +24,7 @@ export default {
     },
     methods: {
         async search() {
+            if(!this.searchKeyword) return;
             this.isSearching = true;
             await this.fetch();
             this.isSearching = false;
