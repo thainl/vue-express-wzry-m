@@ -4,7 +4,7 @@
 
 预览地址：[http://wzry.thainl.xyz/admin](http://wzry.thainl.xyz/admin)
 
-## 后台管理管
+## 后台管理端
 
 - 页面使用element ui 搭建
 - 编辑页面：对各个模型（表）的操作
