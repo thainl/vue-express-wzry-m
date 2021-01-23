@@ -81,7 +81,6 @@ async function getSearchOptions(req, Category) {
                 { path: { $regex: reg } }, // 搜索接口路径
                 { description: { $regex: reg } },
                 { methods: { $regex: reg } },
-                { rights: { $regex: reg } },
             ],
         };
     }

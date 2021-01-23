@@ -69,7 +69,7 @@ export default {
             }
         }
         return {
-            apiMethods: {'查看 GET':'GET', '新增 POST': 'POST','修改 PUT':'PUT', '删除 DELETE': 'DELETE'},
+            apiMethods: {'查看 GET':'GET', '新增 POST': 'POST','修改 PUT':'PUT', '删除 DELETE': 'DELETE', '搜索 SEARCH': 'SEARCH'},
             model: {
             },
             rules: {

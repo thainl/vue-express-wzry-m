@@ -9,7 +9,8 @@ module.exports = (options) => {
 
         let originalUrl = req.query
             ? req.originalUrl.split("?")[0]
-            : req.originalUrl;
+            : req.originalUrl; // 请求的地址
+        let originalRight = req.query.search ? 'SEARCH' : req.method; // 是否为搜索
         const result = role.apiRights.filter((r) => {
             let myPath = "/admin/api" + (r.url ? r.url.path : "");
             if (req.params.id) {
@@ -17,7 +18,7 @@ module.exports = (options) => {
             }
             return (
                 myPath === originalUrl &&
-                r.rights.indexOf(req.method.toUpperCase()) !== -1
+                r.rights.indexOf(originalRight.toUpperCase()) !== -1
             );
         });
         // if (result.length === 1) {

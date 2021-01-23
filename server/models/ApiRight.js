@@ -9,7 +9,7 @@ const schema = new mongoose.Schema({
             type: String,
             validate: {
                 validator: function (val) {
-                    return ["GET", "POST", "PUT", "DELETE"].indexOf(val) !== -1;
+                    return ["GET", "POST", "PUT", "DELETE", "SEARCH"].indexOf(val) !== -1;
                 },
                 message: "api method is wrong",
             },

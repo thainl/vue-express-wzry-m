@@ -54,6 +54,7 @@ export default {
                 this.totalSize = res.data.totalCount;
             }
             this.isFetching = false;
+            this.isSearching = false;
         },
         // 点击删除单个按钮
         handleClickDeleteOne(row) {
