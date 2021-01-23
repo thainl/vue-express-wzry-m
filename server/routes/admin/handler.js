@@ -51,21 +51,9 @@ async function getResourceList(req) {
 
     if (req.Model.modelName === "Hero") {
         Object.assign(skipFields, {
-            partners: 0,
-            skills: 0,
-            scores: 0,
-            teamTips: 0,
-            usageTips: 0,
-            battleTips: 0,
-            reRestraints: 0,
-            restraints: 0,
-            recommendedItem1: 0,
-            recommendedItem2: 0,
-            skins: 0,
-            recommendedMings: 0,
-            recommendedSummoners: 0,
-            recommendedSkill1: 0,
-            recommendedSkill2: 0,
+            avatar: 1,
+            categories: 1,
+            name: 1,
         });
     }
 
