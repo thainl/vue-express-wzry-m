@@ -6,6 +6,8 @@ const {
     getSortObj,
     queryOptions,
     isExistName,
+    getSearchOptions,
+    getSkipFields,
 } = require("../../plugins/utils");
 const Role = require("../../models/Role");
 const oss = require("../../plugins/oss");
@@ -22,40 +24,9 @@ async function createResourceItem(req) {
 async function getResourceList(req) {
     const page = Number(req.query.page || 1),
         size = Number(req.query.size || 0),
-        sortOptions = req.query.sort ? getSortObj(req.query.sort) : {};
-    let searchOptions = {};
-    if (req.query.search) {
-        let reg = new RegExp(req.query.search, "i");
-        const cate = await Category.find({ name: { $regex: reg } }); // 查找分类
-        searchOptions = {
-            $or: [
-                // 多条件
-                { name: { $regex: reg } },
-                { title: { $regex: reg } },
-                { body: { $regex: req.query.search, $options: "$i" } }, // 也可以这样写，忽略大小写
-                { parent: cate },
-                { category: cate },
-                { categories: { $in: cate } },
-                { path: { $regex: reg } }, // 搜索接口路径
-                { description: { $regex: reg } },
-                { methods: { $regex: reg } },
-                { rights: { $regex: reg } },
-            ],
-        };
-    }
-
-    let skipFields = { // 不提取的字段
-        password: 0,
-        body: 0,
-    };
-
-    if (req.Model.modelName === "Hero") {
-        Object.assign(skipFields, {
-            avatar: 1,
-            categories: 1,
-            name: 1,
-        });
-    }
+        sortOptions = req.query.sort ? getSortObj(req.query.sort) : {},
+        searchOptions = await getSearchOptions(req, Category),
+        skipFields = getSkipFields(req);
 
     const items = await req.Model.find(searchOptions, skipFields)
         .setOptions(queryOptions(req))

@@ -64,9 +64,57 @@ function findMiddleware(next) {
     next();
 }
 
+async function getSearchOptions(req, Category) {
+    let searchOptions = {};
+    if (req.query.search) {
+        let reg = new RegExp(req.query.search, "i");
+        const cate = await Category.find({ name: { $regex: reg } }); // 查找分类
+        searchOptions = {
+            $or: [
+                // 多条件
+                { name: { $regex: reg } },
+                { title: { $regex: reg } },
+                { body: { $regex: req.query.search, $options: "$i" } }, // 也可以这样写，忽略大小写
+                { parent: cate },
+                { category: cate },
+                { categories: { $in: cate } },
+                { path: { $regex: reg } }, // 搜索接口路径
+                { description: { $regex: reg } },
+                { methods: { $regex: reg } },
+                { rights: { $regex: reg } },
+            ],
+        };
+    }
+    return searchOptions;
+}
+
+function getSkipFields(req) {
+    let skipFields = { // 不提取的字段
+        password: 0,
+        body: 0,
+    };
+
+    if (req.Model.modelName === "Hero") {
+        skipFields = {
+            avatar: 1,
+            categories: 1,
+            name: 1,
+        };
+    } else if(req.Model.modelName === "Item") {
+        skipFields = {
+            name: 1,
+            category: 1,
+            icon: 1
+        }
+    }
+    return skipFields;
+}
+
 module.exports = {
     isExistName,
     queryOptions,
     getSortObj,
     findMiddleware,
+    getSearchOptions,
+    getSkipFields
 };
