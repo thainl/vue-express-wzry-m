@@ -132,6 +132,9 @@
 .main-page .username {
     margin-right: 8px;
 }
+.main-page .el-menu {
+    height: 100%;
+}
 </style>
 
 <script>
