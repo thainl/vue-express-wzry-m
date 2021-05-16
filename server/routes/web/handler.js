@@ -4,6 +4,7 @@ const Article = mongoose.model("Article");
 const Hero = mongoose.model("Hero");
 const Ad = mongoose.model("Ad");
 
+// 获取文章列表（只获取少量字段）
 async function getArticleSimpleList() {
     const parent = await Category.findOne({ name: "新闻分类" });
     const newsList = await Category.aggregate([
@@ -51,6 +52,7 @@ async function getArticleSimpleList() {
     return list;
 }
 
+// 获取英雄列表（只获取少量字段）
 async function getHeroSimpleList() {
     const parent = await Category.findOne({ name: "英雄分类" });
     const heroesList = await Category.aggregate([
@@ -88,6 +90,7 @@ async function getHeroSimpleList() {
     return list;
 }
 
+// 获取英雄详情
 async function getHeroDetail(id) {
     const data = await Hero.findById(id)
         .populate("categories")
@@ -102,7 +105,7 @@ async function getHeroDetail(id) {
                 select: { name: 1, icon: 1 },
             },
             {
-                path: "restraints.hero reRestraints.hero partners.hero",
+                path: "restraints.hero reRestraints.hero partners.hero", // 关联partners下的hero
                 select: { name: 1, avatar: 1 },
             },
         ])
@@ -114,6 +117,7 @@ async function getHeroDetail(id) {
     return data;
 }
 
+// 获取文章详情
 async function getArticleDetail(id) {
     const data = await Article.findById(id).lean();
     // 相同分类的相关文章
@@ -124,11 +128,13 @@ async function getArticleDetail(id) {
     return data;
 }
 
+// 获取英雄皮肤列表
 async function getHeroSkins(id) {
     const data = await Hero.findById(id).select({ name: 1, skins: 1 }).lean();
     return data;
 }
 
+// 首页轮播图列表
 async function getHomeBanner() {
     const data = await Ad.findOne({ name: "homeBanner" }).lean();
     return data.items;
