@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import NProgress from "nprogress";
 import Main from "../views/Main.vue";
 
 Vue.use(VueRouter);
@@ -380,12 +381,18 @@ router.beforeEach((to, from, next) => {
             });
             return Promise.reject(new Error("无权限进行此操作"));
         } else {
+            NProgress.start();
             next();
         }
     } else {
+        NProgress.start();
         next();
     }
 });
+
+router.afterEach(() => {
+    NProgress.done();
+})
 
 router.$addRoutes = (routes) => {
     // 自定义一个$addRoutes的方法

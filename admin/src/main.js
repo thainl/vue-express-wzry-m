@@ -5,6 +5,7 @@ import router from "./router";
 import http from "./libs/http";
 
 import "./assets/css/common.css";
+import "nprogress/nprogress.css"; // nprogress 进度条样式
 
 Vue.config.productionTip = false;
 
