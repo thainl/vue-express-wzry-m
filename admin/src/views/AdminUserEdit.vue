@@ -98,26 +98,25 @@ export default {
         save() {
             this.$refs.ruleForm.validate(async (valid) => {
                 if (valid) {
-                    this._pwd = this.model.password; // 暂存加密前的密码，方便出错恢复
-                    this.setPwd(encryptWithMD5(this.model.password)); // 密码加密传输
+                    const data = { ...this.model };
+                    data.password = encryptWithMD5(data.password);
                     let res;
                     if (this._id) {
                         res = await updateResourceItem(
                             this.modelName,
                             this._id,
-                            this.model
+                            data
                         );
                     } else {
                         res = await createResourceItem(
                             this.modelName,
-                            this.model
+                            data
                         );
                     }
                     if (res.status === 200) {
                         if (res.data.errno === 1) {
                             // 用户名已存在
                             this.nameErrorTip = res.data.msg;
-                            this.setPwd(this._pwd);
                             return;
                         } else {
                             this.$message({
@@ -128,7 +127,6 @@ export default {
                         }
                     }
                 } else {
-                    this._pwd && this.setPwd(this._pwd);
                     this.$message({
                         type: "error",
                         message: "表单存在错误，请检查",
@@ -137,9 +135,6 @@ export default {
                     return false;
                 }
             });
-        },
-        setPwd(pwd) {
-            this.model.password = pwd;
         },
         async fetchRoles() {
             const res = await getResourceSimpleList("roles");

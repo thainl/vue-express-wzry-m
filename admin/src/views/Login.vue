@@ -86,21 +86,16 @@ export default {
             this.pwdErrorTip = "";
             this.$refs.ruleForm.validate(async (valid) => {
                 if (valid) {
-                    this._pwd = this.model.password;
-                    this.setPwd(encryptWithMD5(this.model.password));
-                    const res = await adminUserLogin(this.model);
+                    const data = { ...this.model };
+                    data.password = encryptWithMD5(data.password);
+                    const res = await adminUserLogin(data);
                     if (res.data.error === 1) {
                         this.nameErrorTip = res.data.msg;
-                        this.setPwd(this._pwd);
-                        this.isLoading = false;
-                        return;
                     } else if (res.data.error === 2) {
                         this.pwdErrorTip = res.data.msg;
-                        this.setPwd(this._pwd);
-                        this.isLoading = false;
-                        return;
                     } else if (res.data.token) {
                         sessionStorage.setItem("token", res.data.token);
+                        this.isLoading = false;
                         this.$router.push("/");
                         this.$message({
                             type: "success",
@@ -108,14 +103,8 @@ export default {
                         });
                     }
                     this.isLoading = false;
-                } else {
-                    this._pwd && this.setPwd(this._pwd);
-                    return false;
                 }
             });
-        },
-        setPwd(pwd) {
-            this.model.password = pwd;
         },
     },
 };
