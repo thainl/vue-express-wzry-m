@@ -8,21 +8,31 @@
 
 1. web端
 
+   ```
 web文件夹下
-
-```
-npm install
-npm run serve
-```
-
+   npm install
+   npm run serve
+   ```
+   
 2. admin端
 
+   ```
 admin文件夹下
+	npm install
+   npm run serve
+   ```
+   
+3. server端
 
-```
-npm install
-npm run serve
-```
+   ```
+   server文件夹下
+   npm install
+   npm run dev
+   ```
+
+   **服务端启动前需要先在`server/plugins/dbConfig.js` 文件夹下配置好MongoDB数据库**
+
+   数据库文件为`server/dump.zip`，自取
 
 ## 后台管理端
 
@@ -81,3 +91,7 @@ npm install
 npm run serve
 ```
 
+
+```
+
+```
