@@ -9,7 +9,7 @@
 1. web端
 
    ```
-web文件夹下
+   web文件夹下
    npm install
    npm run serve
    ```
@@ -17,7 +17,7 @@ web文件夹下
 2. admin端
 
    ```
-admin文件夹下
+   admin文件夹下
 	npm install
    npm run serve
    ```
