@@ -93,12 +93,13 @@ async function deleteResource(req) {
 // 上传文件
 async function uploadFile(req) {
     const file = req.file;
-    // file.url = `http://127.0.0.1:2887/uploads/${file.filename}`; // 上传到本地
+    file.url = `http://127.0.0.1:2887/uploads/${file.filename}`; // 上传到本地， 如果删除到oss注释该行
 
-    const result = await oss.put("uploads/" + file.filename, file.path); // 上传到阿里oss
-    await fs.unlink(file.path); // 上传至oss后删除本地缓存文件
+    // 如果上传到本地，则这注释3行代码
+    // const result = await oss.put("uploads/" + file.filename, file.path); // 上传到阿里oss，需要在oss配置
+    // await fs.unlink(file.path); // 上传至oss后删除本地缓存文件
+    // file.url = result.url; // 上传oss后返回的url
 
-    file.url = result.url;
     return file;
 }
 

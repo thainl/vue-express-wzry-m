@@ -4,6 +4,26 @@
 
 预览地址：[http://wzry.thainl.xyz/admin](http://wzry.thainl.xyz/admin)
 
+## 运行
+
+1. web端
+
+web文件夹下
+
+```
+npm install
+npm run serve
+```
+
+2. admin端
+
+admin文件夹下
+
+```
+npm install
+npm run serve
+```
+
 ## 后台管理端
 
 - 页面使用element ui 搭建
